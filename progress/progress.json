@@ -1,0 +1,33 @@
+{
+  "student": "Siddharth Sharma",
+  "plan_started": "2026-08-21",
+  "plan_ends": "2027-02-07",
+  "hours_per_week": null,
+  "github_username": null,
+  "current_week": 0,
+  "calibration": {
+    "diagnostic_scores": null,
+    "warmup_result": null,
+    "notes": "Awaiting Week 0 diagnostic. Plan assumes ~1 YOE (backend + SDET + DA internship) per resume."
+  },
+  "weeks": {
+    "0": { "status": "assigned", "assigned": "2026-08-21", "due": "2026-08-23" },
+    "1": { "status": "assigned", "assigned": "2026-08-21", "due": "2026-08-30" }
+  },
+  "quiz_scores": {},
+  "dsa": { "solved_total": 0, "log": [] },
+  "capstones": {
+    "relay": "not_started",
+    "docmind": "not_started",
+    "predictmaint": "not_started",
+    "analytics": "not_started"
+  },
+  "resume_versions": ["SIDDHARTH_SHARMA_Resume_2026_01.pdf"],
+  "milestones": {
+    "backend_ready": "2026-10-18",
+    "ai_engineer_ready": "2026-11-15",
+    "ml_engineer_ready": "2026-12-20",
+    "data_analyst_ready": "2027-01-10",
+    "fde_ready": "2027-02-07"
+  }
+}

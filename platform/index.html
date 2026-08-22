@@ -1,0 +1,555 @@
+<title>Sid's Launchpad</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #F2F4F6; --surface: #FFFFFF; --surface2: #E9EDF1; --ink: #1B2530; --muted: #5C6B78;
+    --line: #D7DEE4; --accent: #D14E12; --accent-ink: #FFFFFF; --accent-soft: #F8E4D8;
+    --ok: #237A50; --ok-soft: #DCEFE4; --warn: #96690F; --warn-soft: #F4E8CC; --bad: #B3362B; --bad-soft: #F5DDDA;
+    --shadow: 0 1px 3px rgba(27,37,48,.07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F141A; --surface: #171E26; --surface2: #212B36; --ink: #E6EBEF; --muted: #94A3B0;
+      --line: #2B3642; --accent: #F07A3D; --accent-ink: #1F0E04; --accent-soft: #3A2517;
+      --ok: #5CBA88; --ok-soft: #1C3427; --warn: #D9A93F; --warn-soft: #362F19; --bad: #E0685C; --bad-soft: #3B211E;
+      --shadow: 0 1px 3px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F141A; --surface: #171E26; --surface2: #212B36; --ink: #E6EBEF; --muted: #94A3B0;
+    --line: #2B3642; --accent: #F07A3D; --accent-ink: #1F0E04; --accent-soft: #3A2517;
+    --ok: #5CBA88; --ok-soft: #1C3427; --warn: #D9A93F; --warn-soft: #362F19; --bad: #E0685C; --bad-soft: #3B211E;
+    --shadow: 0 1px 3px rgba(0,0,0,.35);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: 'Public Sans', 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 1.55; }
+  .mono { font-family: 'IBM Plex Mono', Consolas, monospace; }
+  code { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: .88em;
+    background: var(--surface2); padding: 1px 5px; border-radius: 4px; }
+  button { font: inherit; color: inherit; cursor: pointer; background: none; border: none; }
+  button:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+  header { position: sticky; top: 0; z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line); }
+  .head-in { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 18px 0 0; flex-wrap: wrap; }
+  .eyebrow { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 11px; letter-spacing: .14em;
+    color: var(--accent); text-transform: uppercase; font-weight: 600; }
+  h1 { font-family: Archivo, 'Segoe UI', system-ui, sans-serif; font-weight: 800; font-size: 26px;
+    margin: 2px 0 0; letter-spacing: -.01em; }
+  nav { display: flex; gap: 4px; }
+  nav button { padding: 10px 14px 12px; font-weight: 600; color: var(--muted); border-bottom: 2px solid transparent;
+    border-radius: 0; }
+  nav button:hover { color: var(--ink); }
+  nav button.on { color: var(--ink); border-bottom-color: var(--accent); }
+
+  .now { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; margin: 20px 0 4px; padding: 14px 16px;
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: 8px; box-shadow: var(--shadow); }
+  .now .tag { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 11px; letter-spacing: .12em;
+    font-weight: 600; color: var(--accent); }
+  .now b { font-weight: 700; }
+  .now span { color: var(--muted); }
+
+  main { padding: 8px 0 60px; }
+  .view { display: none; }
+  .view.on { display: block; animation: rise .25s ease; }
+  @keyframes rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .view.on { animation: none; } * { transition: none !important; } }
+
+  .phase { margin-top: 28px; }
+  .phase-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .phase-code { font-family: 'IBM Plex Mono', Consolas, monospace; font-weight: 600; font-size: 12px;
+    color: var(--accent); letter-spacing: .1em; }
+  .phase-name { font-family: Archivo, system-ui, sans-serif; font-weight: 700; font-size: 17px; }
+  .phase-range { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 11.5px; color: var(--muted); }
+  .meter { flex: 1 1 60px; height: 4px; background: var(--surface2); border-radius: 2px; min-width: 60px; }
+  .meter i { display: block; height: 100%; background: var(--ok); border-radius: 2px; transition: width .3s ease; }
+  .phase-count { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 11.5px; color: var(--muted);
+    font-variant-numeric: tabular-nums; }
+  .milestone { margin-top: 8px; font-size: 13px; color: var(--muted); }
+  .milestone b { color: var(--ok); font-weight: 600; }
+
+  .wk { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; margin-bottom: 6px;
+    box-shadow: var(--shadow); }
+  .wk-row { display: grid; grid-template-columns: 52px 1fr auto; gap: 12px; align-items: center;
+    width: 100%; text-align: left; padding: 11px 14px; border-radius: 8px; }
+  .wk-row:hover { background: var(--surface2); }
+  .wk-code { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 12px; font-weight: 600; color: var(--muted); }
+  .wk-title { font-weight: 600; }
+  .wk-dates { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 99px;
+    font-size: 12px; font-weight: 600; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+  .pill i { width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+  .pill.doing { background: var(--warn-soft); border-color: transparent; color: var(--warn); }
+  .pill.doing i { background: var(--warn); }
+  .pill.done { background: var(--ok-soft); border-color: transparent; color: var(--ok); }
+  .pill.done i { background: var(--ok); }
+  .wk-detail { display: none; padding: 2px 14px 13px 66px; font-size: 13.5px; }
+  .wk.open .wk-detail { display: block; }
+  .wk-detail p { margin: 4px 0; }
+  .wk-detail .lbl { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 10px; letter-spacing: .12em;
+    color: var(--muted); text-transform: uppercase; margin-right: 8px; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 20px; }
+  .qcard { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px;
+    text-align: left; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 6px; }
+  .qcard:hover { border-color: var(--accent); }
+  .qcard h3 { margin: 0; font-family: Archivo, system-ui, sans-serif; font-size: 16px; font-weight: 700; }
+  .qcard .sub { color: var(--muted); font-size: 13px; }
+  .best { align-self: flex-start; margin-top: 6px; }
+  .chip { display: inline-block; padding: 2px 10px; border-radius: 99px; font-size: 12px; font-weight: 600;
+    font-variant-numeric: tabular-nums; }
+  .chip.ok { background: var(--ok-soft); color: var(--ok); }
+  .chip.warn { background: var(--warn-soft); color: var(--warn); }
+  .chip.dim { background: var(--surface2); color: var(--muted); }
+  .go { margin-top: 8px; align-self: flex-start; background: var(--accent); color: var(--accent-ink);
+    padding: 7px 16px; border-radius: 7px; font-weight: 700; font-size: 13.5px; }
+  .go:hover { filter: brightness(1.08); }
+
+  .runner-head { display: flex; align-items: center; gap: 14px; margin: 20px 0 6px; flex-wrap: wrap; }
+  .back { color: var(--muted); font-weight: 600; font-size: 13.5px; padding: 6px 10px 6px 0; }
+  .back:hover { color: var(--ink); }
+  .runner-head h2 { font-family: Archivo, system-ui, sans-serif; font-size: 20px; margin: 0; font-weight: 800; }
+  .qbox { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px;
+    margin-top: 10px; box-shadow: var(--shadow); }
+  .qsec { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 10.5px; letter-spacing: .13em;
+    text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 4px; }
+  .qtext { font-weight: 600; margin: 0 0 10px; }
+  .qtext .qn { font-family: 'IBM Plex Mono', Consolas, monospace; color: var(--muted); font-weight: 500;
+    margin-right: 8px; font-size: 13px; }
+  .opt { display: flex; gap: 10px; align-items: baseline; padding: 8px 10px; border: 1px solid var(--line);
+    border-radius: 7px; margin-bottom: 6px; cursor: pointer; font-size: 14px; }
+  .opt:hover { background: var(--surface2); }
+  .opt input { accent-color: var(--accent); }
+  .graded .opt { cursor: default; }
+  .graded .opt:hover { background: none; }
+  .opt.right { border-color: var(--ok); background: var(--ok-soft); }
+  .opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+  .expl { display: none; font-size: 13px; color: var(--muted); border-top: 1px dashed var(--line);
+    margin-top: 8px; padding-top: 8px; }
+  .graded .expl { display: block; }
+  .submit-bar { position: sticky; bottom: 0; background: var(--bg); padding: 14px 0; margin-top: 8px;
+    border-top: 1px solid var(--line); display: flex; gap: 14px; align-items: center; }
+  .warn-note { color: var(--bad); font-weight: 600; font-size: 13.5px; }
+  .result { border: 1px solid var(--line); border-left: 4px solid var(--accent); background: var(--surface);
+    border-radius: 10px; padding: 18px; margin-top: 20px; box-shadow: var(--shadow); }
+  .result .big { font-family: Archivo, system-ui, sans-serif; font-size: 34px; font-weight: 800;
+    font-variant-numeric: tabular-nums; }
+  .result .verdict { font-weight: 600; margin-top: 2px; }
+  .secline { display: flex; justify-content: space-between; gap: 10px; padding: 5px 0; border-top: 1px dashed var(--line);
+    font-size: 13.5px; font-variant-numeric: tabular-nums; }
+  .secline:first-of-type { margin-top: 10px; }
+
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 20px; }
+  .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px;
+    box-shadow: var(--shadow); }
+  .tile .lbl { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 10.5px; letter-spacing: .13em;
+    text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .tile .val { font-family: Archivo, system-ui, sans-serif; font-size: 30px; font-weight: 800; margin: 4px 0 8px;
+    font-variant-numeric: tabular-nums; }
+  .tile .val small { font-size: 15px; color: var(--muted); font-weight: 600; }
+  .stepper { display: inline-flex; gap: 6px; margin-left: 10px; vertical-align: middle; }
+  .stepper button { width: 26px; height: 26px; border: 1px solid var(--line); border-radius: 6px; font-weight: 700;
+    line-height: 1; background: var(--surface2); font-size: 15px; }
+  .stepper button:hover { border-color: var(--accent); color: var(--accent); }
+  .mlist { margin-top: 24px; }
+  h2.sec-h { font-family: Archivo, system-ui, sans-serif; font-size: 18px; font-weight: 800; margin: 28px 0 10px; }
+  .mrow { display: flex; gap: 14px; align-items: baseline; padding: 9px 4px; border-bottom: 1px dashed var(--line);
+    flex-wrap: wrap; }
+  .mrow .d { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 12px; color: var(--muted); min-width: 90px;
+    font-variant-numeric: tabular-nums; }
+  .mrow .n { font-weight: 600; flex: 1; }
+  textarea.export { width: 100%; min-height: 130px; font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 12px;
+    background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 12px;
+    resize: vertical; }
+  .hint { color: var(--muted); font-size: 13px; margin: 6px 0 10px; }
+  .copy { background: var(--accent); color: var(--accent-ink); padding: 8px 18px; border-radius: 7px; font-weight: 700; }
+  .copy:hover { filter: brightness(1.08); }
+  footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px; padding: 16px 0 30px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+</style>
+
+<header>
+  <div class="wrap head-in">
+    <div>
+      <div class="eyebrow">Mission plan · 24 weeks · 5 roles</div>
+      <h1>Sid's Launchpad</h1>
+    </div>
+    <nav id="nav">
+      <button data-v="roadmap" class="on">Roadmap</button>
+      <button data-v="quizzes">Quizzes</button>
+      <button data-v="progress">Progress</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="now">
+    <span class="tag">NOW</span>
+    <div><b>Week 0 — Setup &amp; Diagnostic</b> <span>· due Sun Aug 23 · take the Diagnostic quiz, then send Claude your section scores, hours/week, GitHub username, and warm-up result.</span></div>
+  </div>
+
+  <section class="view on" id="view-roadmap"></section>
+  <section class="view" id="view-quizzes"></section>
+  <section class="view" id="view-progress"></section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Built by Claude for Siddharth Sharma · Aug 2026 → Feb 2027</span>
+    <span>Say <code>start week N</code> in chat to generate each week's content</span>
+  </div>
+</footer>
+
+<script>
+"use strict";
+/* ---------------- data ---------------- */
+const PHASES = [
+  { code: "P0", name: "Setup & Diagnostic", range: "Aug 21–23", weeks: [0] },
+  { code: "P1", name: "Interview Core", range: "Aug 24 – Sep 20", weeks: [1, 2, 3, 4] },
+  { code: "P2", name: "Backend Pro", range: "Sep 21 – Oct 18", weeks: [5, 6, 7, 8],
+    milestone: "Backend-interview-ready (Python + Java/Spring) — start applying · Resume v1" },
+  { code: "P3", name: "AI Engineer", range: "Oct 19 – Nov 15", weeks: [9, 10, 11, 12],
+    milestone: "AI-Engineer-ready — MCP story front and center · Resume v2" },
+  { code: "P4", name: "ML Engineer", range: "Nov 16 – Dec 20", weeks: [13, 14, 15, 16, 17],
+    milestone: "Junior/mid MLE-ready · Resume v3" },
+  { code: "P5", name: "Data Analyst", range: "Dec 21 – Jan 10", weeks: [18, 19, 20],
+    milestone: "Analyst-ready" },
+  { code: "P6", name: "FDE + Gauntlet", range: "Jan 11 – Feb 7", weeks: [21, 22, 23, 24],
+    milestone: "FDE-ready — 4 capstones, ~150 DSA solves, 5 mock interviews done" }
+];
+
+const WEEKS = {
+  0:  { t: "Setup & Diagnostic", d: "Aug 21–23", f: "Tooling, accounts, 25-question diagnostic, coding warm-up", s: "Send Claude: section scores, hours/week, GitHub username, warm-up result" },
+  1:  { t: "Python for Interviews I", d: "Aug 24–30", f: "Collections, comprehensions, sorting, strings, big-O of builtins", s: "12/12 on check.py · 6 DSA (arrays & hashing) · first STAR story" },
+  2:  { t: "Python for Interviews II", d: "Aug 31 – Sep 6", f: "Closures, decorators, generators, itertools, typing, error design", s: "Decorator mini-lib · 6 DSA (two pointers & sliding window)" },
+  3:  { t: "Advanced SQL I", d: "Sep 7–13", f: "Joins mastery, aggregation, subqueries, CTEs, window functions intro", s: "20 SQL drills on a real schema · 6 DSA (stack & binary search)" },
+  4:  { t: "Advanced SQL II + pytest", d: "Sep 14–20", f: "Window functions deep, EXPLAIN & indexes, schema design, pytest patterns", s: "SQL drill set 2 · tested mini-lib at 90% coverage · 6 DSA (linked lists)" },
+  5:  { t: "FastAPI Production", d: "Sep 21–27", f: "Project structure, Pydantic v2, async, DI, SQLAlchemy 2.0 + Alembic · Java drill: collections internals, generics, Streams", s: "Capstone 1 “Relay” skeleton: event-ingest API · Java Q-bank 1 · 6 DSA (trees I, 2 in Java)" },
+  6:  { t: "Auth & Security", d: "Sep 28 – Oct 4", f: "JWT, OAuth2 flows, RBAC, rate limiting, OWASP API top-10 · Java drill: concurrency, JVM memory & GC", s: "Relay: API-key auth, HMAC-signed deliveries · Java Q-bank 2 · 6 DSA (trees II, 2 in Java)" },
+  7:  { t: "Data Layer at Scale", d: "Oct 5–11", f: "Transactions & isolation, indexing deep, N+1, Redis patterns, workers · Spring drill: IoC, @Transactional, JPA/Hibernate", s: "Relay: queue + retry/backoff + dead-letter · Spring Q-bank · 6 DSA (heaps, 2 in Java)" },
+  8:  { t: "Ship It", d: "Oct 12–18", f: "Multi-stage Docker, GitHub Actions CI/CD, deploy, logging, load testing · Spring Boot, Security & actuator drill", s: "Relay deployed + design doc + load-test report + Java/Spring mock interview → Resume v1 · 6 DSA (backtracking)" },
+  9:  { t: "LLM Foundations", d: "Oct 19–25", f: "Tokens, context, sampling, Claude/OpenAI APIs, prompting, structured outputs", s: "Doc-extraction CLI · 6 DSA (graphs I)" },
+  10: { t: "Tool Use & MCP", d: "Oct 26 – Nov 1", f: "Function calling, agent loop from scratch, build your own MCP server, streaming", s: "Capstone 2 “DocMind” start: working MCP server · 6 DSA (graphs II)" },
+  11: { t: "RAG", d: "Nov 2–8", f: "Embeddings, chunking strategies, pgvector, hybrid search, reranking, citations", s: "DocMind: cited RAG over a real corpus · 6 DSA (intervals & greedy)" },
+  12: { t: "Evals & Agents", d: "Nov 9–15", f: "Golden sets, LLM-as-judge, regression evals in CI, guardrails, cost & latency", s: "DocMind: eval harness + deployed + demo video → Resume v2 · 6 DSA (1-D DP)" },
+  13: { t: "ML Core", d: "Nov 16–22", f: "Bias-variance, train/val/test, metrics, linear & logistic regression from scratch", s: "NumPy from-scratch notebook vs sklearn · 6 DSA (1-D DP II)" },
+  14: { t: "scikit-learn Mastery", d: "Nov 23–29", f: "Trees, random forests, gradient boosting, pipelines, cross-validation, tuning", s: "Capstone 3 “PredictMaint”: first models on sensor data · 6 DSA (2-D DP)" },
+  15: { t: "Real-World ML", d: "Nov 30 – Dec 6", f: "Feature engineering, leakage, imbalanced data, interpretation (SHAP)", s: "PredictMaint: feature pipeline + honest evaluation report · timed DSA sets" },
+  16: { t: "PyTorch", d: "Dec 7–13", f: "Tensors, autograd, training loop, simple nets, transfer learning", s: "Fine-tuned text classifier · timed DSA sets" },
+  17: { t: "MLOps", d: "Dec 14–20", f: "MLflow tracking, serving via FastAPI, monitoring & drift, versioning", s: "PredictMaint served + tracked + monitored → Resume v3" },
+  18: { t: "Statistics for Analysts", d: "Dec 21–27", f: "Distributions, sampling, confidence intervals, hypothesis & A/B testing", s: "A/B test analysis writeup on real experiment data" },
+  19: { t: "Analytics SQL", d: "Dec 28 – Jan 3", f: "Cohort, retention, funnel queries; hard window functions; metrics design", s: "25 hard SQL drills + metrics doc" },
+  20: { t: "Excel, BI & Storytelling", d: "Jan 4–10", f: "Excel power tools (XLOOKUP, INDEX/MATCH, pivot tables, what-if), Power BI advanced, DAX basics, dashboard design, exec communication", s: "Capstone 4: analytics deep-dive — Excel workbook + published dashboard" },
+  21: { t: "System Design I", d: "Jan 11–17", f: "Load balancing, caching, queues, sharding, consistency, capacity estimation", s: "2 full design docs, reviewed like an interview" },
+  22: { t: "System Design II + AI", d: "Jan 18–24", f: "Designing RAG platforms and ML serving; take-home simulation", s: "AI system design doc + timed take-home" },
+  23: { t: "FDE Craft", d: "Jan 25–31", f: "48-hour POC drill, integration patterns, discovery questions, demo storytelling", s: "POC repo + recorded demo pitch" },
+  24: { t: "The Gauntlet", d: "Feb 1–7", f: "Timed DSA sets, one full mock per role (backend mock in Java/Spring), behavioral STAR bank, resume vFinal", s: "Interview-ready across all 5 roles" }
+};
+
+const QUIZZES = [
+  { id: "diag", name: "Diagnostic", sub: "25 questions · 6 sections · closed book, no googling", sections: true, qs: [
+    { sec: "Python", q: "def add(x, xs=[]): xs.append(x); return xs — you call add(1), then add(2). What does the second call return?", o: ["[2]", "[1, 2]", "[1]", "It raises TypeError"], a: 1, x: "Default arguments are evaluated once at function definition — the same list is shared across calls. Classic interview gotcha." },
+    { sec: "Python", q: "What does [x*x for x in range(5) if x % 2] evaluate to?", o: ["[0, 1, 4, 9, 16]", "[0, 4, 16]", "[1, 9]", "[1, 4, 9]"], a: 2, x: "x % 2 is truthy only for odd x, so 1 and 3 survive → their squares [1, 9]." },
+    { sec: "Python", q: "Which of these can be used as a dictionary key?", o: ["[\"a\", 1] (a list)", "(\"a\", 1) (a tuple)", "{\"a\"} (a set)", "{\"a\": 1} (a dict)"], a: 1, x: "Dict keys must be hashable; tuples are (if their elements are), while lists, sets, and dicts are mutable and unhashable." },
+    { sec: "Python", q: "a = [1, 2]; b = a; b.append(3) — what is a now?", o: ["[1, 2]", "[1, 2, 3]", "[3]", "It raises an error"], a: 1, x: "b = a copies the reference, not the list — both names point at the same object." },
+    { sec: "Python", q: "What is the difference between is and ==?", o: ["No difference in practice", "is compares values, == compares types", "is compares identity (same object), == compares equality of value", "is only works on numbers"], a: 2, x: "is asks “same object in memory?”; == asks “equal value?”. Use == for values, is for None." },
+    { sec: "Python", q: "sorted(words, key=len) does what?", o: ["Sorts words in place by length", "Returns a new list sorted by length; equal-length words keep their original order", "Returns the lengths, sorted", "Raises unless words is a list"], a: 1, x: "sorted() always returns a new list, and Python's sort is stable — ties keep input order." },
+    { sec: "SQL", q: "employees LEFT JOIN departments — what happens to an employee whose department_id matches nothing?", o: ["The row is dropped", "The row appears with NULLs in the department columns", "The query errors", "The row is duplicated"], a: 1, x: "LEFT JOIN keeps every left-side row; unmatched right-side columns come back NULL." },
+    { sec: "SQL", q: "WHERE vs HAVING — the real difference?", o: ["They are interchangeable", "WHERE filters rows before grouping; HAVING filters groups after aggregation", "HAVING is just faster", "WHERE can't use AND"], a: 1, x: "WHERE runs pre-GROUP BY on rows; HAVING runs post-aggregation on group results like COUNT(*) or SUM()." },
+    { sec: "SQL", q: "ROW_NUMBER() OVER (PARTITION BY dept ORDER BY salary DESC) — filtering for row number 1 gives you…", o: ["The first hired employee per department", "One arbitrary employee per department", "The highest-paid employee per department", "All employees, renumbered"], a: 2, x: "Numbering restarts per department (PARTITION BY) and is ordered by salary descending — #1 is the top earner. Core window-function pattern." },
+    { sec: "SQL", q: "A query with WHERE email = '…' is slow on a 10M-row table. Most likely fix?", o: ["Use SELECT * instead of naming columns", "Add an index on email so the DB avoids a full table scan", "Switch to LIKE", "Add ORDER BY"], a: 1, x: "Without an index the DB scans all 10M rows; a B-tree index makes the lookup roughly O(log n)." },
+    { sec: "DSA", q: "Average-case time to look up a key in a hash map?", o: ["O(1)", "O(log n)", "O(n)", "O(n log n)"], a: 0, x: "Hashing jumps straight to the bucket — constant time on average (O(n) only in pathological collision cases)." },
+    { sec: "DSA", q: "Best data structure for matching brackets or implementing undo?", o: ["Queue", "Stack", "Heap", "Hash map"], a: 1, x: "Both are last-in-first-out problems — the most recent open bracket / action is handled first." },
+    { sec: "DSA", q: "Binary search requires ___ and runs in ___.", o: ["Any data · O(1)", "Sorted data · O(log n)", "Sorted data · O(n)", "A hash map · O(log n)"], a: 1, x: "Halving the search space each step needs order; 10M sorted items take ~23 comparisons." },
+    { sec: "DSA", q: "Two Sum in one pass, O(n) — the key technique?", o: ["Sort first, then scan", "Nested loops with early exit", "Store seen values in a hash map and check for target − current", "Binary search each element"], a: 2, x: "For each number, its needed complement is a O(1) hash-map lookup away. The pattern behind dozens of problems." },
+    { sec: "Web", q: "PUT vs PATCH?", o: ["PUT replaces the whole resource; PATCH applies a partial update", "PATCH is just the newer name for PUT", "PUT creates, PATCH deletes", "PATCH is idempotent, PUT is not"], a: 0, x: "PUT sends the full new representation (and is idempotent); PATCH sends only the changes." },
+    { sec: "Web", q: "401 vs 403?", o: ["401: server crashed · 403: not found", "401: not authenticated · 403: authenticated but not allowed", "Both mean bad credentials", "401: rate limited · 403: banned"], a: 1, x: "401 = “who are you?” (missing/bad credentials). 403 = “I know who you are, and no.”" },
+    { sec: "Web", q: "Which set of HTTP methods is idempotent (same effect no matter how many times you repeat it)?", o: ["POST, PUT", "GET, POST", "GET, PUT, DELETE", "Only GET"], a: 2, x: "Repeating a GET, PUT, or DELETE leaves the server in the same state; repeating POST typically creates duplicates." },
+    { sec: "Web", q: "Why put Redis in front of Postgres for hot read endpoints?", o: ["Redis stores more data than Postgres", "Repeated reads are served from memory, cutting latency and DB load (cache-aside)", "It makes writes transactional", "Postgres can't handle JSON"], a: 1, x: "You did this at Onextel — the cache absorbs repeat reads; the DB stays the source of truth." },
+    { sec: "Stats", q: "Salaries with a few huge outliers — which central measure represents a “typical” salary better?", o: ["Mean", "Median", "Mode", "Standard deviation"], a: 1, x: "The median resists outliers; a few executive salaries drag the mean far above what's typical." },
+    { sec: "Stats", q: "A p-value of 0.03 means…", o: ["There's a 3% chance the null hypothesis is true", "The effect size is 3%", "If the null were true, data this extreme would occur about 3% of the time", "The result is 97% reproducible"], a: 2, x: "It's P(data at least this extreme | null true) — NOT the probability the null is true. Most-failed stats question in analyst interviews." },
+    { sec: "Stats", q: "Ice-cream sales correlate strongly with drowning deaths. Best explanation?", o: ["Ice cream causes drowning", "Coincidence — correlations are meaningless", "A confounder (summer) drives both", "The sample is too small"], a: 2, x: "Correlation ≠ causation; hot weather raises both. Always hunt for the confounder." },
+    { sec: "ML/AI", q: "Your model: 99% accuracy on training data, 62% on test data. This is…", o: ["Underfitting — make the model bigger", "Overfitting — regularize, simplify, or get more data", "Data leakage — the test set is too easy", "Normal and fine"], a: 1, x: "Memorizing the training set without generalizing is the definition of overfitting." },
+    { sec: "ML/AI", q: "Predicting a house's sale price vs classifying email as spam/not-spam — these are:", o: ["Both classification", "Regression · Classification", "Classification · Regression", "Both clustering"], a: 1, x: "Continuous output → regression; discrete categories → classification." },
+    { sec: "ML/AI", q: "What is RAG (Retrieval-Augmented Generation)?", o: ["Fine-tuning a model on your documents", "Retrieving relevant documents and adding them to the prompt so the LLM answers grounded in them", "Generating synthetic training data", "Running the model twice for safety"], a: 1, x: "Retrieve → stuff into context → generate with citations. You'll build one in Week 11." },
+    { sec: "ML/AI", q: "In an agentic LLM system, “tool use” means…", o: ["The model edits its own weights", "The model outputs a structured call that your code executes, then you feed the result back", "Users get a plugin store", "The model browses the web autonomously by default"], a: 1, x: "The model requests, your code runs it, the result returns to the model — the loop MCP standardizes (your JCI work!)." }
+  ]},
+  { id: "w1", name: "Week 1 · Python for Interviews", sub: "15 questions · take Sunday, after the exercises", qs: [
+    { q: "grid = [[0]*3]*2; grid[0][0] = 9 — what is grid[1][0]?", o: ["0", "9", "None", "IndexError"], a: 1, x: "[[0]*3]*2 copies the reference to ONE row twice — both rows alias the same list. Build with a comprehension instead." },
+    { q: "In Python 3.7+, iterating a dict yields keys in…", o: ["Arbitrary order", "Sorted order", "Insertion order (guaranteed)", "Reverse insertion order"], a: 2, x: "Insertion order is a language guarantee since 3.7 — interviewers still love asking this." },
+    { q: "x in my_set vs x in my_list — average complexity?", o: ["O(1) vs O(n)", "O(n) vs O(1)", "Both O(1)", "Both O(n)"], a: 0, x: "Sets hash; lists scan. Converting a lookup list to a set is the most common easy optimization." },
+    { q: "Building a big string with s += piece in a loop is O(n²). Idiomatic fix?", o: ["Use a bytearray", "Collect parts in a list and \"\".join(parts)", "Use recursion", "Preallocate the string"], a: 1, x: "Strings are immutable — each += copies everything so far. join makes one final pass." },
+    { q: "nums.sort() vs sorted(nums)?", o: ["Identical", ".sort() sorts in place and returns None; sorted() returns a new list", ".sort() is stable, sorted() is not", "sorted() only works on numbers"], a: 1, x: "x = nums.sort() leaving x as None is a classic bug. Both are stable Timsort, O(n log n)." },
+    { q: "s[::-1] returns…", o: ["The string reversed (a new string)", "The string with the last char removed", "An iterator", "The same string object"], a: 0, x: "Slice with step −1 walks backwards and always builds a new sequence." },
+    { q: "Counter(\"aabbbc\").most_common(1) returns…", o: ["[\"b\"]", "[(\"b\", 3)]", "{\"b\": 3}", "3"], a: 1, x: "most_common returns a list of (element, count) tuples, highest count first." },
+    { q: "list(zip([1, 2, 3], \"ab\")) evaluates to…", o: ["[(1,'a'), (2,'b'), (3, None)]", "[(1,'a'), (2,'b')]", "ValueError", "[(1,'a'), (2,'b'), (3,'ab')]"], a: 1, x: "zip stops at the shortest input (use itertools.zip_longest to pad instead)." },
+    { q: "for i, x in enumerate(items, start=1) — i on the first iteration is…", o: ["0", "1", "items[0]", "Depends on items"], a: 1, x: "enumerate's second argument sets the starting count — handy for 1-based output." },
+    { q: "The safe pattern for a mutable default parameter?", o: ["def f(xs=[]) is fine", "def f(xs=None): xs = [] if xs is None else xs", "def f(xs=list)", "def f(*xs=[])"], a: 1, x: "Use None as the sentinel and create the list inside the call — fresh object every time." },
+    { q: "copy.copy(nested_list) vs copy.deepcopy(nested_list)?", o: ["Identical for lists", "copy duplicates the outer list but inner lists are still shared; deepcopy clones everything", "deepcopy is shallow", "copy only works on dicts"], a: 1, x: "Shallow copy = new container, same inner objects. Mutating an inner list through either name shows up in both." },
+    { q: "all([]) evaluates to…", o: ["False", "True", "None", "ValueError"], a: 1, x: "Vacuously true — no element is falsy. (any([]) is False.) Shows up in edge-case handling." },
+    { q: "{v: k for k, v in d.items()} does what — and what's the catch?", o: ["Sorts the dict; no catch", "Inverts keys/values; duplicate values silently collapse to one key", "Deep-copies the dict", "Raises if values are strings"], a: 1, x: "Inversion needs unique, hashable values — duplicates keep only the last pair." },
+    { q: "d[\"missing\"] vs d.get(\"missing\")?", o: ["Both return None", "Both raise KeyError", "[] raises KeyError; .get returns None (or your default)", ".get is deprecated"], a: 2, x: ".get(key, default) is the idiomatic safe lookup; square brackets fail loudly." },
+    { q: "In try/except/else/finally, the else block runs…", o: ["Always", "Only if an exception was raised", "Only if NO exception was raised", "Never — it's invalid syntax"], a: 2, x: "else = the success path, keeping it out of the try so its own errors aren't swallowed. finally always runs." }
+  ]}
+];
+
+const MILESTONES = [
+  { d: "Oct 18", n: "Backend-interview-ready — start applying", wk: 8 },
+  { d: "Nov 15", n: "AI-Engineer-ready — apply with the MCP story", wk: 12 },
+  { d: "Dec 20", n: "ML-Engineer-ready (junior/mid)", wk: 17 },
+  { d: "Jan 10", n: "Data-Analyst-ready", wk: 20 },
+  { d: "Feb 7", n: "FDE-ready — full portfolio, all roles sharpened", wk: 24 }
+];
+
+/* ---------------- state ---------------- */
+const KEY = "launchpad.v1";
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { S = {}; }
+S.status = S.status || {};   // weekNum -> todo|doing|done
+S.quiz = S.quiz || {};       // quizId -> {score,total,pct,date,sections?}
+S.dsa = S.dsa || 0;
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+/* ---------------- helpers ---------------- */
+const $ = (sel, el) => (el || document).querySelector(sel);
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const STATUSES = ["todo", "doing", "done"];
+const SLABEL = { todo: "To do", doing: "In progress", done: "Done" };
+
+/* ---------------- roadmap ---------------- */
+function renderRoadmap() {
+  const host = $("#view-roadmap");
+  host.innerHTML = PHASES.map(p => {
+    const done = p.weeks.filter(w => S.status[w] === "done").length;
+    const rows = p.weeks.map(w => {
+      const wk = WEEKS[w];
+      const st = S.status[w] || "todo";
+      return `<div class="wk" data-w="${w}">
+        <button class="wk-row" aria-expanded="false">
+          <span class="wk-code">W${String(w).padStart(2, "0")}</span>
+          <span><span class="wk-title">${esc(wk.t)}</span><br><span class="wk-dates">${esc(wk.d)}</span></span>
+          <span class="pill ${st}" data-pill role="button" tabindex="0" title="Click to cycle status"><i></i>${SLABEL[st]}</span>
+        </button>
+        <div class="wk-detail">
+          <p><span class="lbl">Focus</span>${esc(wk.f)}</p>
+          <p><span class="lbl">Ship</span>${esc(wk.s)}</p>
+        </div>
+      </div>`;
+    }).join("");
+    return `<section class="phase">
+      <div class="phase-head">
+        <span class="phase-code">${p.code}</span>
+        <span class="phase-name">${esc(p.name)}</span>
+        <span class="phase-range">${esc(p.range)}</span>
+        <span class="meter"><i style="width:${p.weeks.length ? (100 * done / p.weeks.length) : 0}%"></i></span>
+        <span class="phase-count">${done}/${p.weeks.length}</span>
+      </div>
+      ${rows}
+      ${p.milestone ? `<p class="milestone"><b>Milestone:</b> ${esc(p.milestone)}</p>` : ""}
+    </section>`;
+  }).join("");
+
+  host.querySelectorAll(".wk").forEach(el => {
+    const row = $(".wk-row", el);
+    const pill = $("[data-pill]", el);
+    row.addEventListener("click", e => {
+      if (e.target.closest("[data-pill]")) return;
+      el.classList.toggle("open");
+      row.setAttribute("aria-expanded", el.classList.contains("open"));
+    });
+    const cycle = e => {
+      e.stopPropagation();
+      const w = el.dataset.w;
+      const cur = S.status[w] || "todo";
+      S.status[w] = STATUSES[(STATUSES.indexOf(cur) + 1) % 3];
+      save(); renderRoadmap(); renderProgress();
+    };
+    pill.addEventListener("click", cycle);
+    pill.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); cycle(e); } });
+  });
+}
+
+/* ---------------- quizzes ---------------- */
+function renderQuizList() {
+  const host = $("#view-quizzes");
+  host.innerHTML = `<div class="cards">` + QUIZZES.map(q => {
+    const best = S.quiz[q.id];
+    const chip = best
+      ? `<span class="chip ${best.pct >= 70 ? "ok" : "warn"}">Best: ${best.score}/${best.total} (${best.pct}%)</span>`
+      : `<span class="chip dim">Not attempted</span>`;
+    return `<div class="qcard">
+      <h3>${esc(q.name)}</h3>
+      <span class="sub">${esc(q.sub)}</span>
+      <span class="best">${chip}</span>
+      <button class="go" data-quiz="${q.id}">${best ? "Retake" : "Start"}</button>
+    </div>`;
+  }).join("") + `</div>
+  <p class="hint" style="margin-top:16px">New quizzes appear here each week when you say <code>start week N</code> in chat. After the Diagnostic, send Claude your section scores.</p>`;
+  host.querySelectorAll("[data-quiz]").forEach(b =>
+    b.addEventListener("click", () => renderRunner(b.dataset.quiz)));
+}
+
+function renderRunner(id) {
+  const quiz = QUIZZES.find(q => q.id === id);
+  const host = $("#view-quizzes");
+  host.innerHTML = `
+    <div class="runner-head">
+      <button class="back">&larr; All quizzes</button>
+      <h2>${esc(quiz.name)}</h2>
+    </div>
+    <p class="hint">Closed book. Pick one answer per question, then submit at the bottom.</p>
+    <div id="result-slot"></div>
+    <div id="qlist">${quiz.qs.map((item, i) => `
+      <div class="qbox" data-q="${i}">
+        ${item.sec ? `<div class="qsec">${esc(item.sec)}</div>` : ""}
+        <p class="qtext"><span class="qn">${String(i + 1).padStart(2, "0")}</span>${esc(item.q)}</p>
+        ${item.o.map((opt, j) => `
+          <label class="opt"><input type="radio" name="q${i}" value="${j}"><span>${esc(opt)}</span></label>`).join("")}
+        <div class="expl"></div>
+      </div>`).join("")}
+    </div>
+    <div class="submit-bar">
+      <button class="go" id="submit">Submit answers</button>
+      <span class="warn-note" id="note"></span>
+    </div>`;
+
+  $(".back", host).addEventListener("click", renderQuizList);
+  $("#submit", host).addEventListener("click", () => grade(quiz));
+}
+
+function grade(quiz) {
+  const host = $("#view-quizzes");
+  const boxes = host.querySelectorAll(".qbox");
+  const answers = [];
+  let missing = -1;
+  boxes.forEach((box, i) => {
+    const sel = box.querySelector("input:checked");
+    answers[i] = sel ? Number(sel.value) : null;
+    if (sel === null || !sel) { if (missing < 0) missing = i; }
+  });
+  const unanswered = answers.filter(a => a === null).length;
+  if (unanswered > 0) {
+    $("#note", host).textContent = unanswered + " question" + (unanswered > 1 ? "s" : "") + " unanswered";
+    boxes[missing].scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
+  let score = 0;
+  const bySec = {};
+  boxes.forEach((box, i) => {
+    const item = quiz.qs[i];
+    const picked = answers[i];
+    const right = picked === item.a;
+    if (right) score++;
+    if (item.sec) {
+      bySec[item.sec] = bySec[item.sec] || { ok: 0, n: 0 };
+      bySec[item.sec].n++;
+      if (right) bySec[item.sec].ok++;
+    }
+    box.classList.add("graded");
+    const opts = box.querySelectorAll(".opt");
+    opts.forEach((o, j) => {
+      o.querySelector("input").disabled = true;
+      if (j === item.a) o.classList.add("right");
+      else if (j === picked) o.classList.add("wrong");
+    });
+    box.querySelector(".expl").textContent = item.x;
+  });
+
+  const total = quiz.qs.length;
+  const pct = Math.round(100 * score / total);
+  const prev = S.quiz[quiz.id];
+  if (!prev || pct >= prev.pct) {
+    S.quiz[quiz.id] = { score, total, pct, date: new Date().toISOString().slice(0, 10),
+      sections: quiz.sections ? Object.fromEntries(Object.entries(bySec).map(([k, v]) => [k, v.ok + "/" + v.n])) : undefined };
+    save();
+  }
+  const verdict = pct >= 85 ? "Strong — this area won't slow you down." :
+    pct >= 65 ? "Solid base — we'll reinforce the gaps in the weekly plan." :
+    "Good data — this is exactly what the plan will fix. No judgment, just a starting line.";
+  $("#result-slot", host).innerHTML = `<div class="result">
+    <div class="big">${score}/${total} <small style="font-size:16px;color:var(--muted)">(${pct}%)</small></div>
+    <div class="verdict">${verdict}</div>
+    ${quiz.sections ? Object.entries(bySec).map(([k, v]) =>
+      `<div class="secline"><span>${esc(k)}</span><span class="mono">${v.ok}/${v.n}</span></div>`).join("") : ""}
+    ${quiz.sections ? `<p class="hint" style="margin-top:12px">Send these section scores to Claude in chat — they calibrate your whole plan.</p>` : ""}
+    <button class="go" style="margin-top:8px" id="retake">Retake</button>
+  </div>`;
+  $("#retake", host).addEventListener("click", () => renderRunner(quiz.id));
+  $("#result-slot", host).scrollIntoView({ behavior: "smooth", block: "start" });
+  $("#note", host).textContent = "";
+  renderProgress();
+}
+
+/* ---------------- progress ---------------- */
+function renderProgress() {
+  const host = $("#view-progress");
+  const totalWeeks = Object.keys(WEEKS).length;
+  const done = Object.values(S.status).filter(v => v === "done").length;
+  const quizzes = Object.values(S.quiz);
+  const avg = quizzes.length ? Math.round(quizzes.reduce((a, q) => a + q.pct, 0) / quizzes.length) : null;
+
+  host.innerHTML = `
+    <div class="tiles">
+      <div class="tile">
+        <div class="lbl">Weeks complete</div>
+        <div class="val">${done}<small> / ${totalWeeks}</small></div>
+        <div class="meter"><i style="width:${100 * done / totalWeeks}%"></i></div>
+      </div>
+      <div class="tile">
+        <div class="lbl">Quiz average</div>
+        <div class="val">${avg === null ? "—" : avg + "<small>%</small>"}</div>
+        <div class="hint">${quizzes.length} quiz${quizzes.length === 1 ? "" : "zes"} taken (best scores)</div>
+      </div>
+      <div class="tile">
+        <div class="lbl">DSA problems solved</div>
+        <div class="val">${S.dsa}<small> / 150</small>
+          <span class="stepper"><button id="dsa-minus" aria-label="decrease">−</button><button id="dsa-plus" aria-label="increase">+</button></span>
+        </div>
+        <div class="meter"><i style="width:${Math.min(100, 100 * S.dsa / 150)}%"></i></div>
+      </div>
+    </div>
+
+    <h2 class="sec-h">Milestones</h2>
+    <div class="mlist">${MILESTONES.map(m => {
+      const reached = (S.status[m.wk] === "done");
+      return `<div class="mrow">
+        <span class="d">${esc(m.d)}</span>
+        <span class="n">${esc(m.n)}</span>
+        <span class="chip ${reached ? "ok" : "dim"}">${reached ? "Reached" : "Ahead"}</span>
+      </div>`; }).join("")}
+    </div>
+
+    <h2 class="sec-h">Report to Claude</h2>
+    <p class="hint">Copy this and paste it in chat with <code>status</code> or <code>grade week N</code> — it syncs your platform progress into the grade book.</p>
+    <textarea class="export" readonly id="export"></textarea>
+    <p><button class="copy" id="copy">Copy report</button> <span class="hint" id="copied"></span></p>`;
+
+  $("#export", host).value = JSON.stringify({ exported: new Date().toISOString().slice(0, 10),
+    weeks: S.status, quizzes: S.quiz, dsa_solved: S.dsa }, null, 2);
+  $("#dsa-plus", host).addEventListener("click", () => { S.dsa++; save(); renderProgress(); });
+  $("#dsa-minus", host).addEventListener("click", () => { S.dsa = Math.max(0, S.dsa - 1); save(); renderProgress(); });
+  $("#copy", host).addEventListener("click", () => {
+    const ta = $("#export", host);
+    const doneMsg = () => { $("#copied", host).textContent = "Copied — paste it to Claude in chat."; };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(ta.value).then(doneMsg, () => { ta.select(); document.execCommand("copy"); doneMsg(); });
+    } else { ta.select(); document.execCommand("copy"); doneMsg(); }
+  });
+}
+
+/* ---------------- nav ---------------- */
+document.getElementById("nav").addEventListener("click", e => {
+  const btn = e.target.closest("button[data-v]");
+  if (!btn) return;
+  document.querySelectorAll("#nav button").forEach(b => b.classList.toggle("on", b === btn));
+  document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.id === "view-" + btn.dataset.v));
+  if (btn.dataset.v === "quizzes" && !$("#view-quizzes .qbox")) renderQuizList();
+});
+
+renderRoadmap();
+renderQuizList();
+renderProgress();
+</script>
