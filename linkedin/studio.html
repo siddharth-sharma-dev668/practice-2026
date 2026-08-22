@@ -1,0 +1,846 @@
+<title>Sid's Post Studio</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg:#F3F4F6; --surface:#FFFFFF; --surface2:#E9EBEF; --ink:#1B2530; --muted:#5C6B78;
+    --line:#D8DDE3; --accent:#D14E12; --accent-ink:#FFFFFF; --ok:#237A50; --ok-soft:#DCEFE4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#10151B; --surface:#171E26; --surface2:#222C38; --ink:#E6EBEF; --muted:#94A3B0;
+      --line:#2B3642; --accent:#F07A3D; --accent-ink:#1F0E04; --ok:#5CBA88; --ok-soft:#1C3427;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:#10151B; --surface:#171E26; --surface2:#222C38; --ink:#E6EBEF; --muted:#94A3B0;
+    --line:#2B3642; --accent:#F07A3D; --accent-ink:#1F0E04; --ok:#5CBA88; --ok-soft:#1C3427;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:'Public Sans','Segoe UI',system-ui,sans-serif;
+    font-size:15px; line-height:1.55; }
+  .wrap { max-width:900px; margin:0 auto; padding:0 20px 70px; }
+  header { border-bottom:1px solid var(--line); padding:22px 0 16px; }
+  .eyebrow { font-family:'IBM Plex Mono',Consolas,monospace; font-size:11px; letter-spacing:.14em;
+    color:var(--accent); text-transform:uppercase; font-weight:600; }
+  h1 { font-family:Archivo,system-ui,sans-serif; font-weight:800; font-size:26px; margin:2px 0 4px; }
+  .sub { color:var(--muted); font-size:13.5px; }
+  code { font-family:'IBM Plex Mono',Consolas,monospace; font-size:.88em; background:var(--surface2);
+    padding:1px 5px; border-radius:4px; }
+  button { font:inherit; color:inherit; cursor:pointer; background:none; border:none; }
+  button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; border-radius:4px; }
+  .rules { display:flex; gap:8px 18px; flex-wrap:wrap; margin:14px 0 0; padding:12px 14px; background:var(--surface);
+    border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:8px; font-size:12.5px; color:var(--muted); }
+  .rules b { color:var(--ink); }
+  .wkgroup { margin-top:26px; }
+  .wkhead { display:flex; align-items:baseline; gap:12px; margin-bottom:10px; }
+  .wkhead .n { font-family:Archivo,system-ui,sans-serif; font-weight:800; font-size:16px; }
+  .wkhead .d { font-family:'IBM Plex Mono',Consolas,monospace; font-size:11.5px; color:var(--muted); }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:10px; }
+  .pcard { display:flex; flex-direction:column; align-items:flex-start; gap:7px; text-align:left; background:var(--surface);
+    border:1px solid var(--line); border-radius:10px; padding:15px 16px; }
+  .pcard:hover { border-color:var(--accent); }
+  .chip { display:inline-block; padding:2px 10px; border-radius:99px; font-family:'IBM Plex Mono',Consolas,monospace;
+    font-size:10.5px; font-weight:600; letter-spacing:.08em; }
+  .chip.decode { background:var(--surface2); color:var(--accent); }
+  .chip.log { background:var(--accent); color:var(--accent-ink); }
+  .chip.vid { background:var(--ok-soft); color:var(--ok); letter-spacing:.02em; }
+  .pcard h3 { margin:0; font-size:15px; font-weight:700; }
+  .pcard .date { font-family:'IBM Plex Mono',Consolas,monospace; font-size:11px; color:var(--muted); }
+  .back { color:var(--muted); font-weight:600; font-size:13.5px; padding:14px 0 4px; }
+  .back:hover { color:var(--ink); }
+  .detail h2 { font-family:Archivo,system-ui,sans-serif; font-size:21px; font-weight:800; margin:6px 0 2px; }
+  .meta { display:flex; gap:10px; align-items:center; margin:6px 0 14px; flex-wrap:wrap; }
+  .cols { display:grid; grid-template-columns:minmax(260px,400px) 1fr; gap:22px; align-items:start; }
+  @media (max-width:760px) { .cols { grid-template-columns:1fr; } }
+  .art { border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#0F1722; }
+  .art svg { display:block; width:100%; height:auto; }
+  .btns { display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; }
+  .btn { background:var(--accent); color:var(--accent-ink); padding:8px 16px; border-radius:7px; font-weight:700; font-size:13.5px; }
+  .btn:hover { filter:brightness(1.08); }
+  .btn.ghost { background:var(--surface2); color:var(--ink); }
+  .hint { color:var(--muted); font-size:12.5px; margin-top:6px; }
+  .lbl { font-family:'IBM Plex Mono',Consolas,monospace; font-size:10.5px; letter-spacing:.13em; text-transform:uppercase;
+    color:var(--muted); font-weight:600; margin:18px 0 6px; }
+  .lbl:first-child { margin-top:0; }
+  pre.copytext { white-space:pre-wrap; word-wrap:break-word; background:var(--surface); border:1px solid var(--line);
+    border-radius:10px; padding:16px 18px; font-family:inherit; font-size:14px; margin:0; }
+  pre.copytext .ph { color:var(--accent); font-weight:700; }
+  .toast { color:var(--ok); font-weight:600; font-size:13px; margin-left:6px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Content engine · Mon DECODE · Thu UPGRADE LOG</div>
+    <h1>Sid's Post Studio</h1>
+    <div class="sub">16 ready-to-post packages, Aug 24 – Oct 15. Open a post → copy the caption, download the graphic, read the reel script.</div>
+    <div class="rules">
+      <span><b>Fill every {placeholder}</b> with real numbers</span>
+      <span><b>Post 9–11 AM IST</b>, reply to all comments in hour 1</span>
+      <span><b>Post from your phone</b>, never the work laptop</span>
+      <span><b>No employer internals</b> — "Fortune 500" is the safe phrase</span>
+    </div>
+  </header>
+  <main id="app"></main>
+</div>
+
+<script>
+"use strict";
+/* ============ SVG design kit (fixed dark artwork palette) ============ */
+const C = { bg:"#0F1722", panel:"#1A2532", panel2:"#223040", ink:"#F1F5F8", mut:"#8FA1AF", acc:"#F0703A", ok:"#58C08B", bad:"#E0685C", line:"#31404F" };
+const F = "Segoe UI, Arial, sans-serif";
+function T(x, y, s, size, fill, w, anchor, ls) {
+  return `<text x="${x}" y="${y}" font-family="${F}" font-size="${size}" fill="${fill}" font-weight="${w||600}"${anchor?` text-anchor="${anchor}"`:""}${ls?` letter-spacing="${ls}"`:""}>${s}</text>`;
+}
+function R(x, y, w, h, fill, r, stroke) {
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r==null?14:r}" fill="${fill}"${stroke?` stroke="${stroke}" stroke-width="2.5"`:""}/>`;
+}
+function AR(x1, y1, x2, y2) { // arrow
+  const a = Math.atan2(y2-y1, x2-x1), s = 13;
+  const p1x = x2 - s*Math.cos(a-0.45), p1y = y2 - s*Math.sin(a-0.45);
+  const p2x = x2 - s*Math.cos(a+0.45), p2y = y2 - s*Math.sin(a+0.45);
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${C.acc}" stroke-width="4"/><path d="M${x2},${y2} L${p1x},${p1y} L${p2x},${p2y} Z" fill="${C.acc}"/>`;
+}
+function chipRow(items, y, x0) { // small labeled chips in a row
+  let x = x0 == null ? 90 : x0, out = "";
+  items.forEach(it => {
+    const w = it.length * 17 + 56;
+    out += R(x, y, w, 64, "none", 32, C.acc) + T(x + w/2, y + 42, it, 27, C.ink, 700, "middle");
+    x += w + 22;
+  });
+  return out;
+}
+/* Log-post stat template */
+function statArt(lines, quote) {
+  let out = "", y = 545;
+  lines.forEach(l => {
+    out += T(90, y, "▸", 30, C.acc, 800);
+    out += T(140, y, l, 33, C.ink, 600);
+    y += 78;
+  });
+  out += R(90, y + 6, 900, 118, C.panel, 16);
+  out += `<rect x="90" y="${y+6}" width="8" height="118" rx="4" fill="${C.acc}"/>`;
+  out += T(130, y + 55, "“" + quote[0], 30, C.ink, 700);
+  if (quote[1]) out += T(130, y + 98, quote[1] + "”", 30, C.ink, 700);
+  else out = out.replace("“" + quote[0], "“" + quote[0] + "”");
+  return out;
+}
+/* Per-post artwork */
+const ART = {
+  log1() {
+    let o = T(90, 560, "24 WEEKS.", 92, C.ink, 800) + T(90, 665, "5 ROLES.", 92, C.acc, 800);
+    o += chipRow(["BACKEND","AI","ML"], 740) + chipRow(["DATA","FDE"], 830);
+    o += T(90, 985, "1 engineer. 0 gurus. 100% public.", 36, C.mut, 600);
+    o += T(90, 1075, "Mon: one concept, decoded simply.", 30, C.ink, 600);
+    o += T(90, 1120, "Thu: honest progress log — real numbers.", 30, C.ink, 600);
+    return o;
+  },
+  d_hashmap() {
+    let o = R(90, 520, 330, 78, C.panel, 39) + T(255, 570, "sid_sharma", 30, C.ink, 700, "middle");
+    o += AR(430, 559, 520, 559);
+    o += R(530, 508, 200, 100, C.panel2, 16, C.acc) + T(630, 552, "hash( )", 30, C.acc, 700, "middle") + T(630, 588, "does math", 20, C.mut, 500, "middle");
+    o += AR(740, 559, 830, 700);
+    for (let i = 0; i < 5; i++) {
+      const y = 640 + i * 88, hot = i === 1;
+      o += R(830, y, 160, 70, hot ? C.acc : C.panel, 12);
+      o += T(910, y + 45, "shelf " + (845 + i), 24, hot ? "#1F0E04" : C.mut, 600, "middle");
+    }
+    o += T(90, 780, "one jump.", 56, C.ink, 800) + T(90, 850, "no searching.", 56, C.ink, 800);
+    o += T(90, 940, "2 billion accounts → answer in", 30, C.mut, 500) + T(90, 985, "~0.02 seconds", 40, C.acc, 800);
+    o += T(90, 1105, "Python dict · Java HashMap · your next interview", 27, C.mut, 500);
+    return o;
+  },
+  d_generator() {
+    let o = R(90, 500, 420, 420, C.panel, 18);
+    for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++)
+      o += R(130 + j * 115, 545 + i * 95, 95, 72, C.panel2, 10);
+    o += `<line x1="110" y1="920" x2="490" y2="520" stroke="${C.bad}" stroke-width="7" stroke-linecap="round"/>`;
+    o += T(300, 975, "everything at once", 27, C.mut, 600, "middle") + T(300, 1012, "(RAM cries)", 24, C.bad, 600, "middle");
+    o += R(570, 500, 420, 420, C.panel, 18, C.acc);
+    o += `<line x1="610" y1="712" x2="950" y2="712" stroke="${C.line}" stroke-width="5"/>`;
+    o += R(640, 660, 100, 100, C.acc, 12) + T(690, 725, "1", 40, "#1F0E04", 800, "middle");
+    o += R(775, 672, 76, 76, C.panel2, 10) + T(813, 722, "2", 30, C.mut, 700, "middle");
+    o += R(880, 680, 60, 60, C.panel2, 10) + T(910, 720, "3", 24, C.mut, 700, "middle");
+    o += T(780, 975, "one at a time", 27, C.ink, 600, "middle") + T(780, 1012, "(yield) ✓", 24, C.ok, 700, "middle");
+    o += T(90, 1105, "if you walk through data once — stream it, don't store it", 27, C.mut, 500);
+    return o;
+  },
+  d_join() {
+    let o = R(90, 490, 430, 330, C.panel, 18) + T(115, 540, "CLASS A", 24, C.mut, 700, null, ".1em");
+    ["aman", "divya", "sid", "zoya"].forEach((n, i) => o += T(115, 595 + i * 55, n, 30, ["divya","sid"].includes(n) ? C.acc : C.ink, 600));
+    o += R(560, 490, 430, 330, C.panel, 18) + T(585, 540, "CLASS B", 24, C.mut, 700, null, ".1em");
+    ["sid", "divya", "rahul"].forEach((n, i) => o += T(585, 595 + i * 55, n, 30, ["divya","sid"].includes(n) ? C.acc : C.ink, 600));
+    o += AR(305, 830, 440, 935) + AR(775, 830, 640, 935);
+    o += R(300, 945, 480, 150, C.panel2, 18, C.acc);
+    o += T(540, 1000, "INNER JOIN", 26, C.acc, 800, "middle", ".08em");
+    o += T(540, 1055, "sid · divya", 38, C.ink, 800, "middle");
+    o += T(90, 1180, "LEFT JOIN = all of Class A, blanks where B has nothing", 26, C.mut, 500);
+    return o;
+  },
+  d_index() {
+    let o = R(90, 490, 430, 560, C.panel, 14) + T(305, 545, "1,000 pages", 28, C.mut, 700, "middle");
+    for (let i = 0; i < 11; i++)
+      o += `<line x1="130" y1="${590 + i * 40}" x2="480" y2="${590 + i * 40}" stroke="${i === 6 ? C.acc : C.line}" stroke-width="${i === 6 ? 8 : 4}" stroke-linecap="round"/>`;
+    o += T(305, 1100, "read EVERY page ✗", 26, C.bad, 700, "middle");
+    o += R(600, 590, 390, 240, C.panel2, 16, C.acc);
+    o += T(625, 645, "INDEX", 24, C.acc, 800, null, ".12em");
+    o += T(625, 700, "Sharma → p. 847", 34, C.ink, 800);
+    o += T(625, 750, "Verma → p. 912", 28, C.mut, 600);
+    o += AR(700, 850, 470, 843);
+    o += T(795, 1000, "jump straight there ✓", 28, C.ok, 700, "middle");
+    o += T(795, 1045, "~23 steps, not 10,000,000", 25, C.mut, 500, "middle");
+    o += T(90, 1180, "the catch: every index makes writes a little slower", 26, C.mut, 500);
+    return o;
+  },
+  d_apiflow() {
+    const steps = [["YOU TAP “PLACE ORDER”", C.acc], ["API — the waiter takes the request", C.panel], ["AUTH — is it really you? ✓", C.panel], ["DATABASE — order now exists", C.panel], ["PAYMENT — separate system, own drama", C.panel], ["WEBHOOK → restaurant: “new order!”", C.acc]];
+    let o = "", y = 480;
+    steps.forEach((s, i) => {
+      const hot = s[1] === C.acc;
+      o += R(90, y, 900, 82, hot ? C.acc : C.panel, 14);
+      o += T(120, y + 52, s[0], 30, hot ? "#1F0E04" : C.ink, 700);
+      if (i < steps.length - 1) o += AR(540, y + 86, 540, y + 116);
+      y += 122;
+    });
+    o += T(90, y + 45, "6 systems. 2 seconds. zero drama — when built well.", 27, C.mut, 500);
+    return o;
+  },
+  d_jwt() {
+    let o = R(90, 500, 620, 210, C.panel, 20, C.acc);
+    o += `<line x1="480" y1="510" x2="480" y2="700" stroke="${C.line}" stroke-width="4" stroke-dasharray="12 12"/>`;
+    o += T(130, 585, "LOGIN ✓", 34, C.ink, 800) + T(130, 640, "checked once", 24, C.mut, 500);
+    o += `<path d="M560,570 l14,30 32,4 -23,23 5,32 -28,-15 -28,15 5,-32 -23,-23 32,-4 z" fill="${C.acc}"/>`;
+    o += T(595, 675, "STAMPED", 22, C.acc, 800, "middle", ".1em");
+    o += T(90, 810, "every request after → show the stamp:", 28, C.mut, 500);
+    o += R(90, 840, 900, 90, C.panel2, 12);
+    o += T(120, 897, "eyJhbGc.who-you-are.", 32, C.mut, 600);
+    o += T(475, 897, "signature", 32, C.acc, 800);
+    o += T(90, 1000, "can't forge it — change 1 character, verification fails", 28, C.ink, 600);
+    o += T(90, 1050, "expires — like the stamp fading after the show", 28, C.ink, 600);
+    o += T(90, 1160, "no DB lookup · no re-login · this is how you “stay signed in”", 26, C.mut, 500);
+    return o;
+  },
+  log6() {
+    const rows = [["EVENT ARRIVES (API)", C.panel], ["QUEUE — never make the sender wait", C.panel], ["WORKER delivers to your URL", C.panel]];
+    let o = "", y = 490;
+    rows.forEach(r => { o += R(90, y, 900, 78, r[1], 14) + T(120, y + 50, r[0], 29, C.ink, 700); o += AR(540, y + 82, 540, y + 108); y += 114; });
+    o += R(90, y, 435, 78, C.ok, 14) + T(307, y + 50, "delivered ✓", 29, "#0E2A1D", 800, "middle");
+    o += R(555, y, 435, 78, C.panel2, 14, C.acc) + T(772, y + 50, "failed? RETRY 1m·5m·25m", 26, C.acc, 700, "middle");
+    y += 114; o += AR(772, y - 32, 772, y);
+    o += R(555, y, 435, 78, C.panel, 14) + T(772, y + 50, "DEAD LETTER — park, don't lose", 25, C.mut, 700, "middle");
+    o += T(90, y + 150, "+ HMAC-signed · idempotency keys · load-tested", 27, C.mut, 500);
+    o += T(90, y + 210, "don't build another to-do app.", 34, C.ink, 800);
+    o += T(90, y + 258, "build a small piece of real infrastructure.", 34, C.acc, 800);
+    return o;
+  },
+  d_queue() {
+    let o = "";
+    const dots = [[130,530],[200,495],[275,555],[150,620],[240,650],[320,600],[135,710],[215,730],[300,700],[180,800],[265,795],[340,760]];
+    dots.forEach(d => o += `<circle cx="${d[0]}" cy="${d[1]}" r="20" fill="${C.panel2}" stroke="${C.line}" stroke-width="2"/>`);
+    o += T(235, 880, "5,00,000 clicks at once", 26, C.mut, 600, "middle");
+    o += `<line x1="400" y1="500" x2="560" y2="620" stroke="${C.acc}" stroke-width="5"/><line x1="400" y1="820" x2="560" y2="700" stroke="${C.acc}" stroke-width="5"/>`;
+    for (let i = 0; i < 4; i++) o += `<circle cx="${610 + i * 62}" cy="660" r="20" fill="${C.acc}"/>`;
+    o += T(700, 730, "the queue (a polite line)", 24, C.acc, 600, "middle");
+    o += AR(860, 660, 910, 660);
+    o += R(915, 600, 105, 120, C.panel, 14, C.ok) + T(967, 655, "server", 22, C.ink, 700, "middle") + T(967, 690, "✓ alive", 22, C.ok, 700, "middle");
+    o += T(90, 1000, "accept instantly.", 52, C.ink, 800) + T(90, 1065, "process steadily.", 52, C.acc, 800);
+    o += T(90, 1170, "payments · notifications · your Uber match · my webhook service", 25, C.mut, 500);
+    return o;
+  },
+  d_docker() {
+    let o = `<path d="M320,505 a90,60 0 0 1 180,0" fill="none" stroke="${C.mut}" stroke-width="8"/>`;
+    const layers = [["your code", C.acc, "#1F0E04"], ["dependencies", C.panel2, C.ink], ["exact environment", C.panel, C.mut]];
+    layers.forEach((l, i) => {
+      o += R(180, 520 + i * 118, 460, 104, l[1], 26) + T(410, 585 + i * 118, l[0], 32, l[2], 700, "middle");
+    });
+    o += T(410, 935, "sealed · labeled · portable", 25, C.mut, 600, "middle");
+    ["laptop", "server", "cloud"].forEach((m, i) => {
+      const y = 520 + i * 130;
+      o += AR(660, 570 + i * 118, 730, y + 45);
+      o += R(740, y, 250, 90, C.panel, 14) + T(865, y + 40, m, 26, C.ink, 700, "middle") + T(865, y + 72, "runs the same ✓", 22, C.ok, 600, "middle");
+    });
+    o += T(90, 1075, "one command. any machine. identical result.", 30, C.ink, 700);
+    o += T(90, 1170, "image = packed tiffin · container = meal served hot", 26, C.mut, 500);
+    return o;
+  },
+  log8() {
+    let o = "", y = 510;
+    [["{N} LeetCode problems", "{X} easy · {Y} medium"], ["{N} quizzes · avg {X}%", "20+ SQL drills"], ["Java: de-rusted", "2 mocks survived"], ["SHIPPED: Relay", "deployed + CI/CD ✓"]].forEach((row, i) => {
+      const x = i % 2 === 0 ? 90 : 560;
+      o += R(x, y, 430, 150, i === 3 ? C.acc : C.panel, 16);
+      o += T(x + 30, y + 62, row[0], 30, i === 3 ? "#1F0E04" : C.ink, 800);
+      o += T(x + 30, y + 110, row[1], 25, i === 3 ? "#4A2410" : C.mut, 600);
+      if (i % 2 === 1) y += 175;
+    });
+    o += T(90, 920, "faceplants included: {your honest fail}", 28, C.mut, 600);
+    o += T(90, 1020, "now: applying.", 54, C.ink, 800);
+    o += T(90, 1090, "next: the AI phase.", 54, C.acc, 800);
+    o += T(90, 1180, "certificates expire. shipped things don't.", 27, C.mut, 500);
+    return o;
+  }
+};
+
+/* ============ slide chrome ============ */
+function buildSlide(p) {
+  const chipTxt = (p.fmt === "log" ? "UPGRADE LOG #" + p.num : "DECODE #" + p.num) + " · " + p.day.toUpperCase();
+  const chipW = chipTxt.length * 14.5 + 60;
+  let head = "", hy = 235;
+  p.head.forEach(l => { head += T(90, hy, l.t, l.s || 66, l.c ? C.acc : C.ink, 800); hy += (l.s || 66) * 1.22; });
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350" width="1080" height="1350">
+    <rect width="1080" height="1350" fill="${C.bg}"/>
+    ${R(90, 78, chipW, 58, "none", 29, C.acc)}${T(90 + chipW / 2, 116, chipTxt, 23, C.acc, 700, "middle", ".06em")}
+    ${T(990, 116, p.date, 24, C.mut, 600, "end")}
+    ${head}
+    ${(ART[p.art] || (() => ""))()}
+    <line x1="90" y1="1232" x2="990" y2="1232" stroke="${C.line}" stroke-width="2"/>
+    ${T(90, 1282, "Siddharth Sharma · engineer, upgrading in public", 27, C.ink, 700)}
+    ${T(90, 1320, "Mon: DECODE · Thu: UPGRADE LOG", 22, C.mut, 500)}
+  </svg>`;
+}
+
+/* ============ posts ============ */
+const POSTS = [
+{ id:"w1-log1", wk:1, day:"Monday", date:"Aug 24", fmt:"log", num:1, title:"The badge says Test Engineer (launch post)",
+  head:[{t:"my badge says"},{t:"“Test Engineer.”"},{t:"my plan disagrees.",c:1}], art:"log1",
+  caption:`My employee badge says "Test Engineer." My plan disagrees.
+
+1 year into my career, I've:
+▸ built REST APIs pushing 10M+ messages/month
+▸ tuned Postgres queries, shipped with Docker
+▸ and now — I test software at a Fortune 500. Honest work. I'm good at it.
+
+But I want more range: Backend. AI. ML. Data.
+
+So I built a 24-week plan — projects, quizzes, weekly targets — and I'm posting the entire climb here:
+
+▸ Every Monday: one tech concept, explained so simply a 12-year-old gets it.
+▸ Every Thursday: my honest progress log. Real numbers. Including the embarrassing ones.
+
+No course to sell. No 5 AM routine sermons. Just an engineer with 1 YOE upgrading in public.
+
+Follow along if you're climbing too — or if you enjoy watching occasional faceplants. Both happen here.
+
+What's the ONE skill you're building this year? Drop it below — I'll cheer for you. \u{1F447}
+
+#BuildInPublic #SoftwareEngineering #TechCareers #UpgradeLog`,
+  script:`REEL #1 · 30–40s · talking head (phone, eye level, window light)
+
+HOOK (0–3s): Hold badge up to camera, logo covered/blurred: "This badge says Test Engineer. In 24 weeks, it'll be underselling me."
+BEAT 1: "One year in: I've built APIs doing 10 million messages a month. Now I test software at a Fortune 500."
+BEAT 2: "But I want range — backend, AI, ML, data. So I built a 24-week plan."
+BEAT 3: "Every Monday I decode one concept, simply. Every Thursday, my honest numbers. Even the ugly ones."
+CTA: "Follow the climb. Week 1 starts now."
+SHOOTING: 4 jump cuts, captions ON (CapCut auto), NOT filmed at office, no company logos anywhere.` },
+
+{ id:"w1-dec1", wk:1, day:"Thursday", date:"Aug 27", fmt:"decode", num:1, title:"Hash maps — Instagram's 0.02s username check",
+  head:[{t:"how Instagram checks"},{t:"2,000,000,000 accounts"},{t:"in 0.02 seconds",c:1}], art:"d_hashmap",
+  caption:`Instagram checks if your username is taken in ~0.02 seconds. Against 2 BILLION+ accounts.
+
+It doesn't search a list. (Checking one by one would take minutes.)
+
+It uses a hash map:
+1️⃣ Your username goes into a math function → out comes a number.
+2️⃣ That number IS the shelf where the answer lives.
+3️⃣ One jump. Done.
+
+Like a library where the book's name tells you the exact shelf. No wandering. No searching.
+
+The catch: sometimes two names land on the same shelf (a "collision") — then it checks the 2–3 things there. Still basically instant.
+
+Where you've already met them: Python's dict, Java's HashMap, JavaScript objects… and every "instant" feature you use daily. Username checks, UPI ID lookups, contact search — a hash map is quietly flexing somewhere.
+
+(Also: interviewers are OBSESSED with this. Learn it once, use it for a decade.)
+
+Want a concept decoded next Monday? Drop it below. \u{1F447}
+
+#TechExplained #DSA #Programming #UpgradeLog` },
+
+{ id:"w2-dec2", wk:2, day:"Monday", date:"Aug 31", fmt:"decode", num:2, title:"Generators — Netflix doesn't download the movie",
+  head:[{t:"Netflix doesn't"},{t:"download the movie."},{t:"neither should your code.",c:1}], art:"d_generator",
+  caption:`Netflix doesn't download the whole movie. It hands you the next 30 seconds, again and again.
+
+Python has the same trick: generators.
+
+Normal function = cooking the ENTIRE buffet before anyone eats. If the buffet is 1 billion items, your RAM files a complaint.
+
+Generator = cooking one plate when asked. The keyword "yield" literally means: "here's your plate — call me when you want the next one."
+
+That's why range(1_000_000_000) is instant. It doesn't CREATE a billion numbers. It's just… ready to hand you the next one.
+
+Same idea runs your feed: infinite scroll, video buffering, reading giant log files line by line.
+
+Rule of thumb: if you only walk through the data once — stream it, don't store it.
+
+One keyword. Massive memory savings. It's the kind of detail that separates "knows Python" from "writes Python well."
+
+What should Monday's next decode be? \u{1F447}
+
+#Python #TechExplained #Programming #UpgradeLog` },
+
+{ id:"w2-log2", wk:2, day:"Thursday", date:"Sep 3", fmt:"log", num:2, title:"Is DSA dead in the AI era?",
+  head:[{t:"“AI writes code now."},{t:"why are you grinding"},{t:"LeetCode like it's 2015?”",c:1}], art:"logstats2",
+  caption:`"AI writes code now. Why are you grinding LeetCode like it's 2015?"
+
+A friend asked me this. Fair question. Here's my answer:
+
+AI removed the TYPING, not the THINKING.
+
+When production breaks at 2 AM, the engineer who understands why a hash map lookup is O(1) debugs it. The one who only ever copy-pasted… escalates it.
+
+And practically? Every company on my target list still opens with a DSA screen. Maybe the game changes someday. I'm playing the board that exists.
+
+\u{1F4CB} Upgrade Log, week 2:
+▸ {N} problems solved ({X} easy, {Y} medium)
+▸ Pattern that finally clicked: {e.g., two pointers}
+▸ Humbling moment: {the "easy" problem that took you 40 minutes}
+
+Two weeks in. Brain hurts in the good way.
+
+LeetCode veterans — which pattern took YOU longest to see? \u{1F447}
+
+#DSA #LeetCode #BuildInPublic #UpgradeLog`,
+  script:`REEL #2 · 35–45s · talking head, walking shot works too
+
+HOOK (0–3s): "AI writes code now. So why am I doing LeetCode like it's 2015? Am I stupid?"
+BEAT 1: "Here's the thing — AI removed the typing. Not the thinking."
+BEAT 2: "2 AM, production's down. The engineer who understands WHY things are fast fixes it. The copy-paster escalates it."
+BEAT 3: "And every interview I'm targeting still starts with DSA. Play the board that exists, not the one on Twitter."
+CTA: "Agree or fight me in the comments."
+SHOOTING: energy up, 5–6 cuts, captions ON.` },
+
+{ id:"w3-dec3", wk:3, day:"Monday", date:"Sep 7", fmt:"decode", num:3, title:"SQL JOINs — two attendance registers",
+  head:[{t:"two attendance registers."},{t:"one question:"},{t:"who's in BOTH?",c:1}], art:"d_join",
+  caption:`Two attendance registers. Class A and Class B. Quick — who's in both?
+
+Congratulations. Your brain just ran an INNER JOIN.
+
+SQL JOINs, decoded:
+▸ INNER JOIN → only people in BOTH registers.
+▸ LEFT JOIN → EVERYONE from register A, with their B-details where they exist (blanks where they don't).
+
+Why it matters: real data lives in separate tables. Users in one, orders in another. JOINs are how you ask actual questions — "which users have never ordered?" is a LEFT JOIN with a NULL check. That exact question shows up in interviews constantly.
+
+⚠️ The classic trap: writing a LEFT JOIN, then filtering the right table in WHERE — which silently turns it back into an INNER JOIN. Interviewers bait this on purpose. (Filter in the ON clause or check for NULLs.)
+
+Did 20 JOIN drills this week. The register picture is what finally made it stick.
+
+SQL people: what query bug ate a full day of your life? \u{1F447}
+
+#SQL #DataAnalytics #TechExplained #UpgradeLog` },
+
+{ id:"w3-log3", wk:3, day:"Thursday", date:"Sep 10", fmt:"log", num:3, title:"Excel + SQL — the underrated job ticket",
+  head:[{t:"everyone wants the"},{t:"“AI Engineer” title."},{t:"meanwhile: Excel + SQL.",c:1}], art:"logstats3",
+  caption:`Everyone wants the "AI Engineer" title. Meanwhile, the most GETTABLE tech job in India still runs on Excel + SQL.
+
+Unpopular but true: Data Analyst roles are the most accessible on-ramp into tech. And they're not going anywhere — every AI product still needs someone who can explain why revenue dipped on Tuesday.
+
+What analyst interviews actually test (I've been researching the real loops):
+▸ SQL — live, on a real dataset. JOINs, GROUP BY, window functions.
+▸ Excel — pivot tables, XLOOKUP. Yes. In 2026. Still.
+▸ One BI tool — Power BI or Tableau.
+▸ Stats — enough to not flinch at "p-value."
+▸ A case round — "Sales dropped 15%. Walk me through your investigation."
+
+I did a data-analytics internship before my engineering job. The dashboards I built there still come up in conversations. This stuff compounds.
+
+\u{1F4CB} Log: {SQL drills done} drills · quiz {score}% · {DSA count} problems total
+
+Analysts — what did YOUR interview actually ask? \u{1F447}
+
+#DataAnalytics #SQL #CareerAdvice #UpgradeLog`,
+  script:`REEL #3 · 30–40s · talking head
+
+HOOK (0–3s): "Everyone wants to be an AI engineer. The most gettable tech job in India still runs on Excel and SQL."
+BEAT 1: "Data analyst interviews: live SQL on real data, pivot tables, one BI tool, basic stats."
+BEAT 2: "That's it. That's the gate. And every AI company still needs someone to explain why Tuesday's numbers dipped."
+BEAT 3: "I started as a data intern. Those dashboards still pay career dividends."
+CTA: "Want my analyst prep list? Comment DATA."
+SHOOTING: hold up phone with a pivot table for 1s as b-roll if possible.` },
+
+{ id:"w4-dec4", wk:4, day:"Monday", date:"Sep 14", fmt:"decode", num:4, title:"DB indexes — finding Sharma in 1,000 pages",
+  head:[{t:"finding “Sharma” in a"},{t:"1,000-page register:"},{t:"two very different ways",c:1}], art:"d_index",
+  caption:`Finding "Sharma" in a 1,000-page register. Option A: read every page. Option B: the index at the back — "Sharma → page 847."
+
+Databases face the exact same choice on every query.
+
+No index → "full table scan." The database reads EVERY row. 10 million rows? It checks all 10 million. That's why that one screen in your app takes 4 seconds to load.
+
+With an index → the DB keeps a sorted mini-directory and jumps straight to the row. Ten million rows ≈ 23 steps. (Binary search — halve, halve, halve.)
+
+The part nobody tells beginners: indexes aren't free. Every INSERT/UPDATE now has to update the mini-directory too — so each index slows writes a little. You index what you SEARCH, not everything.
+
+At my last job we cut an API's response time ~20% — a good chunk was adding the right indexes and killing N+1 query patterns. Least glamorous, most effective work I've done.
+
+What's the slowest query you've met in the wild? \u{1F447}
+
+#Databases #SQL #Backend #TechExplained #UpgradeLog` },
+
+{ id:"w4-log4", wk:4, day:"Thursday", date:"Sep 17", fmt:"log", num:4, title:"Breaking software made me a better builder",
+  head:[{t:"hot take from a"},{t:"test engineer:"},{t:"QA is a cheat code.",c:1}], art:"logstats4",
+  caption:`Hot take from a Test Engineer: learning to BREAK software taught me more about building it than building did.
+
+Developers ask: "how do I make this work?"
+Testers ask: "how does this fail?"
+
+The second question is the senior one.
+
+A year of SDET work rewired my defaults. I now instinctively think: empty input. Duplicate webhook. Network dies mid-payment. Two requests land on the same millisecond. That's not "QA thinking" — that's exactly what system design interviews probe.
+
+So, to every fresher who landed in QA and feels boxed in: the box is real — recruiters DO filter by title, I'm living that fight. But the skills are a cheat code, not a cage. Pair them with building things and you become the engineer who ships stuff that doesn't break at 2 AM.
+
+\u{1F4CB} Log: mini-library tested to {X}% coverage · {N} SQL drills · {N} DSA problems total
+
+QA folks who crossed into dev — what worked for you? \u{1F447}
+
+#SDET #QA #SoftwareEngineering #CareerGrowth #UpgradeLog`,
+  script:`REEL #4 · 30–40s · talking head
+
+HOOK (0–3s): "I break software for a living. Best developer education I never asked for."
+BEAT 1: "Developers ask 'how do I make it work.' Testers ask 'how does it fail.' The second question is the senior one."
+BEAT 2: "Empty input, duplicate event, network dies mid-payment — my brain runs these automatically now. That's literally what system design interviews test."
+BEAT 3: "If you're in QA feeling boxed in: the title filter is real. The skills are a cheat code. Pair them with building."
+CTA: "QA-to-dev people: drop what worked in the comments."` },
+
+{ id:"w5-dec5", wk:5, day:"Monday", date:"Sep 21", fmt:"decode", num:5, title:"The 2-second journey of a food order",
+  head:[{t:"you tap “place order.”"},{t:"your biryani is now a"},{t:"distributed system.",c:1}], art:"d_apiflow",
+  caption:`You tap "Place Order." Your biryani is now a distributed systems problem.
+
+What happens in the next ~2 seconds:
+
+1️⃣ Your app calls an API — a waiter carrying "POST /orders" to the kitchen.
+2️⃣ Auth check — is this really you? (A signed token. Next Monday's post.)
+3️⃣ The order service writes to a database — your order officially EXISTS now.
+4️⃣ A payment service gets called — separate system, its own dramas and retries.
+5️⃣ The restaurant's tablet gets a WEBHOOK — the platform calls THEM: "new order, start cooking."
+6️⃣ Status updates flow back to you as each piece completes.
+
+Six systems cooperating in seconds. And when one is slow — timeouts, retries, and queues keep the whole thing from collapsing.
+
+That's backend engineering: making this invisible relay race boring and reliable.
+
+I'm building piece #5 from scratch right now — a webhook delivery service. Architecture drops Thursday.
+
+Which piece should I decode deeper? \u{1F447}
+
+#Backend #SystemDesign #APIs #TechExplained #UpgradeLog` },
+
+{ id:"w5-log5", wk:5, day:"Thursday", date:"Sep 24", fmt:"log", num:5, title:"8 months without Java — what my brain deleted",
+  head:[{t:"I didn't write Java"},{t:"for 8 months."},{t:"humbling doesn't cover it.",c:1}], art:"logstats5",
+  caption:`I didn't write Java for 8 months. This week I opened IntelliJ again. "Humbling" doesn't cover it.
+
+What SURVIVED: the concepts. Collections, OOP design, how Spring wires everything together — intact.
+
+What DIED: the reflexes. I typed "def" in a .java file. Twice. Stared at a stream chain like it was written by a stranger. (It was. Past me.)
+
+The good news: relearning is ~5x faster than learning. It's re-activation, not acquisition. The bad news: it's not zero, and nobody warns you.
+
+My anti-rust system now:
+▸ 2 of my 6 weekly DSA problems — in Java
+▸ Weekly drills: HashMap internals, equals/hashCode contract, @Transactional traps
+▸ Because Indian backend interviews are Java-first, and my strongest work experience is Java. Letting it rot would be career malpractice.
+
+\u{1F4CB} Log: {N} problems ({N} in Java) · drill score {X}/10 · Relay capstone: {status}
+
+Be honest — what skill did YOU let rust? \u{1F447}
+
+#Java #SpringBoot #BuildInPublic #UpgradeLog`,
+  script:`REEL #5 · 30–40s · talking head
+
+HOOK (0–3s): "I didn't touch Java for 8 months. Watch what my brain deleted."
+BEAT 1: "Concepts? Survived. Collections, OOP, Spring wiring — all there."
+BEAT 2: "Reflexes? Dead. I typed Python's 'def' in a .java file. TWICE."
+BEAT 3: "Relearning is 5x faster than learning — but it's not zero. Skills decay. Now 2 of my weekly LeetCode problems are in Java, forever."
+CTA: "What did you let rust? Be honest."` },
+
+{ id:"w6-dec6", wk:6, day:"Monday", date:"Sep 28", fmt:"decode", num:6, title:"JWT — the concert hand-stamp",
+  head:[{t:"why don't you log in"},{t:"on every single click?"},{t:"a hand-stamp.",c:1}], art:"d_jwt",
+  caption:`A concert checks your ticket ONCE, then stamps your hand. After that, every gate just glances at the stamp.
+
+That's exactly how you "stay logged in." The stamp is called a JWT.
+
+▸ Log in once → server checks your password → hands you a signed token. (Stamped.)
+▸ Every request after that carries the token. The server verifies the SIGNATURE — no database lookup, no password re-check, no queue at the gate.
+
+Why it can't be faked: the signature is cryptographic. Change even one character of the token and verification fails — like showing up with half a stamp.
+
+Why it expires: stamps fade. Tokens carry an expiry time, so a stolen one is only useful briefly. (That's why "refresh tokens" exist — quietly re-stamping you before it fades.)
+
+I implemented the full flow this week — login, expiry, refresh — in my webhook service. It's one of those things you THINK you understand… until you build it.
+
+Auth bugs are legendary. Seen a good one? \u{1F447}
+
+#WebSecurity #Backend #JWT #TechExplained #UpgradeLog` },
+
+{ id:"w6-log6", wk:6, day:"Thursday", date:"Oct 1", fmt:"log", num:6, title:"Building Relay in public — the blueprint",
+  head:[{t:"I'm building the tech"},{t:"that tells a restaurant"},{t:"you ordered. in public.",c:1}], art:"log6",
+  caption:`I'm building "Relay" — the tech that tells the restaurant you ordered. In public. Here's the blueprint.
+
+A webhook delivery service. Sounds small. It is not:
+
+▸ Accept events FAST (API → queue — never make the sender wait)
+▸ Deliver each event to subscribers' URLs
+▸ Their server is down? RETRY — with growing gaps: 1m, 5m, 25m…
+▸ Still failing? DEAD-LETTER queue. Park it. Never lose it.
+▸ Sign every delivery (HMAC) so receivers can verify it's really me
+▸ Idempotency keys so nothing ever gets processed twice by accident
+
+Here's the thing: every bullet above is a system design interview topic. Queues, retries, backoff, dead letters, idempotency, signatures.
+
+That's my advice to every junior asking "what project should I build?" — not another to-do app. Build a small piece of REAL infrastructure. You'll learn system design by accident.
+
+Deploying in 2 weeks. Repo goes public with it.
+
+\u{1F4CB} Log: {progress — endpoints done, tests passing} · {N} DSA total
+
+What "boring" infrastructure secretly fascinates you? \u{1F447}
+
+#SystemDesign #Backend #BuildInPublic #UpgradeLog`,
+  script:`REEL #6 · 40–45s · voiceover over screen recording (the graphic + code editor)
+
+HOOK (0–3s): "How does the restaurant KNOW you ordered? Nobody's sitting there refreshing a page."
+BEAT 1: "The platform CALLS them. It's called a webhook — an API in reverse."
+BEAT 2: "Their tablet is offline? You retry. 1 minute, 5, 25. Still dead? Dead-letter queue — park it, never lose it." (show the diagram)
+BEAT 3: "I'm building exactly this from scratch. Queues, retries, signatures — every piece is an interview topic."
+CTA: "Full blueprint in the post. Repo drops in 2 weeks."
+SHOOTING: screen-record the post graphic + your editor; voiceover in a quiet room.` },
+
+{ id:"w7-dec7", wk:7, day:"Monday", date:"Oct 5", fmt:"decode", num:7, title:"Queues — how flash sales don't kill servers",
+  head:[{t:"5,00,000 people hit"},{t:"“BUY” at once."},{t:"why is the server alive?",c:1}], art:"d_queue",
+  caption:`A flash sale drops. 5,00,000 people smash "Buy" in the same minute. Why doesn't the server explode?
+
+Because engineers copied the most Indian invention of all: the queue. \u{1F604}
+
+The trick — the server does NOT process 5 lakh orders instantly. It ACCEPTS them instantly. Into a line.
+
+▸ Front desk (API): "Got it. You're #48,212." — takes 5 milliseconds
+▸ Workers: pull from the line, process at a steady, survivable pace
+▸ Spike ends → the line drains → nobody crashed
+
+Without the queue? Everyone rushes the counter at once. The counter collapses. EVERYONE loses — including the business.
+
+This one pattern (producer → queue → consumer) quietly runs payments, notifications, ride-matching, email… and the webhook service I'm building. Half the internet is just politely standing in a line you never see.
+
+Accept instantly. Process steadily. Tattoo it somewhere.
+
+Ever watched a system die from a traffic spike? Stories please \u{1F447}
+
+#SystemDesign #Backend #TechExplained #UpgradeLog` },
+
+{ id:"w7-log7", wk:7, day:"Thursday", date:"Oct 8", fmt:"log", num:7, title:"The chaiwala theory of caching",
+  head:[{t:"the same chai order,"},{t:"500 times a day."},{t:"that's a cache.",c:1}], art:"logstats7",
+  caption:`The same chai order, 500 times a day. At some point the chaiwala stops asking and just starts pouring when he sees you.
+
+Congratulations, he invented caching.
+
+This week Redis properly *clicked* for me, so here's the log version:
+
+▸ The problem: thousands of requests asking for the SAME hot data → the database sweats over identical answers all day
+▸ The fix: keep the answer in memory (Redis). First request: compute it, remember it. Next 10,000: instant.
+▸ The actually-hard part: INVALIDATION — when the real data changes, the remembered answer must die. ("There are only two hard things in computer science: cache invalidation and naming things.")
+
+Honest admission: I *used* Redis at my first job — mostly following patterns that already existed. This week I built the caching layer myself, from zero. The difference between using a thing and owning the why: about 8 months and one side project.
+
+\u{1F4CB} Log: Relay {status} · {N} DSA total · cache hit rate in my load test: {X}%
+
+What concept did YOU use long before you understood it? \u{1F447}
+
+#Redis #Backend #BuildInPublic #UpgradeLog`,
+  script:`REEL #7 · 30–40s · talking head (bonus: film holding an actual chai)
+
+HOOK (0–3s): "The same chai order, 500 times a day. Eventually the chaiwala stops asking. That's a cache."
+BEAT 1: "Databases sweat over the same question thousands of times. So you remember the answer in memory — Redis."
+BEAT 2: "First request: compute. Next ten thousand: instant."
+BEAT 3: "The hard part? Knowing when to FORGET — stale answers are worse than slow ones."
+CTA: "Full breakdown in the post. What did you use before you understood it?"` },
+
+{ id:"w8-dec8", wk:8, day:"Monday", date:"Oct 12", fmt:"decode", num:8, title:"Docker — the tiffin box for code",
+  head:[{t:"“but it works"},{t:"on MY laptop!”"},{t:"— famous last words",c:1}], art:"d_docker",
+  caption:`"But it works on my laptop!" — every developer, seconds before disaster.
+
+The fix is a tiffin box.
+
+Shipping just your code is like sending a RECIPE to someone else's kitchen. Their stove runs hotter. Half the masala is missing. Wrong pan. Same recipe, different disaster. That's deploying without containers.
+
+Docker packs the ENTIRE meal instead:
+▸ your code
+▸ + every dependency
+▸ + the exact environment it needs
+…sealed and labeled. It runs IDENTICALLY on your laptop, your friend's Mac, and a server in Mumbai.
+
+The vocabulary, decoded:
+▸ Image = the packed tiffin (frozen, shareable)
+▸ Container = the meal, heated and served (a running copy)
+▸ Registry = the dabbawala network that moves tiffins around
+
+One command — docker run — and a machine that has never seen your project executes it perfectly.
+
+I shipped my first fully containerized, CI/CD-deployed service this week. Full 8-week recap on Thursday — with all the numbers.
+
+Your worst "works on my machine" story. Go. \u{1F447}
+
+#Docker #DevOps #Backend #TechExplained #UpgradeLog` },
+
+{ id:"w8-log8", wk:8, day:"Thursday", date:"Oct 15", fmt:"log", num:8, title:"8-week recap + I'm applying now",
+  head:[{t:"8 weeks ago I"},{t:"announced a plan."},{t:"here's what happened.",c:1}], art:"log8",
+  caption:`8 weeks ago I announced a plan on this app. Here's what actually happened — numbers, faceplants and all.
+
+\u{1F4CA} The numbers:
+▸ {N} LeetCode problems ({X} easy · {Y} medium)
+▸ {N} weekly quizzes, {X}% average
+▸ 20+ SQL drills — window functions no longer scare me
+▸ Java de-rusted: {N} drills + a full mock interview survived
+▸ SHIPPED: Relay — a webhook delivery service. Queued, retried with backoff, HMAC-signed, dead-lettered, containerized, deployed with CI/CD. Repo: {link}
+
+\u{1F926} The faceplants:
+▸ {your honest fail #1 — e.g., the week DSA slipped}
+▸ {honest fail #2 — e.g., the quiz you bombed}
+
+What I learned about learning: plans work when they ship THINGS, not certificates. Certificates expire. Shipped things don't.
+
+And now the scary part: I'm applying for backend roles. Starting today.
+
+The log continues — Phase 2 is AI engineering: RAG, agents, MCP. Same schedule. Same honesty.
+
+If your team needs a backend engineer who tests like a paranoid person and documents like a maniac — my DMs are open. \u{1F609}
+
+Engineers & recruiters: roast Relay. Seriously — tear the repo apart in the comments. \u{1F447}
+
+#OpenToWork? No — #BuildInPublic #Backend #Java #Python #UpgradeLog`,
+  script:`REEL #8 · 45s · talking head + b-roll of the deployed app / repo
+
+HOOK (0–3s): "8 weeks. {N} problems. One deployed service. And now the scary part."
+BEAT 1 (numbers on screen as captions): "{N} LeetCode. {N} quizzes. Java de-rusted. SQL — handled."
+BEAT 2 (screen b-roll): "And this is Relay — a webhook delivery service with queues, retries and dead letters. Live. Deployed. Public repo."
+BEAT 3: "Faceplants included — week {X} I skipped DSA entirely. It's in the log. That's the point."
+BEAT 4: "Today I start applying for backend roles. Phase 2 — AI engineering — starts Monday."
+CTA: "Follow for the AI phase. And if you're hiring — you know where the DMs are."` }
+];
+
+/* stat-template art bindings */
+ART.logstats2 = () => statArt([
+  "{N} problems solved · {X} easy · {Y} medium",
+  "pattern that clicked: {two pointers}",
+  "humbling moment: {40 min on an 'easy'}",
+  "interviews still open with DSA. so do I."
+], ["AI removed the typing,", "not the thinking."]);
+ART.logstats3 = () => statArt([
+  "SQL — live query test on real data",
+  "Excel — pivot tables + XLOOKUP (yes, still)",
+  "one BI tool · stats · one case round",
+  "that's the whole gate."
+], ["the most gettable tech job", "still runs on Excel + SQL."]);
+ART.logstats4 = () => statArt([
+  "devs ask: “does it work?”",
+  "testers ask: “how does it fail?”",
+  "the second question is the senior one",
+  "edge-case instinct = system design instinct"
+], ["QA is a cheat code,", "not a cage."]);
+ART.logstats5 = () => statArt([
+  "survived: concepts, design instinct",
+  "died: reflexes (“def” in a .java file. twice.)",
+  "fix: 2 LeetCode/week in Java + drills",
+  "relearning ≈ 5x faster. but never zero."
+], ["skills decay.", "plan for it."]);
+ART.logstats7 = () => statArt([
+  "1st request: compute + remember (Redis)",
+  "next 10,000: instant",
+  "hard part: knowing when to FORGET",
+  "stale answers are worse than slow ones"
+], ["the chaiwala stopped asking.", "that's a cache."]);
+
+/* ============ app ============ */
+const app = document.getElementById("app");
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function markPH(s) { return esc(s).replace(/\{([^}]+)\}/g, '<span class="ph">{$1}</span>'); }
+
+function renderList() {
+  let html = "";
+  for (let w = 1; w <= 8; w++) {
+    const posts = POSTS.filter(p => p.wk === w);
+    html += `<section class="wkgroup"><div class="wkhead"><span class="n">Week ${w}</span><span class="d">${posts.map(p => p.day.slice(0,3) + " " + p.date).join(" · ")}</span></div><div class="cards">`;
+    posts.forEach(p => {
+      html += `<button class="pcard" data-id="${p.id}">
+        <span><span class="chip ${p.fmt}">${p.fmt === "log" ? "UPGRADE LOG #" + p.num : "DECODE #" + p.num}</span>
+        ${p.script ? ' <span class="chip vid">▶ reel script</span>' : ""}</span>
+        <h3>${esc(p.title)}</h3>
+        <span class="date">${p.day} · ${p.date}</span>
+      </button>`;
+    });
+    html += `</div></section>`;
+  }
+  app.innerHTML = html;
+  app.querySelectorAll("[data-id]").forEach(b => b.addEventListener("click", () => renderDetail(b.dataset.id)));
+  window.scrollTo(0, 0);
+}
+
+function copyText(txt, toastEl) {
+  const done = () => { toastEl.textContent = "Copied ✓"; setTimeout(() => toastEl.textContent = "", 2500); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, done);
+  else done();
+}
+
+function renderDetail(id) {
+  const p = POSTS.find(x => x.id === id);
+  const svg = buildSlide(p);
+  app.innerHTML = `
+    <button class="back">&larr; All posts</button>
+    <h2>${esc(p.title)}</h2>
+    <div class="meta">
+      <span class="chip ${p.fmt}">${p.fmt === "log" ? "UPGRADE LOG #" + p.num : "DECODE #" + p.num}</span>
+      <span class="date" style="color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:12px">${p.day} · ${p.date} · post 9–11 AM IST</span>
+    </div>
+    <div class="cols">
+      <div>
+        <div class="art">${svg}</div>
+        <div class="btns">
+          <button class="btn" id="dl">Download PNG (1080×1350)</button>
+        </div>
+        <p class="hint">On the hosted page you'll get a quick save confirmation. If saving is ever blocked, screenshot the graphic or open <code>linkedin/studio.html</code> locally.</p>
+      </div>
+      <div>
+        <div class="lbl">Caption — replace every <span style="color:var(--accent)">{placeholder}</span> with real numbers</div>
+        <pre class="copytext">${markPH(p.caption)}</pre>
+        <div class="btns"><button class="btn" id="cpc">Copy caption</button><span class="toast" id="t1"></span></div>
+        ${p.script ? `<div class="lbl">Reel script</div><pre class="copytext">${markPH(p.script)}</pre>
+        <div class="btns"><button class="btn ghost" id="cps">Copy script</button><span class="toast" id="t2"></span></div>` : ""}
+      </div>
+    </div>`;
+  app.querySelector(".back").addEventListener("click", renderList);
+  document.getElementById("cpc").addEventListener("click", () => copyText(p.caption, document.getElementById("t1")));
+  if (p.script) document.getElementById("cps").addEventListener("click", () => copyText(p.script, document.getElementById("t2")));
+  document.getElementById("dl").addEventListener("click", () => {
+    const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement("canvas"); c.width = 1080; c.height = 1350;
+      c.getContext("2d").drawImage(img, 0, 0, 1080, 1350);
+      URL.revokeObjectURL(url);
+      c.toBlob(async png => {
+        if (!png) { alert("Could not render the PNG — screenshot the graphic instead."); return; }
+        const rt = window.claude;
+        const dl = rt && rt.use ? await rt.use("downloads").catch(() => null) : null;
+        if (dl) { // hosted page: save via the viewer's confirmation prompt
+          try { await dl.save({ filename: p.id + ".png", data: png }); }
+          catch (e) {
+            if (e && e.code === "declined") return;
+            if (e && e.code === "rate_limited") alert("One save at a time — try again in a moment.");
+            else alert("Save didn't work here — screenshot the graphic, or use the local studio.html file.");
+          }
+          return;
+        }
+        try { // local file: plain download
+          const a = document.createElement("a");
+          a.download = p.id + ".png";
+          a.href = c.toDataURL("image/png");
+          document.body.appendChild(a); a.click(); a.remove();
+        } catch (e) { alert("Download blocked here — screenshot the graphic instead."); }
+      }, "image/png");
+    };
+    img.onerror = () => alert("Could not render PNG here — screenshot the graphic instead.");
+    img.src = url;
+  });
+  window.scrollTo(0, 0);
+}
+
+renderList();
+</script>

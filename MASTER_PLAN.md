@@ -31,6 +31,18 @@ You are **not a beginner** — this plan treats you as a working engineer with ~
 
 **Strategic order (nearest-first):** Backend → AI Engineer → ML Engineer → Data Analyst polish → FDE (FDE is the *synthesis* of all four + client skills — your backend + data + MCP profile is naturally FDE-shaped).
 
+### What the interviews actually look like (researched Aug 2026 — full detail in [interview-prep/INTERVIEW_INTEL.md](interview-prep/INTERVIEW_INTEL.md))
+
+| Role | The loop at 1–2 YOE in India | The make-or-break round |
+|---|---|---|
+| Backend | OA (2–3 LC-medium) → DSA rounds → **LLD/machine coding at startups** → Java/Spring+SQL+project rounds at GCCs → HM | Live DSA + HashMap/@Transactional-depth Java; startups: 90-min working-code LLD (Parking Lot, Logger, Chess) |
+| AI Engineer | Screen → practical Python → GenAI concepts → AI system design → **take-home (RAG/agent) + defense** | The take-home — and **evals are the #1 differentiator** (your SDET background IS an evals background) |
+| ML Engineer | OA/DSA → ML breadth → junior-level ML system design (a discussion) → **project end-to-end walkthrough** | The project walkthrough — highest-weight round at this level |
+| Data Analyst | Screen → **live SQL** → live Excel (raw data → pivot → dashboard, timed) → case/guesstimate → HR | Live SQL with window functions; "DAU dropped 15% — investigate" case |
+| FDE | Screen → practical coding → enterprise design → **decomposition case (~40% pass rate)** → client roleplay | Decomposition + how you talk to "customers" (diagnostic questions before solutions) |
+
+Two cross-cutting 2026 realities: **proctoring is tightening and in-person finals are returning** (38.5% of candidates flagged for AI-cheating in one 19k-interview study — fluency must be live and explainable), and **project deep-dives outweigh trivia at your level** — every capstone gets a rehearsed narrative.
+
 ---
 
 ## 2. The operating system (how we work)
@@ -103,7 +115,9 @@ Everything happens in this folder. Weekly loop:
 
 During P2, solve 2 of your 6 weekly DSA problems in Java so syntax stays warm. Capstone 1 stays in FastAPI deliberately — your resume already proves Spring Boot at work, so the portfolio adds breadth and feeds the AI phase; "I've shipped in both stacks" beats two Java repos. (Prefer to build Relay in Spring Boot instead? Say the word — the plan flexes.) If the W8 mock is shaky, we insert a dedicated Java week before applications go out.
 
-**🎯 MILESTONE (Oct 18): Backend-interview-ready — Python AND Java/Spring. Start applying to backend roles. Resume v1.**
+**LLD / machine-coding thread (W5–8, ~1.5h/week):** Indian startups (Razorpay, Tekion, Chalo, Zepto…) gate backend hires with a 60–120-min *working-code* design round. One problem per week, **in Java** (double duty with the revision thread): W5 Parking Lot → W6 Logger (an actual Razorpay task) → W7 Rate Limiter → W8 Splitwise. Bar: clean OO modeling + running code + defended design. Full LLD mock in W21.
+
+**🎯 MILESTONE (Oct 18): Backend-interview-ready — Python AND Java/Spring. Start applying to backend roles — referrals + direct hiring-manager outreach first (title filters die at the ATS, not in interviews). Resume v1.**
 
 ### Phase 3 — AI Engineer (W9–12 · Oct 19 → Nov 15)
 *Your MCP exposure at JCI + FastAPI = fastest path to the hottest market.*
@@ -113,7 +127,7 @@ During P2, solve 2 of your 6 weekly DSA problems in Java so syntax stays warm. C
 | 9 | LLM foundations: tokens, context, sampling, Claude/OpenAI APIs, serious prompt engineering, structured outputs | CLI that extracts structured data from messy docs | Graphs I (6) |
 | 10 | Tool use & MCP: function calling, agent loop from scratch, **build your own MCP server**, streaming | **Capstone 2 "DocMind"** start: MCP server + tool-using assistant | Graphs II (6) |
 | 11 | RAG: embeddings, chunking strategies, pgvector, hybrid search, reranking, citations | DocMind: RAG over a real document corpus with cited answers | Intervals & greedy (6) |
-| 12 | Evals & agents: golden sets, LLM-as-judge, regression evals in CI, guardrails, cost/latency engineering | DocMind: **eval harness + deployed + demo video** | 1-D DP (6) |
+| 12 | Evals & agents: golden sets, LLM-as-judge, regression evals in CI, guardrails, cost/latency engineering | DocMind: **eval harness (built FIRST — your SDET edge) + deployed + 3-min recorded walkthrough** (take-home reviewers now expect one) | 1-D DP (6) |
 
 **🎯 MILESTONE (Nov 15): AI-Engineer-ready. Apply. Resume v2 (MCP story front and center).**
 
@@ -126,7 +140,7 @@ During P2, solve 2 of your 6 weekly DSA problems in Java so syntax stays warm. C
 | 14 | sklearn mastery: trees, random forest, gradient boosting/XGBoost, pipelines, cross-validation, tuning | **Capstone 3 "PredictMaint"**: predictive-maintenance model on public sensor data (ties to your IoT story) | 2-D DP (6) |
 | 15 | Real-world ML: feature engineering, leakage, imbalanced data, interpretation (SHAP) | PredictMaint: feature pipeline + honest evaluation report | Timed easy/med sets |
 | 16 | PyTorch: tensors, autograd, training loop, simple nets, transfer learning, DL-vs-classical judgment | Small PyTorch project (e.g., fine-tune a text classifier) | Timed sets |
-| 17 | MLOps: MLflow tracking, model serving via FastAPI, monitoring & drift, data/model versioning | PredictMaint: **served + tracked + monitored + deployed** | Timed sets |
+| 17 | MLOps: MLflow tracking, model serving via FastAPI, monitoring & drift, data/model versioning | PredictMaint: **served + tracked + monitored + deployed** + written end-to-end project narrative + walkthrough mock (the highest-weight MLE round) | Timed sets |
 
 **🎯 MILESTONE (Dec 20): Junior/mid MLE-ready. Apply. Resume v3.**
 
@@ -136,8 +150,8 @@ During P2, solve 2 of your 6 weekly DSA problems in Java so syntax stays warm. C
 | Wk | Topic | Build (Capstone 4) |
 |---|---|---|
 | 18 | Statistics: distributions, sampling, confidence intervals, hypothesis testing, A/B testing end-to-end, common traps | A/B test analysis writeup on real experiment data |
-| 19 | Analytics SQL: cohort/retention/funnel queries, hard window-function drills + metrics design | 25 hard SQL drills + metrics doc |
-| 20 | Excel power tools (XLOOKUP, INDEX/MATCH, pivot tables, what-if analysis) + Power BI advanced, DAX basics, dashboard design, exec communication | **Capstone 4: analytics deep-dive — Excel workbook + published dashboard** |
+| 19 | Analytics SQL: cohort/retention/funnel queries, gaps-and-islands (consecutive-days problems), hard window-function drills + metrics design | 25 hard SQL drills + metrics doc |
+| 20 | Excel power tools (XLOOKUP, INDEX/MATCH, pivot tables, what-if analysis) + Power BI advanced, DAX basics, dashboard design, exec communication | **Capstone 4: analytics deep-dive — Excel workbook + published dashboard** + 30-min TIMED drill: raw data → clean → pivot → mini-dashboard (analyst loops test exactly this, live) |
 
 **🎯 MILESTONE (Jan 10): Data-Analyst-ready (senior-intern → analyst level).**
 
@@ -146,9 +160,9 @@ During P2, solve 2 of your 6 weekly DSA problems in Java so syntax stays warm. C
 
 | Wk | Topic | Deliverable |
 |---|---|---|
-| 21 | System design I: load balancing, caching, queues, sharding, consistency, capacity estimation, API design | 2 full design docs (I review like an interviewer) |
+| 21 | System design I: load balancing, caching, queues, sharding, consistency, capacity estimation, API design | 2 full design docs (I review like an interviewer) + 90-min LLD mock (machine coding, in Java) |
 | 22 | System design II + AI system design: design a RAG platform, ML serving at scale; take-home simulation | 1 AI system design + timed take-home |
-| 23 | FDE craft: **48-hour POC drill** (I play a fuzzy customer, you scope + build + demo), integration patterns, discovery questions, demo storytelling | POC repo + recorded demo pitch |
+| 23 | FDE craft: **48-hour POC drill** (I play a fuzzy customer, you scope + build + demo), **decomposition case drills** (Palantir-style: "reduce a city's 911 response times" — the FDE signature round, ~40% pass rate), client-roleplay ("the CTO is calling"), discovery questions, demo storytelling | POC repo + recorded demo pitch + 2 decomposition cases |
 | 24 | Gauntlet: timed DSA sets, one full mock per role (5 mocks — the backend one in Java/Spring), behavioral STAR bank (12 stories), resume vFinal, application tracker | Interview-ready across all 5 roles |
 
 **🎯 MILESTONE (Feb 7): FDE-ready. Full portfolio: 4 capstones + POC, ~150 DSA problems solved, 5 resume versions.**
@@ -168,20 +182,23 @@ During P2, solve 2 of your 6 weekly DSA problems in Java so syntax stays warm. C
 
 | # | Name | One-liner | Proves |
 |---|---|---|---|
-| 1 | **Relay** | Webhook delivery service: queued, retried with backoff, HMAC-signed, dead-lettered, load-tested, deployed with CI/CD | Backend at production grade |
-| 2 | **DocMind** | RAG + agent service with its own MCP server, citation-grounded answers, and a regression eval harness in CI | AI engineering, evals maturity |
+| 1 | **Relay** | Webhook delivery service: queued, retried with backoff, HMAC-signed, dead-lettered, load-tested, deployed with CI/CD + 3-min recorded demo | Backend at production grade |
+| 2 | **DocMind** | RAG + agent service with its own MCP server, citation-grounded answers, and a regression eval harness in CI — **eval harness built first** + recorded walkthrough | AI engineering, evals maturity |
 | 3 | **PredictMaint** | End-to-end predictive-maintenance ML service: features → XGBoost/PyTorch → MLflow → served → monitored | ML engineering lifecycle |
 | 4 | **Analytics deep-dive** | Public-dataset investigation + A/B analysis + published Power BI dashboard + exec summary | Analyst rigor + storytelling |
 | + | **48h POC** | Fuzzy-brief-to-demo build | FDE speed + client skills |
 
 GitHub standards: pinned repos, real READMEs (problem → architecture diagram → decisions → how to run → metrics), meaningful commit history, profile README.
 
-## 6. Market strategy (brief)
+## 6. Market strategy (research-backed, Aug 2026)
 
-- **Where:** product companies + GCCs + funded AI startups (Pune/Bangalore/remote). Your JCI GCC experience transfers well.
-- **Positioning:** "Backend engineer with test-automation rigor and MCP/AI tooling experience" — never "SDET looking to switch."
-- **The MCP story is your differentiator.** By W12 you'll have built MCP servers, not just evaluated them — say that in every AI-role interview.
-- Applying is a numbers + referrals game: from W8, ~10 quality applications/week + LinkedIn outreach. We'll build the tracker in W24 (or earlier — say the word).
+- **Where:** GCCs are the strongest junior absorber right now (+35% YoY in tier-2 cities) + funded startups (fintech, quick-commerce, AI) + select product companies. AI-tagged roles grew +33% YoY while plain-CRUD listings shrank — **the backend + AI combination is precisely the winning profile.**
+- **Positioning:** "Backend engineer currently in an SDET seat" — lead with Onextel production work. Never "SDET looking to switch." Interviewers judge current ability; it's the **ATS/recruiter title filter** that kills SDET candidates → from W8, referrals + direct hiring-manager outreach come FIRST, portal applications second. (The LinkedIn content engine exists for exactly this.)
+- **The MCP story is your differentiator** — MCP now appears in AI-engineer JDs explicitly, and almost no 1-YOE candidate has work exposure. By W12 you'll have *built* MCP servers, not just evaluated them.
+- **Your SDET background is secretly an evals background** — evals are the most under-supplied skill in AI-engineer loops. Say: "I build test/eval harnesses and quality gates for LLM systems."
+- **FDE sequencing (be realistic):** Indian-startup FDE / solutions-engineer / deployment roles are targetable at W24; global-lab FDE (OpenAI/Anthropic/Databricks — India-remote postings exist) realistically lands at 2.5–4 YOE with a shipped GenAI product + customer-facing evidence. The plan builds that evidence now.
+- **Comp reality check (directional, 1–2 YOE):** backend — services ₹4.5–10L, product/startups ₹10–20L+, top GCCs ₹18–25L · AI engineer — ₹8–16L entry with real projects, ₹18–30L at 2–4 yrs · MLE — ₹7–14L services/GCC, ₹15–25L product · DA — ₹4–8L. Don't anchor on LinkedIn-influencer numbers.
+- Cadence from W8: ~10 quality applications/week + 5 referral asks + the Thursday LinkedIn log doing inbound work. Application tracker built at W24 (or earlier — say the word).
 
 ## 7. Anti-patterns I will call out
 
