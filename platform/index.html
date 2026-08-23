@@ -85,11 +85,34 @@
   .pill.doing i { background: var(--warn); }
   .pill.done { background: var(--ok-soft); border-color: transparent; color: var(--ok); }
   .pill.done i { background: var(--ok); }
-  .wk-detail { display: none; padding: 2px 14px 13px 66px; font-size: 13.5px; }
-  .wk.open .wk-detail { display: block; }
-  .wk-detail p { margin: 4px 0; }
-  .wk-detail .lbl { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 10px; letter-spacing: .12em;
-    color: var(--muted); text-transform: uppercase; margin-right: 8px; }
+  .wkpage-head { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 14px 0 4px; }
+  .wkpage-head h2 { font-family: Archivo, system-ui, sans-serif; font-weight: 800; font-size: 22px; margin: 0; }
+  .focusline { color: var(--muted); font-size: 14px; margin: 3px 0 0; }
+  .focusline b { color: var(--ink); }
+  .steps { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .step { display: flex; gap: 12px; align-items: flex-start; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 10px; padding: 13px 15px; box-shadow: var(--shadow); }
+  .step input[type=checkbox] { width: 19px; height: 19px; margin-top: 2px; accent-color: var(--ok); cursor: pointer; flex: none; }
+  .step .st-t { font-weight: 600; }
+  .step.done .st-t { color: var(--muted); text-decoration: line-through; }
+  .step .st-d { color: var(--muted); font-size: 13px; margin-top: 3px; }
+  .cmd { display: flex; align-items: center; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+  .cmd code { padding: 6px 12px; font-size: 13px; }
+  .mini { background: var(--surface2); border: 1px solid var(--line); border-radius: 6px; padding: 4px 12px;
+    font-size: 12.5px; font-weight: 600; }
+  .mini:hover { border-color: var(--accent); color: var(--accent); }
+  .linkchips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .linkchips a { display: inline-block; padding: 4px 13px; border: 1px solid var(--line); border-radius: 99px;
+    font-size: 12.5px; font-weight: 600; color: var(--ink); text-decoration: none; background: var(--surface2); }
+  .linkchips a:hover { border-color: var(--accent); color: var(--accent); }
+  .takequiz { margin-top: 10px; }
+  .locked { border: 1px dashed var(--line); border-radius: 10px; padding: 16px 18px; color: var(--muted);
+    font-size: 14px; margin-top: 16px; background: var(--surface); }
+  .markdone { margin-top: 14px; }
+  .back { color: var(--muted); font-weight: 600; font-size: 13.5px; padding: 12px 0 0; }
+  .back:hover { color: var(--ink); }
+  .now .go { padding: 6px 14px; font-size: 12.5px; white-space: nowrap; }
+  .ready-chip { font-size: 10.5px; margin-left: 8px; vertical-align: 2px; }
 
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 20px; }
   .qcard { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px;
@@ -185,10 +208,7 @@
 </header>
 
 <main class="wrap">
-  <div class="now">
-    <span class="tag">NOW</span>
-    <div><b>Week 0 — Setup &amp; Diagnostic</b> <span>· due Sun Aug 23 · take the Diagnostic quiz, then send Claude your section scores, hours/week, GitHub username, and warm-up result.</span></div>
-  </div>
+  <div class="now" id="now"></div>
 
   <section class="view on" id="view-roadmap"></section>
   <section class="view" id="view-quizzes"></section>
@@ -246,6 +266,28 @@ const WEEKS = {
   22: { t: "System Design II + AI", d: "Jan 18–24", f: "Designing RAG platforms and ML serving; take-home simulation", s: "AI system design doc + timed take-home" },
   23: { t: "FDE Craft", d: "Jan 25–31", f: "48-hour POC drill, decomposition case drills (the FDE signature round), client roleplay, discovery questions, demo storytelling", s: "POC repo + recorded pitch + 2 decomposition cases" },
   24: { t: "The Gauntlet", d: "Feb 1–7", f: "Timed DSA sets, one full mock per role (backend mock in Java/Spring), behavioral STAR bank, resume vFinal", s: "Interview-ready across all 5 roles" }
+};
+
+/* Full in-portal content per week. Weeks appear here as Sid reaches them (say "start week N" in chat). */
+const CONTENT = {
+  0: { steps: [
+    { t: "Install pytest (one-time, ~1 min)", cmd: "pip install pytest", d: "Python 3.13, Git and Node are already verified on your machine." },
+    { t: "Create accounts: GitHub (professional username) + LeetCode; make sure LinkedIn exists", d: "Capstones get pushed to GitHub from a personal device — never the work laptop." },
+    { t: "Take the Diagnostic — closed book, no googling", quiz: "diag", d: "25 questions, 6 sections, ~25 min. It sets your starting point; a low section just means the plan reinforces it. No judgment, just calibration." },
+    { t: "Coding warm-up (15 min, honest timing)", d: "Create warmup.py in curriculum/week-00-setup-and-diagnostic/ and implement: most_common_word(text) → the most frequent word, lowercased, punctuation ignored, ties broken alphabetically. No looking anything up. Note how long it took and whether it ran first try." },
+    { t: "Send Claude 4 things in chat — this unlocks your calibrated plan", d: "1) Diagnostic section scores  2) real hours/week you can commit + any deadline  3) GitHub username  4) warm-up result (time + did it work). Shortcut: Progress tab → Copy report, paste it, add the rest." }
+  ]},
+  1: { steps: [
+    { t: "Study (max ~2.5h total — then build)", d: "Skim what you know, read comprehensions + sorting carefully, memorize the list/dict/set complexity rows.",
+      links: [["Data Structures tutorial", "https://docs.python.org/3/tutorial/datastructures.html"], ["Sorting HOW TO", "https://docs.python.org/3/howto/sorting.html"], ["Big-O of builtins", "https://wiki.python.org/moin/TimeComplexity"], ["collections: Counter, defaultdict, deque", "https://docs.python.org/3/library/collections.html"]] },
+    { t: "Implement all 12 functions in exercises.py — target 12/12 by Sunday", cmd: "python check.py",
+      d: "Folder: curriculum\\week-01-python-core\\. Edit exercises.py, then run the checker (from that folder) as often as you like. Docs allowed; AI assistance not — interviews are live and proctored now." },
+    { t: "DSA set — 6 problems on LeetCode (arrays & hashing)", d: "You met several in exercises.py first — that's deliberate. Save each solution as a file in a dsa/ folder so Claude can review your approach, not just the green tick.",
+      links: [["217 Contains Duplicate", "https://leetcode.com/problems/contains-duplicate/"], ["242 Valid Anagram", "https://leetcode.com/problems/valid-anagram/"], ["1 Two Sum", "https://leetcode.com/problems/two-sum/"], ["49 Group Anagrams", "https://leetcode.com/problems/group-anagrams/"], ["347 Top K Frequent Elements", "https://leetcode.com/problems/top-k-frequent-elements/"], ["238 Product Except Self", "https://leetcode.com/problems/product-of-array-except-self/"]] },
+    { t: "Take the Week 1 quiz (Sunday, after the exercises)", quiz: "w1", d: "15 questions on exactly what you practised this week." },
+    { t: "Write STAR story #1 — the Onextel p95-latency-by-20% bullet", d: "File: interview-prep/stories.md. Situation, Task, Action (what YOU specifically did: which queries, what profiling, why Redis), Result (how it was measured). Every backend interviewer pulls this thread first." },
+    { t: "Say “grade week 1” to Claude", d: "Claude reviews every file you wrote, scores it with line-by-line feedback, updates the grade book, and generates Week 2." }
+  ]}
 };
 
 const QUIZZES = [
@@ -310,6 +352,7 @@ try { S = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { S = {}; }
 S.status = S.status || {};   // weekNum -> todo|doing|done
 S.quiz = S.quiz || {};       // quizId -> {score,total,pct,date,sections?}
 S.dsa = S.dsa || 0;
+S.tasks = S.tasks || {};     // "week:stepIndex" -> true
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 
 /* ---------------- helpers ---------------- */
@@ -318,24 +361,27 @@ const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(
 const STATUSES = ["todo", "doing", "done"];
 const SLABEL = { todo: "To do", doing: "In progress", done: "Done" };
 
-/* ---------------- roadmap ---------------- */
+/* ---------------- roadmap + week portal ---------------- */
+function showView(name) {
+  document.querySelectorAll("#nav button").forEach(b => b.classList.toggle("on", b.dataset.v === name));
+  document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.id === "view-" + name));
+}
+function openQuiz(id) { showView("quizzes"); renderRunner(id); window.scrollTo(0, 0); }
+function openWeek(w) { showView("roadmap"); renderWeek(w); }
+
 function renderRoadmap() {
   const host = $("#view-roadmap");
-  host.innerHTML = PHASES.map(p => {
+  host.innerHTML = `<p class="hint" style="margin-top:14px">Click a week to open its lessons, tasks and assessments. Click a status pill to cycle to-do → in progress → done.</p>` + PHASES.map(p => {
     const done = p.weeks.filter(w => S.status[w] === "done").length;
     const rows = p.weeks.map(w => {
       const wk = WEEKS[w];
       const st = S.status[w] || "todo";
       return `<div class="wk" data-w="${w}">
-        <button class="wk-row" aria-expanded="false">
+        <button class="wk-row">
           <span class="wk-code">W${String(w).padStart(2, "0")}</span>
-          <span><span class="wk-title">${esc(wk.t)}</span><br><span class="wk-dates">${esc(wk.d)}</span></span>
+          <span><span class="wk-title">${esc(wk.t)}</span>${CONTENT[w] ? '<span class="chip ok ready-chip">ready</span>' : ""}<br><span class="wk-dates">${esc(wk.d)}</span></span>
           <span class="pill ${st}" data-pill role="button" tabindex="0" title="Click to cycle status"><i></i>${SLABEL[st]}</span>
         </button>
-        <div class="wk-detail">
-          <p><span class="lbl">Focus</span>${esc(wk.f)}</p>
-          <p><span class="lbl">Ship</span>${esc(wk.s)}</p>
-        </div>
       </div>`;
     }).join("");
     return `<section class="phase">
@@ -354,21 +400,101 @@ function renderRoadmap() {
   host.querySelectorAll(".wk").forEach(el => {
     const row = $(".wk-row", el);
     const pill = $("[data-pill]", el);
+    const w = el.dataset.w;
     row.addEventListener("click", e => {
       if (e.target.closest("[data-pill]")) return;
-      el.classList.toggle("open");
-      row.setAttribute("aria-expanded", el.classList.contains("open"));
+      renderWeek(w);
     });
     const cycle = e => {
       e.stopPropagation();
-      const w = el.dataset.w;
       const cur = S.status[w] || "todo";
       S.status[w] = STATUSES[(STATUSES.indexOf(cur) + 1) % 3];
-      save(); renderRoadmap(); renderProgress();
+      save(); renderRoadmap(); renderProgress(); renderNow();
     };
     pill.addEventListener("click", cycle);
     pill.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); cycle(e); } });
   });
+  window.scrollTo(0, 0);
+}
+
+function stepHTML(w, i, s) {
+  const done = !!S.tasks[w + ":" + i];
+  const best = s.quiz ? S.quiz[s.quiz] : null;
+  return `<div class="step ${done ? "done" : ""}">
+    <input type="checkbox" data-task="${w}:${i}" ${done ? "checked" : ""} aria-label="mark step done">
+    <span style="flex:1">
+      <span class="st-t">${esc(s.t)}</span>
+      ${s.d ? `<div class="st-d">${esc(s.d)}</div>` : ""}
+      ${s.cmd ? `<div class="cmd"><code>${esc(s.cmd)}</code><button class="mini" data-copy="${esc(s.cmd)}">copy</button></div>` : ""}
+      ${s.links ? `<div class="linkchips">${s.links.map(l => `<a href="${l[1]}" target="_blank" rel="noopener">${esc(l[0])} ↗</a>`).join("")}</div>` : ""}
+      ${s.quiz ? `<div class="takequiz"><button class="go" data-openquiz="${s.quiz}">${best ? "Retake" : "Take"} the quiz →</button>${best ? ` <span class="chip ${best.pct >= 70 ? "ok" : "warn"}" style="margin-left:8px">best: ${best.score}/${best.total}</span>` : ""}</div>` : ""}
+    </span>
+  </div>`;
+}
+
+function renderWeek(w) {
+  const host = $("#view-roadmap");
+  const wk = WEEKS[w];
+  const c = CONTENT[w];
+  const st = S.status[w] || "todo";
+  const steps = c ? c.steps : [];
+  const doneCount = steps.filter((_, i) => S.tasks[w + ":" + i]).length;
+  host.innerHTML = `
+    <button class="back">&larr; Roadmap</button>
+    <div class="wkpage-head">
+      <span class="wk-code" style="font-size:14px">W${String(w).padStart(2, "0")}</span>
+      <h2>${esc(wk.t)}</h2>
+      <span class="pill ${st}" data-pill role="button" tabindex="0" title="Click to cycle status"><i></i>${SLABEL[st]}</span>
+      <span class="phase-range">${esc(wk.d)}</span>
+    </div>
+    <p class="focusline"><b>Focus:</b> ${esc(wk.f)}</p>
+    <p class="focusline"><b>Ship by Sunday:</b> ${esc(wk.s)}</p>
+    ${c ? `
+      <p class="hint" style="margin-top:16px">${doneCount}/${steps.length} steps done — work top to bottom, tick as you go (saved on this device).</p>
+      <div class="steps">${steps.map((s, i) => stepHTML(w, i, s)).join("")}</div>
+      ${doneCount === steps.length && steps.length && st !== "done" ? `<p class="markdone"><button class="go" id="markdone">All steps done — mark Week ${Number(w)} complete ✓</button></p>` : ""}`
+    : `<div class="locked"><b style="color:var(--ink)">This week unlocks when you reach it.</b><br>Say <code>start week ${Number(w)}</code> to Claude in chat — the full lesson, exercises, drills and this week's quiz get generated and appear right here (and in your curriculum folder). One week at a time keeps the content matched to your actual level.</div>`}
+  `;
+  $(".back", host).addEventListener("click", renderRoadmap);
+  const pill = $("[data-pill]", host);
+  const cycle = e => {
+    e.preventDefault();
+    const cur = S.status[w] || "todo";
+    S.status[w] = STATUSES[(STATUSES.indexOf(cur) + 1) % 3];
+    save(); renderWeek(w); renderProgress(); renderNow();
+  };
+  pill.addEventListener("click", cycle);
+  pill.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") cycle(e); });
+  host.querySelectorAll("[data-task]").forEach(cb => cb.addEventListener("change", () => {
+    S.tasks[cb.dataset.task] = cb.checked;
+    save(); renderWeek(w); renderNow();
+  }));
+  host.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click", () => {
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(b.dataset.copy);
+    b.textContent = "copied ✓"; setTimeout(() => { b.textContent = "copy"; }, 2000);
+  }));
+  host.querySelectorAll("[data-openquiz]").forEach(b => b.addEventListener("click", () => openQuiz(b.dataset.openquiz)));
+  const md = $("#markdone", host);
+  if (md) md.addEventListener("click", () => { S.status[w] = "done"; save(); renderRoadmap(); renderProgress(); renderNow(); });
+  window.scrollTo(0, 0);
+}
+
+function renderNow() {
+  const el = document.getElementById("now");
+  const order = Object.keys(WEEKS).map(Number).sort((a, b) => a - b);
+  const w = order.find(x => (S.status[x] || "todo") !== "done");
+  if (w == null) {
+    el.innerHTML = `<span class="tag">DONE</span><div><b>All 25 weeks complete.</b> <span>Tell Claude — time to apply everywhere.</span></div>`;
+    return;
+  }
+  const steps = CONTENT[w] ? CONTENT[w].steps : [];
+  const doneCount = steps.filter((_, i) => S.tasks[w + ":" + i]).length;
+  const nextIdx = steps.findIndex((_, i) => !S.tasks[w + ":" + i]);
+  const next = nextIdx >= 0 ? steps[nextIdx] : null;
+  el.innerHTML = `<span class="tag">NOW</span>
+    <div style="flex:1"><b>Week ${w} — ${esc(WEEKS[w].t)}</b> <span>· ${esc(WEEKS[w].d)}${steps.length ? ` · ${doneCount}/${steps.length} steps` : ""}${next ? ` · next: ${esc(next.t)}` : ""}</span></div>
+    <button class="go" id="now-open">Open Week ${w} →</button>`;
+  document.getElementById("now-open").addEventListener("click", () => openWeek(w));
 }
 
 /* ---------------- quizzes ---------------- */
@@ -480,7 +606,7 @@ function grade(quiz) {
   $("#retake", host).addEventListener("click", () => renderRunner(quiz.id));
   $("#result-slot", host).scrollIntoView({ behavior: "smooth", block: "start" });
   $("#note", host).textContent = "";
-  renderProgress();
+  renderProgress(); renderNow();
 }
 
 /* ---------------- progress ---------------- */
@@ -544,12 +670,13 @@ function renderProgress() {
 document.getElementById("nav").addEventListener("click", e => {
   const btn = e.target.closest("button[data-v]");
   if (!btn) return;
-  document.querySelectorAll("#nav button").forEach(b => b.classList.toggle("on", b === btn));
-  document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.id === "view-" + btn.dataset.v));
+  showView(btn.dataset.v);
+  if (btn.dataset.v === "roadmap") renderRoadmap();
   if (btn.dataset.v === "quizzes" && !$("#view-quizzes .qbox")) renderQuizList();
 });
 
 renderRoadmap();
 renderQuizList();
 renderProgress();
+renderNow();
 </script>
