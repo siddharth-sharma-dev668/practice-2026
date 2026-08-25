@@ -3,18 +3,43 @@
   "plan_started": "2026-08-21",
   "plan_ends": "2027-02-07",
   "hours_per_week": null,
-  "github_username": null,
+  "github_username": "siddharth-sharma-dev668",
+  "github_repo": "https://github.com/siddharth-sharma-dev668/practice-2026",
   "current_week": 0,
   "calibration": {
-    "diagnostic_scores": null,
+    "diagnostic_scores": {
+      "taken": "2026-08-25",
+      "total": "22/25",
+      "pct": 88,
+      "sections": {
+        "Python": "3/6",
+        "SQL": "4/4",
+        "DSA": "4/4",
+        "Web": "4/4",
+        "Stats": "3/3",
+        "ML/AI": "4/4"
+      },
+      "missed_questions": "UNKNOWN — miss-tracking was added to the platform after he took this. Ask which 3 Python questions he missed; every later quiz records it automatically."
+    },
+    "java_diagnostic": {
+      "status": "assigned 2026-08-25",
+      "why": "The first diagnostic contained no Java and no Spring at all — Sid flagged it. His Java is his headline resume experience but cold since Dec 2025, and the W5-8 revision thread + W8 mock are sized from this score.",
+      "quiz_id": "diag-java",
+      "covers": "Java Core (5), Collections (4), Concurrency & JVM (4), Spring (4), JPA/Hibernate (3)"
+    },
     "warmup_result": null,
-    "notes": "Awaiting Week 0 diagnostic. Plan assumes ~1 YOE (backend + SDET + DA internship) per resume."
+    "notes": "88% overall is strong for ~1 YOE. Python 3/6 is the ONE real weakness found — and it is both his daily language as an SDET and the exact focus of W1-2, so the plan is aimed correctly; do NOT let him test out of W1-2. Caveat on the 100% sections: 3-4 questions each cannot distinguish 'solid' from 'strong', and they tested fundamentals only (LEFT JOIN, not window functions; big-O, not real DSA under time). W3-4 SQL (window functions, EXPLAIN, indexes) and the timed DSA sets remain unproven and stay in the plan at full weight."
   },
   "weeks": {
-    "0": { "status": "assigned", "assigned": "2026-08-21", "due": "2026-08-23" },
+    "0": { "status": "in_progress", "assigned": "2026-08-21", "due": "2026-08-23",
+      "done": ["diagnostic (22/25)", "GitHub account + username", "git remote configured"],
+      "outstanding": ["Java/Spring diagnostic", "coding warm-up (warmup.py)", "hours/week commitment", "push commits to GitHub"] },
     "1": { "status": "assigned", "assigned": "2026-08-21", "due": "2026-08-30" }
   },
-  "quiz_scores": {},
+  "quiz_scores": {
+    "diag": { "score": 22, "total": 25, "pct": 88, "date": "2026-08-25",
+      "sections": { "Python": "3/6", "SQL": "4/4", "DSA": "4/4", "Web": "4/4", "Stats": "3/3", "ML/AI": "4/4" } }
+  },
   "dsa": { "solved_total": 0, "log": [] },
   "capstones": {
     "relay": "not_started",
