@@ -32,10 +32,17 @@
       "covers": "Java Core (5), Collections (4), Concurrency & JVM (4), Spring (4), JPA/Hibernate (3)"
     },
     "warmup_result": {
-      "status": "not_written",
-      "sid_said": "2026-08-25: 'I thought the idea but not code' — worked out the approach mentally, never typed it.",
-      "why_this_matters": "This is the SAME signal as the Python diagnostic misses, from a different angle: he can design the solution but hasn't converted it to Python under time pressure. Approach-without-code is worth roughly nothing in a live proctored round (and 2026 loops are tightening on exactly this). The gap between 'I know the approach' and 'I can type it cold in 15 min' IS the training target for W1-6.",
-      "still_needed": "The actual typed warmup.py plus honest timing. Watch specifically: does he reach for collections.Counter, re.findall, and a sorted(key=lambda) tuple for the tie-break — or hand-roll loops in a Java shape? That answer sizes how much idiom drilling W1-2 needs."
+      "status": "written_but_never_run",
+      "file": "warmup.py (repo root — belongs in curriculum/week-00-setup-and-diagnostic/)",
+      "reviewed": "2026-08-25",
+      "idiom_verdict": "STRONGER than the diagnostic implied. Unprompted he reached for re.findall(r'\\b\\w+\\b', text.lower()) to tokenize and case-fold in one line, collections.Counter to tally, max(counts.values()) for the top frequency, a generator expression with min() for the alphabetical tie-break, and an empty-input guard most candidates skip. That is genuine Python instinct, not hand-rolled Java-shaped loops. Revise the earlier 'fluency gap' read downward.",
+      "bugs": [
+        "Line 9: `if counts == max_counts` compares the Counter object to an int — always False, so the generator is empty and min() raises ValueError on EVERY non-empty input. Should be `count`.",
+        "Line 6: `return none` — lowercase; Python has no `none`, so empty input raises NameError. Should be `None`."
+      ],
+      "verified_behaviour": "Ran it: 'the cat the dog THE bird. cat!' -> ValueError; 'b a b a' -> ValueError; '' -> NameError. The function fails 100% of the time despite being algorithmically correct.",
+      "the_real_finding": "He does not run his code. Both bugs die on the first execution and both are single-token slips (counts/count, none/None) — no amount of Python knowledge catches them, and one run catches both. This is the highest-leverage habit to fix, and it is worth naming that he is an SDET by trade. In a live proctored round an untested solution that looks right but throws is simply a fail. Training target for W1-6 is the verify loop (run it, or dry-run one input aloud, before calling it done) — NOT more Python theory.",
+      "still_needed": "His honest timing for the attempt, and the fix made by HIM (bugs were pointed out by class, not corrected for him)."
     },
     "notes": "88% overall is strong for ~1 YOE. Python 3/6 is the ONE real weakness found — and it is both his daily language as an SDET and the exact focus of W1-2, so the plan is aimed correctly; do NOT let him test out of W1-2. Caveat on the 100% sections: 3-4 questions each cannot distinguish 'solid' from 'strong', and they tested fundamentals only (LEFT JOIN, not window functions; big-O, not real DSA under time). W3-4 SQL (window functions, EXPLAIN, indexes) and the timed DSA sets remain unproven and stay in the plan at full weight."
   },
