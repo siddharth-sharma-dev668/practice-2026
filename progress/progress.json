@@ -2,7 +2,9 @@
   "student": "Siddharth Sharma",
   "plan_started": "2026-08-21",
   "plan_ends": "2027-02-07",
-  "hours_per_week": null,
+  "hours_per_week": 5,
+  "hours_detail": "30-60 min/day as of 2026-08-25 (~5 h/week). Sid says he will increase over time — he says `more hours` when capacity actually grows and the plan gets re-cut upward (DSA volume first, then ML depth). Plan was rebuilt for this number: original assumed 13-16 h/week.",
+  "plan_structure": "BRAIDED, not sequential phases — Sid's call on 2026-08-25 and it was the right one. Every week touches backend + AI/ML + data-or-Java + DSA (see MASTER_PLAN.md section 2 for the daily rhythm). Reason: the old 7-phase plan finished Backend in October for a February interview, which is exactly how his Java went cold. 4 stages now: S1 Foundations W1-6, S2 Build W7-12, S3 Deepen W13-18, S4 Prove W19-24. Two COMBINED capstones instead of four separate ones — each spans all five target roles.",
   "github_username": "siddharth-sharma-dev668",
   "github_repo": "https://github.com/siddharth-sharma-dev668/practice-2026",
   "current_week": 0,
@@ -19,7 +21,9 @@
         "Stats": "3/3",
         "ML/AI": "4/4"
       },
-      "missed_questions": "UNKNOWN — miss-tracking was added to the platform after he took this. Ask which 3 Python questions he missed; every later quiz records it automatically."
+      "missed_questions": [2, 3, 6],
+      "missed_detail": "Q2 comprehension with a filter condition; Q3 hashability (what can be a dict key); Q6 sorted(key=len) returning a new list + stability. He got RIGHT the harder semantic ones: Q1 mutable default argument, Q4 reference aliasing, Q5 is-vs-==.",
+      "interpretation": "This is a FLUENCY gap, not a mental-model gap. He understands mutability, aliasing and identity — the things that take longest to learn — but is cold on Pythonic idiom and stdlib behaviour, exactly as expected for a Java-background engineer writing pytest daily. Week 1's syllabus (comprehensions, sorting, collections, big-O of builtins) maps almost one-to-one onto 2/3/6, so it needs no redesign — but drill idiom and stdlib behaviour, not semantics theory."
     },
     "java_diagnostic": {
       "status": "assigned 2026-08-25",
@@ -27,7 +31,12 @@
       "quiz_id": "diag-java",
       "covers": "Java Core (5), Collections (4), Concurrency & JVM (4), Spring (4), JPA/Hibernate (3)"
     },
-    "warmup_result": null,
+    "warmup_result": {
+      "status": "not_written",
+      "sid_said": "2026-08-25: 'I thought the idea but not code' — worked out the approach mentally, never typed it.",
+      "why_this_matters": "This is the SAME signal as the Python diagnostic misses, from a different angle: he can design the solution but hasn't converted it to Python under time pressure. Approach-without-code is worth roughly nothing in a live proctored round (and 2026 loops are tightening on exactly this). The gap between 'I know the approach' and 'I can type it cold in 15 min' IS the training target for W1-6.",
+      "still_needed": "The actual typed warmup.py plus honest timing. Watch specifically: does he reach for collections.Counter, re.findall, and a sorted(key=lambda) tuple for the tie-break — or hand-roll loops in a Java shape? That answer sizes how much idiom drilling W1-2 needs."
+    },
     "notes": "88% overall is strong for ~1 YOE. Python 3/6 is the ONE real weakness found — and it is both his daily language as an SDET and the exact focus of W1-2, so the plan is aimed correctly; do NOT let him test out of W1-2. Caveat on the 100% sections: 3-4 questions each cannot distinguish 'solid' from 'strong', and they tested fundamentals only (LEFT JOIN, not window functions; big-O, not real DSA under time). W3-4 SQL (window functions, EXPLAIN, indexes) and the timed DSA sets remain unproven and stay in the plan at full weight."
   },
   "weeks": {

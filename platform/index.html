@@ -267,47 +267,46 @@
 <script>
 "use strict";
 /* ---------------- data ---------------- */
+/* 4 stages, not 7 role-phases: every week braids backend + AI/ML + data/Java + DSA,
+   so nothing goes cold before February (the mistake that left Java rusty). */
 const PHASES = [
-  { code: "P0", name: "Setup & Diagnostic", range: "Aug 21–23", weeks: [0] },
-  { code: "P1", name: "Interview Core", range: "Aug 24 – Sep 20", weeks: [1, 2, 3, 4] },
-  { code: "P2", name: "Backend Pro", range: "Sep 21 – Oct 18", weeks: [5, 6, 7, 8],
-    milestone: "Backend-interview-ready (Python + Java/Spring) — start applying · Resume v1" },
-  { code: "P3", name: "AI Engineer", range: "Oct 19 – Nov 15", weeks: [9, 10, 11, 12],
-    milestone: "AI-Engineer-ready — MCP story front and center · Resume v2" },
-  { code: "P4", name: "ML Engineer", range: "Nov 16 – Dec 20", weeks: [13, 14, 15, 16, 17],
-    milestone: "Junior/mid MLE-ready · Resume v3" },
-  { code: "P5", name: "Data Analyst", range: "Dec 21 – Jan 10", weeks: [18, 19, 20],
-    milestone: "Analyst-ready" },
-  { code: "P6", name: "FDE + Gauntlet", range: "Jan 11 – Feb 7", weeks: [21, 22, 23, 24],
-    milestone: "FDE-ready — 4 capstones, ~150 DSA solves, 5 mock interviews done" }
+  { code: "S0", name: "Setup & Diagnostic", range: "Aug 21–23", weeks: [0] },
+  { code: "S1", name: "Foundations", range: "Aug 24 – Oct 4", weeks: [1, 2, 3, 4, 5, 6],
+    milestone: "Pulse ingests + persists + tested, CI green · window functions cold" },
+  { code: "S2", name: "Build", range: "Oct 5 – Nov 15", weeks: [7, 8, 9, 10, 11, 12],
+    milestone: "PULSE SHIPS — backend + model + NL-query + evals + dashboard · Resume v1 · applications begin" },
+  { code: "S3", name: "Deepen", range: "Nov 16 – Dec 27", weeks: [13, 14, 15, 16, 17, 18],
+    milestone: "DocMind: own MCP server + cited RAG + evals in CI · Resume v2 · both capstones public" },
+  { code: "S4", name: "Prove", range: "Dec 28 – Feb 7", weeks: [19, 20, 21, 22, 23, 24],
+    milestone: "Interview-ready — 2 multi-role capstones, ~50 DSA solves, 6 mocks, 20+ STAR stories" }
 ];
 
 const WEEKS = {
   0:  { t: "Setup & Diagnostic", d: "Aug 21–23", f: "Tooling, accounts, 25-question diagnostic, coding warm-up", s: "Send Claude: section scores, hours/week, GitHub username, warm-up result" },
-  1:  { t: "Python for Interviews I", d: "Aug 24–30", f: "Collections, comprehensions, sorting, strings, big-O of builtins", s: "12/12 on check.py · 6 DSA (arrays & hashing) · first STAR story" },
-  2:  { t: "Python for Interviews II", d: "Aug 31 – Sep 6", f: "Closures, decorators, generators, itertools, typing, error design", s: "Decorator mini-lib · 6 DSA (two pointers & sliding window)" },
-  3:  { t: "Advanced SQL I", d: "Sep 7–13", f: "Joins mastery, aggregation, subqueries, CTEs, window functions intro", s: "20 SQL drills on a real schema · 6 DSA (stack & binary search)" },
-  4:  { t: "Advanced SQL II + pytest", d: "Sep 14–20", f: "Window functions deep, EXPLAIN & indexes, schema design, pytest patterns", s: "SQL drill set 2 · tested mini-lib at 90% coverage · 6 DSA (linked lists)" },
-  5:  { t: "FastAPI Production", d: "Sep 21–27", f: "Project structure, Pydantic v2, async, DI, SQLAlchemy 2.0 + Alembic · Java drill: collections internals, generics, Streams", s: "Capstone 1 “Relay” skeleton: event-ingest API · Java Q-bank 1 · LLD: Parking Lot (Java) · 6 DSA (trees I, 2 in Java)" },
-  6:  { t: "Auth & Security", d: "Sep 28 – Oct 4", f: "JWT, OAuth2 flows, RBAC, rate limiting, OWASP API top-10 · Java drill: concurrency, JVM memory & GC", s: "Relay: API-key auth, HMAC-signed deliveries · Java Q-bank 2 · LLD: Logger (real Razorpay task) · 6 DSA (trees II, 2 in Java)" },
-  7:  { t: "Data Layer at Scale", d: "Oct 5–11", f: "Transactions & isolation, indexing deep, N+1, Redis patterns, workers · Spring drill: IoC, @Transactional, JPA/Hibernate", s: "Relay: queue + retry/backoff + dead-letter · Spring Q-bank · LLD: Rate Limiter · 6 DSA (heaps, 2 in Java)" },
-  8:  { t: "Ship It", d: "Oct 12–18", f: "Multi-stage Docker, GitHub Actions CI/CD, deploy, logging, load testing · Spring Boot, Security & actuator drill", s: "Relay deployed + design doc + load-test report + 3-min demo + Java/Spring mock → Resume v1 + referral outreach begins · LLD: Splitwise · 6 DSA (backtracking)" },
-  9:  { t: "LLM Foundations", d: "Oct 19–25", f: "Tokens, context, sampling, Claude/OpenAI APIs, prompting, structured outputs", s: "Doc-extraction CLI · 6 DSA (graphs I)" },
-  10: { t: "Tool Use & MCP", d: "Oct 26 – Nov 1", f: "Function calling, agent loop from scratch, build your own MCP server, streaming", s: "Capstone 2 “DocMind” start: working MCP server · 6 DSA (graphs II)" },
-  11: { t: "RAG", d: "Nov 2–8", f: "Embeddings, chunking strategies, pgvector, hybrid search, reranking, citations", s: "DocMind: cited RAG over a real corpus · 6 DSA (intervals & greedy)" },
-  12: { t: "Evals & Agents", d: "Nov 9–15", f: "Golden sets, LLM-as-judge, regression evals in CI, guardrails, cost & latency", s: "DocMind: eval harness (built FIRST — your SDET edge) + deployed + recorded walkthrough → Resume v2 · 6 DSA (1-D DP)" },
-  13: { t: "ML Core", d: "Nov 16–22", f: "Bias-variance, train/val/test, metrics, linear & logistic regression from scratch", s: "NumPy from-scratch notebook vs sklearn · 6 DSA (1-D DP II)" },
-  14: { t: "scikit-learn Mastery", d: "Nov 23–29", f: "Trees, random forests, gradient boosting, pipelines, cross-validation, tuning", s: "Capstone 3 “PredictMaint”: first models on sensor data · 6 DSA (2-D DP)" },
-  15: { t: "Real-World ML", d: "Nov 30 – Dec 6", f: "Feature engineering, leakage, imbalanced data, interpretation (SHAP)", s: "PredictMaint: feature pipeline + honest evaluation report · timed DSA sets" },
-  16: { t: "PyTorch", d: "Dec 7–13", f: "Tensors, autograd, training loop, simple nets, transfer learning", s: "Fine-tuned text classifier · timed DSA sets" },
-  17: { t: "MLOps", d: "Dec 14–20", f: "MLflow tracking, serving via FastAPI, monitoring & drift, versioning", s: "PredictMaint served + tracked + monitored + project narrative & walkthrough mock (highest-weight MLE round) → Resume v3" },
-  18: { t: "Statistics for Analysts", d: "Dec 21–27", f: "Distributions, sampling, confidence intervals, hypothesis & A/B testing", s: "A/B test analysis writeup on real experiment data" },
-  19: { t: "Analytics SQL", d: "Dec 28 – Jan 3", f: "Cohort, retention, funnel queries; hard window functions; metrics design", s: "25 hard SQL drills + metrics doc" },
-  20: { t: "Excel, BI & Storytelling", d: "Jan 4–10", f: "Excel power tools (XLOOKUP, INDEX/MATCH, pivot tables, what-if), Power BI advanced, DAX basics, dashboard design, exec communication", s: "Capstone 4: analytics deep-dive — Excel workbook + dashboard + 30-min TIMED raw-data→pivot→dashboard drill" },
-  21: { t: "System Design I", d: "Jan 11–17", f: "Load balancing, caching, queues, sharding, consistency, capacity estimation", s: "2 full design docs, reviewed like an interview + 90-min LLD mock (Java)" },
-  22: { t: "System Design II + AI", d: "Jan 18–24", f: "Designing RAG platforms and ML serving; take-home simulation", s: "AI system design doc + timed take-home" },
-  23: { t: "FDE Craft", d: "Jan 25–31", f: "48-hour POC drill, decomposition case drills (the FDE signature round), client roleplay, discovery questions, demo storytelling", s: "POC repo + recorded pitch + 2 decomposition cases" },
-  24: { t: "The Gauntlet", d: "Feb 1–7", f: "Timed DSA sets, one full mock per role (backend mock in Java/Spring), behavioral STAR bank, resume vFinal", s: "Interview-ready across all 5 roles" }
+  1:  { t: "Python Fluency + SQL Joins", d: "Aug 24–30", f: "Mon: collections, comprehensions, sorting, big-O of builtins — aimed straight at your Q2/Q3/Q6 diagnostic misses · Thu: LLM basics (tokens, context, temperature) · Sat SQL: joins + aggregation", s: "12/12 on check.py · 2 DSA (arrays & hashing) · Pulse spec written · STAR story #1 · Sunday quiz" },
+  2:  { t: "Decorators + Java Collections", d: "Aug 31 – Sep 6", f: "Mon: closures, decorators, generators, typing · Thu: prompting + structured JSON outputs · Sat Java: collections internals, generics, Streams", s: "Pulse repo skeleton — FastAPI up, Docker builds · 2 DSA (two pointers) · STAR #2" },
+  3:  { t: "FastAPI + CTEs", d: "Sep 7–13", f: "Mon: FastAPI routing, Pydantic v2, dependency injection · Thu: calling the Claude API from Python · Sat SQL: subqueries + CTEs", s: "Pulse: event-ingest endpoint + Postgres · 2 DSA (sliding window) · STAR #3" },
+  4:  { t: "Persistence + JVM", d: "Sep 14–20", f: "Mon: SQLAlchemy 2.0 + Alembic migrations · Thu: embeddings & vector intuition · Sat Java: concurrency, JVM memory & GC", s: "Pulse: events persisted, schema designed · 2 DSA (stack) · STAR #4" },
+  5:  { t: "Async + Tool Calling", d: "Sep 21–27", f: "Mon: async, background tasks, error design · Thu: tool calling / function calling · Sat SQL: window functions I", s: "Pulse: async ingest + worker stub · 2 DSA (binary search) · STAR #5" },
+  6:  { t: "pytest + Spring DI", d: "Sep 28 – Oct 4", f: "Mon: pytest patterns, fixtures, coverage — your SDET edge, on display · Thu: eval basics (golden sets, why temp=0 isn't deterministic) · Sat Java: Spring IoC/DI, @Transactional", s: "Pulse: test suite + GitHub Actions CI green · 2 DSA (linked lists) · Stage 1 checkpoint" },
+  7:  { t: "Auth + RAG Concepts", d: "Oct 5–11", f: "Mon: JWT, API keys, HMAC signing · Thu: RAG concepts — chunking, retrieval · Sat SQL: window functions II · DSA goes bilingual: 1 of 2 in Java from here on", s: "Pulse: auth + signed deliveries · 2 DSA (trees I, 1 in Java) · STAR #7" },
+  8:  { t: "Rate Limits + pgvector", d: "Oct 12–18", f: "Mon: rate limiting, OWASP API top-10 · Thu: pgvector + hybrid search · Sat Java: JPA/Hibernate, N+1", s: "Pulse: rate limits + retrieval endpoint · 2 DSA (trees II, 1 in Java)" },
+  9:  { t: "Indexes + First Model", d: "Oct 19–25", f: "Mon: transactions, isolation, indexing, EXPLAIN · Thu: first ML model — logistic regression, train/test, metrics · Sat SQL: EXPLAIN + index design", s: "Pulse: anomaly-detection baseline model · 2 DSA (heaps, 1 in Java)" },
+  10: { t: "Queues + sklearn", d: "Oct 26 – Nov 1", f: "Mon: Redis caching, queue with retry/backoff/DLQ · Thu: scikit-learn pipelines, cross-validation · Sat SQL: cohort, funnel, retention", s: "Pulse: worker with retries + analytics queries · 2 DSA (intervals, 1 in Java)" },
+  11: { t: "Deploy + NL-Query", d: "Nov 2–8", f: "Mon: multi-stage Docker, deploy, structured logging · Thu: the NL-query feature — LLM + tools over your own Pulse data · Sat Java: Spring Boot, Security, actuator", s: "Pulse: NL-query endpoint live + deployed · 2 DSA (greedy, 1 in Java)" },
+  12: { t: "PULSE SHIPS", d: "Nov 9–15", f: "Mon: load testing, observability · Thu: eval harness for NL-query (LLM-as-judge) built like an SDET · Sat: dashboard on Pulse data", s: "🏁 Pulse deployed + design doc + 3-min demo + eval report → Resume v1 · applications and referrals BEGIN · 2 DSA (backtracking)" },
+  13: { t: "System Design + Your Own MCP", d: "Nov 16–22", f: "Mon: system design I — LB, caching, queues, capacity estimation · Thu: build your own MCP server (the differentiator) · Sat: metrics design", s: "DocMind spec + MCP skeleton · 2 DSA (graphs I, 1 in Java) · 10 applications/wk cadence starts" },
+  14: { t: "Agent Loop + LLD", d: "Nov 23–29", f: "Mon: system design II — sharding, consistency · Thu: agent loop from scratch, streaming · Sat Java: LLD — Parking Lot / Rate Limiter", s: "DocMind: MCP server working end to end · 2 DSA (graphs II, 1 in Java)" },
+  15: { t: "Cited RAG + Stats", d: "Nov 30 – Dec 6", f: "Mon: API versioning, idempotency, webhooks at scale · Thu: RAG with citations over a real corpus · Sat: statistics — CIs, hypothesis tests, A/B", s: "DocMind: citation-grounded answers · 2 DSA (1-D DP, 1 in Java)" },
+  16: { t: "Spring Boot Service + Reranking", d: "Dec 7–13", f: "Mon: write one service in Spring Boot — prove the Java on your resume · Thu: reranking + chunking strategies compared · Sat Java: Spring depth + Q-bank", s: "DocMind: retrieval quality tuned + a Java/Spring component shipped · 2 DSA (2-D DP, 1 in Java)" },
+  17: { t: "MLOps + Monitoring", d: "Dec 14–20", f: "Mon: monitoring, drift, MLflow serving · Thu: MLOps — track, serve and monitor the Pulse model · Sat: A/B analysis writeup", s: "DocMind: eval suite running in CI · Pulse model tracked + monitored · 2 DSA (timed mixed)" },
+  18: { t: "Guardrails + Cost", d: "Dec 21–27", f: "Mon: cost & latency — caching, routing, streaming · Thu: guardrails — PII, prompt injection · Sat Java: JVM tuning + concurrency drills", s: "🏁 DocMind: guardrails + cost report → Resume v2 · both capstones public · 2 DSA (timed mixed)" },
+  19: { t: "DocMind Deployed", d: "Dec 28 – Jan 3", f: "Deploy DocMind, record the walkthrough, rehearse the narrative — project deep-dives outweigh trivia at your level", s: "DocMind deployed + recorded walkthrough · Mock: backend (Python) · 2 DSA (timed)" },
+  20: { t: "Excel, BI & Storytelling", d: "Jan 4–10", f: "Excel power tools (XLOOKUP, INDEX/MATCH, pivots, what-if), dashboard design, exec communication · analytics deep-dive on your own Pulse data", s: "Analytics deep-dive + 30-min TIMED raw-data→pivot→dashboard drill · Mock: AI engineer (take-home defense) · 2 DSA (timed)" },
+  21: { t: "LLD in Java", d: "Jan 11–17", f: "90-minute working-code LLD drills in Java — the startup make-or-break round (Parking Lot, Logger, Splitwise, Chess)", s: "🏁 2 LLD solutions in Java + 90-min LLD mock passed · 2 DSA (timed)" },
+  22: { t: "FDE Craft", d: "Jan 18–24", f: "48-hour POC drill from a deliberately fuzzy brief, decomposition cases (~40% pass rate — the FDE signature round), client roleplay, discovery questions", s: "POC repo + recorded pitch + 2 decomposition cases · Mock: MLE project walkthrough · 2 DSA (timed)" },
+  23: { t: "Full Loop Rehearsal", d: "Jan 25–31", f: "Back-to-back rounds under real conditions: DSA → LLD → system design → project deep-dive → behavioral. Resume vFinal.", s: "Mock: backend (Java/Spring) + system design · resume vFinal · application push · 2 DSA (timed)" },
+  24: { t: "The Gauntlet", d: "Feb 1–7", f: "One full mock per role, behavioral STAR bank polished, portfolio and profile final pass", s: "🏁 Interview-ready — 2 multi-role capstones, ~50 DSA solves, 6 mocks, 20+ STAR stories, scorecard per role" }
 };
 
 /* Full in-portal content per week. Weeks appear here as Sid reaches them (say "start week N" in chat). */
@@ -321,12 +320,12 @@ const CONTENT = {
     { t: "Take the Java & Spring diagnostic — closed book", quiz: "diag-java", d: "Added after the first diagnostic missed Java entirely. 20 questions, ~20 min. Java is your headline experience but cold since Dec 2025, and the Week 5–8 revision thread plus the W8 mock get sized from this score. A low score here is expected and useful — it decides whether Java drills start early." }
   ]},
   1: { steps: [
-    { t: "Study (max ~2.5h total — then build)", d: "Skim what you know, read comprehensions + sorting carefully, memorize the list/dict/set complexity rows.",
+    { t: "Mon (~45 min) — study, then stop", d: "Your diagnostic missed exactly three things: comprehensions with a filter, hashability (what can be a dict key), and sorted(key=…) + stability. Read those three carefully and skim the rest — you already proved you understand mutability, aliasing and is-vs-==, which is the harder half. Memorize the list/dict/set complexity rows.",
       links: [["Data Structures tutorial", "https://docs.python.org/3/tutorial/datastructures.html"], ["Sorting HOW TO", "https://docs.python.org/3/howto/sorting.html"], ["Big-O of builtins", "https://wiki.python.org/moin/TimeComplexity"], ["collections: Counter, defaultdict, deque", "https://docs.python.org/3/library/collections.html"]] },
-    { t: "Implement all 12 functions in exercises.py — target 12/12 by Sunday", cmd: "python check.py",
-      d: "Folder: curriculum\\week-01-python-core\\. Edit exercises.py, then run the checker (from that folder) as often as you like. Docs allowed; AI assistance not — interviews are live and proctored now." },
-    { t: "DSA set — 6 problems on LeetCode (arrays & hashing)", d: "You met several in exercises.py first — that's deliberate. Save each solution as a file in a dsa/ folder so Claude can review your approach, not just the green tick.",
-      links: [["217 Contains Duplicate", "https://leetcode.com/problems/contains-duplicate/"], ["242 Valid Anagram", "https://leetcode.com/problems/valid-anagram/"], ["1 Two Sum", "https://leetcode.com/problems/two-sum/"], ["49 Group Anagrams", "https://leetcode.com/problems/group-anagrams/"], ["347 Top K Frequent Elements", "https://leetcode.com/problems/top-k-frequent-elements/"], ["238 Product Except Self", "https://leetcode.com/problems/product-of-array-except-self/"]] },
+    { t: "Tue + Fri (~45 min each) — exercises.py: 8 of 12 functions is a pass", cmd: "python check.py",
+      d: "Folder: curriculum\\week-01-python-core\\. Edit exercises.py, then run the checker from that folder as often as you like. Two 45-min sittings realistically gets 8 functions — that's a pass, not a shortfall; 12/12 is the stretch. Docs allowed; AI assistance not — interviews are live and proctored now." },
+    { t: "Wed (~45 min) — 2 DSA problems (arrays & hashing)", d: "Two, not six — that's the honest number at 45 min/day, so treat both as non-negotiable. Do the first two; the rest are stretch if a week ever runs light. Save each solution as a file in a dsa/ folder so I can review your approach, not just the green tick.",
+      links: [["1 Two Sum (do this)", "https://leetcode.com/problems/two-sum/"], ["242 Valid Anagram (do this)", "https://leetcode.com/problems/valid-anagram/"], ["217 Contains Duplicate (stretch)", "https://leetcode.com/problems/contains-duplicate/"], ["49 Group Anagrams (stretch)", "https://leetcode.com/problems/group-anagrams/"], ["347 Top K Frequent (stretch)", "https://leetcode.com/problems/top-k-frequent-elements/"]] },
     { t: "Take the Week 1 quiz (Sunday, after the exercises)", quiz: "w1", d: "15 questions on exactly what you practised this week." },
     { t: "Write STAR story #1 — the Onextel p95-latency-by-20% bullet", d: "File: interview-prep/stories.md. Situation, Task, Action (what YOU specifically did: which queries, what profiling, why Redis), Result (how it was measured). Every backend interviewer pulls this thread first." },
     { t: "Say “grade week 1” to Claude", d: "Claude reviews every file you wrote, scores it with line-by-line feedback, updates the grade book, and generates Week 2." }
@@ -403,11 +402,11 @@ const QUIZZES = [
 ];
 
 const MILESTONES = [
-  { d: "Oct 18", n: "Backend-interview-ready — start applying", wk: 8 },
-  { d: "Nov 15", n: "AI-Engineer-ready — apply with the MCP story", wk: 12 },
-  { d: "Dec 20", n: "ML-Engineer-ready (junior/mid)", wk: 17 },
-  { d: "Jan 10", n: "Data-Analyst-ready", wk: 20 },
-  { d: "Feb 7", n: "FDE-ready — full portfolio, all roles sharpened", wk: 24 }
+  { d: "Oct 4", n: "Pulse ingests + tested, CI green · window functions cold", wk: 6 },
+  { d: "Nov 15", n: "PULSE SHIPS (backend + model + NL-query + evals) · Resume v1 · start applying", wk: 12 },
+  { d: "Dec 27", n: "DocMind: own MCP server + cited RAG + evals in CI · Resume v2", wk: 18 },
+  { d: "Jan 17", n: "Java/Spring LLD mock passed — the headline experience proven again", wk: 21 },
+  { d: "Feb 7", n: "Interview-ready — 2 multi-role capstones, ~50 DSA, 6 mocks, resume vFinal", wk: 24 }
 ];
 
 /* ---------------- state + persistence ----------------
