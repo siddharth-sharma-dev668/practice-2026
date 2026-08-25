@@ -1,0 +1,159 @@
+# Content Calendar — 12 weeks, ready to post
+
+**The key insight: your content bank already exists.** The product ships with **49 interview questions** and **40 topics**, each with a written explanation. That is more than 90 posts of teaching material you have already produced. Stop thinking "what do I post" and start working through the list.
+
+Your second bank is your own prep: every week you study topics, solve DSA, build a capstone step and take a quiz. **That is the content nobody can copy**, because it is happening to you.
+
+---
+
+## The five pillars
+
+| # | Pillar | Format | Why it works | Frequency |
+|---|---|---|---|---|
+| 1 | **Question autopsy** | Carousel (4–6 slides) | Immediately useful; saves and shares well; proves you know your subject | 1–2 / week |
+| 2 | **Hard truth** | Single image or 15-s reel | Opinion travels. This is your differentiator — everyone else sells fantasy timelines | 1 / week |
+| 3 | **Build in public** | Story-style post or reel | Authenticity; people root for a person, not a product | 1 / week |
+| 4 | **Micro-lesson** | Carousel | Bookmark bait — the N+1 and `@Transactional` posts will outperform everything | 1 / week |
+| 5 | **Product** | Reel (screen recording) | Only sells after pillars 1–4 have earned attention | 1 / 2 weeks |
+
+**Ratio: 4 useful posts for every 1 selling post.** Break that and growth stops.
+
+---
+
+## Hooks that work in this niche
+
+The first line decides everything. Steal these patterns:
+
+- "I got this wrong in an interview. You probably would too."
+- "3 years of experience and I still failed this question."
+- "Your 150-LeetCode plan is a lie if you have 5 hours a week."
+- "This one-line bug is in most Spring codebases."
+- "Nobody tells you the interview loop changed in 2026."
+- "I scored 3/6 on Python. I write Python every day for a living."
+
+**Avoid:** "Top 5 tips", "Follow for more", "Let's dive in". They read as generic and get scrolled.
+
+---
+
+## Weeks 1–2 — bank these before going public
+
+| # | Pillar | Hook | Source |
+|---|---|---|---|
+| 1 | Autopsy | "`def add(x, xs=[])` — call it twice. Most people get this wrong." | Python Q1 |
+| 2 | Autopsy | "What does `[x*x for x in range(5) if x % 2]` return? 50% get this wrong." | Python Q2 |
+| 3 | Autopsy | "99% accuracy on a disease model. Why that might be useless." | ML/AI Q3 |
+| 4 | Hard truth | "Your prep plan assumes 15 h/week. You have 5. Here's what actually fits." | Your own hours math |
+| 5 | Hard truth | "150 LeetCode problems half-remembered lose to 50 known cold." | LAUNCH_PLAN honesty |
+| 6 | Hard truth | "Interviews got harder in 2026: proctoring tightened, in-person finals came back." | Market research |
+| 7 | Build | "I'm an SDET. I want to be a backend/AI engineer. 24 weeks, in public." | Your story |
+| 8 | Build | "I scored 22/25 on my own diagnostic — and the 3 I missed were the useful part." | Your real result |
+| 9 | Product | 20-s screen recording: resume in → plan out | The app |
+
+---
+
+## Weeks 3–6 — Month 1: teach, don't sell
+
+| Wk | Mon (Autopsy) | Wed (Micro-lesson) | Fri (Build / Truth) | Reel |
+|---|---|---|---|---|
+| 3 | Mutable default arguments | `is` vs `==` and when `is` is correct | "Week 1 done. Here's my honest log." | "3 Python questions in 30 seconds" |
+| 4 | `LEFT JOIN` + `WHERE` = accidental `INNER JOIN` | N+1 queries — the commonest API bug | "Why I do 2 DSA problems a week, not 6" | "Your SQL is silently wrong" |
+| 5 | `@Transactional` self-invocation | `volatile` gives visibility, not atomicity | "What my diagnostic got wrong about me" | "The Spring bug in most codebases" |
+| 6 | Accuracy on imbalanced data | Data leakage — why your model 'works' | "5 weeks in: what I'd change" | "99% accurate and useless" |
+
+**Free giveaway this month:** a "score yourself" 20-question carousel. Genuinely useful standalone, and a live demo of the product's core idea. Pin it.
+
+---
+
+## Weeks 7–10 — Month 2: launch
+
+| Wk | Posts |
+|---|---|
+| 7 | **Launch story** (Mon) · autopsy: hashCode mutation in a HashSet (Wed) · "what's inside, honestly" (Fri) · launch reel (Sat) |
+| 8 | Window functions — the SQL round decider · GC eligibility is reachability, not `null` · first buyer feedback · "$9, here's exactly what you get" |
+| 9 | `finally` swallowing a `return` · idempotency keys and double charges · "my week 8 quiz score" · testimonial reel |
+| 10 | p-values ≠ probability your hypothesis is true · JWT: why no DB lookup · "what I got wrong building this" · demo reel v2 |
+
+---
+
+## Weeks 11–14 — Month 3: scale what worked
+
+By now one format is outperforming. **Find it and repeat it.** Stop being creative — be consistent.
+
+| Wk | Theme |
+|---|---|
+| 11 | Java/Spring week — your strongest bank: 8 questions, 4 posts. High-intent audience, low competition. |
+| 12 | "Interview loops by role" — one post per role (backend, AI, ML, data). Screenshots straight from the product. |
+| 13 | Evals week — "the AI-engineer skill nobody prepares for." Rare, senior-sounding, very shareable. |
+| 14 | Results week — buyer outcomes, your own progress, before/after diagnostic scores. |
+
+---
+
+## Weeks 15–16 — Month 4: evergreen + ladder
+
+- Re-run your top 10 posts with new visuals. Old followers forgot; new ones never saw them.
+- Introduce **Plus ($29)** and the **$99 review** to your email list only, not the feed.
+- Build the 30-post evergreen bank so a bad week costs you nothing.
+
+---
+
+## Six worked posts (copy-paste, then edit in your own voice)
+
+### 1 · Autopsy carousel — mutable default arguments
+> **Slide 1:** `def add(x, xs=[]):` — you call `add(1)`, then `add(2)`. What comes back?
+> **Slide 2:** Most people say `[2]`. It returns `[1, 2]`.
+> **Slide 3:** Default arguments are evaluated **once**, when the function is defined — not per call. Every call shares the same list.
+> **Slide 4:** The fix: `def add(x, xs=None):` then `if xs is None: xs = []`
+> **Slide 5:** This has been asked in Python interviews for a decade. It is still asked because it still catches people.
+
+**Caption:** I write Python for a living and I have shipped this bug. It is not about intelligence — it is about which details you have been burned by. I put 49 of these into a free diagnostic; link in bio. What is a gotcha that caught you? 👇
+
+### 2 · Hard truth — the hours lie
+> **Visual:** two bars — "the plan you downloaded: 15 h/week" vs "your actual life: 5 h/week"
+
+**Caption:** Every roadmap you have saved assumes 15 hours a week. You have five. So you fall behind by week 3, feel like you failed, and quit — when actually the plan was wrong, not you. 24 weeks × 5 h = 120 hours. That is enough for **one** role done properly, ~50 DSA problems known cold, and one project you can defend. It is not enough for five roles and 150 problems, and anyone who tells you otherwise is selling you a fantasy. Plan for the hours you have.
+
+### 3 · Micro-lesson — `@Transactional` self-invocation
+> **Slide 1:** This Spring code looks fine. It has no transaction.
+> **Slide 2:** `public void a() { this.b(); }` and `@Transactional public void b() {}`
+> **Slide 3:** Spring's `@Transactional` works through a **proxy**. Only calls arriving from *outside* the bean get intercepted.
+> **Slide 4:** `this.b()` skips the proxy entirely. No transaction. No error. Silent data loss on failure.
+> **Slide 5:** Fix: move `b()` into another bean and inject it.
+
+**Caption:** This is in more production codebases than anyone admits, and it is a favourite Spring interview question because it separates "used Spring" from "understands Spring." Save it for your next backend round.
+
+### 4 · Build in public — the diagnostic
+**Caption:** I built a 25-question diagnostic and then took it myself. 22/25. Python: **3/6** — the language I write every single day at work. The three I missed were comprehension filters, hashability, and how `sorted()` handles ties. Not concepts — *fluency*. That is the difference between knowing a language and being interview-fluent in it, and it is exactly what an interviewer finds in the first ten minutes. Uncomfortable, but it means I now know precisely what to drill. Week 1 starts Monday. Following along? 👇
+
+### 5 · Build in public — the untested code
+**Caption:** I am a test engineer. I wrote a 9-line function this week and did not run it. Both bugs would have died on the first execution: a variable name off by one letter, and `none` instead of `None`. The algorithm was right. The code did not work. In a live interview, "the approach was correct" scores zero. Run your code. I test software for a living and still needed reminding.
+
+### 6 · Product reel (20 s)
+> **0–3 s:** *(screen)* "Paste your resume." — text lands on screen
+> **3–7 s:** Skills light up as chips — java, spring, postgres, docker
+> **7–11 s:** "12 weeks · 7 h/week" selected
+> **11–15 s:** 20-question diagnostic, then section bars — SQL red
+> **15–20 s:** A 12-week plan appears; SQL topics marked "focus area, extra time"
+
+**Caption:** Your resume decides what you skip. Your diagnostic decides what gets extra hours. Your real free time decides what fits — and it tells you what it had to cut instead of pretending. Runs entirely on your laptop; your resume never leaves your device. $9, link in bio.
+
+---
+
+## Reel rules that matter
+
+1. **First frame must carry text.** Most people watch muted with no sound on.
+2. **Under 25 seconds** for teaching, under 45 for story.
+3. **One idea per reel.** Two ideas means neither lands.
+4. **Cross-post to YouTube Shorts the same day** — same file, second audience, no extra work.
+5. **Screen recordings beat your face** for product demos. Faces work for story posts.
+
+## Posting cadence
+
+| Day | What | Time cost |
+|---|---|---|
+| Mon | Autopsy carousel | pre-made Sunday |
+| Wed | Micro-lesson + reply to all comments | 20 min |
+| Fri | Build-in-public (your real week) | 15 min — it is your study log |
+| Sat | Reel | pre-made Sunday |
+| Sun | **Batch next week: 3 posts + 1 reel, all scheduled** | 90 min |
+
+Use Meta's own scheduler (free, in Instagram/Facebook). Schedule everything Sunday; touch nothing midweek except replies.

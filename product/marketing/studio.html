@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marketing Studio — Interview Launchpad</title>
+<style>
+  :root{--bg:#0F141A;--card:#171E26;--ink:#E6EBEF;--muted:#94A3B0;--line:#2B3642;--accent:#F07A3D}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 'Segoe UI',system-ui,sans-serif}
+  .wrap{max-width:1100px;margin:0 auto;padding:26px 20px 70px}
+  h1{font-size:25px;font-weight:800;margin:0 0 4px}
+  p.lead{color:var(--muted);margin:0 0 22px;max-width:70ch}
+  .item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:20px}
+  .head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+  .name{font-weight:700}
+  .dim{color:var(--muted);font-size:12.5px;font-family:Consolas,monospace}
+  .prev{background:#000;border-radius:8px;overflow:hidden;display:flex;justify-content:center}
+  .prev svg{width:100%;height:auto;max-width:420px;display:block}
+  .row{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
+  button{font:inherit;color:var(--ink);background:none;border:1px solid var(--line);border-radius:7px;padding:7px 14px;cursor:pointer;font-weight:600}
+  button:hover{background:#212B36}
+  button.p{background:var(--accent);color:#1F0E04;border-color:var(--accent)}
+  .note{background:#212B36;border-left:3px solid var(--accent);padding:12px 14px;border-radius:8px;color:var(--muted);font-size:13.5px;margin-bottom:22px}
+  .cap{font-size:13px;color:var(--muted);margin-top:9px;white-space:pre-wrap;border-top:1px dashed var(--line);padding-top:9px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Marketing Studio</h1>
+  <p class="lead">Every graphic below is a live SVG. Hit <b>PNG</b> for a 2× raster ready to post, or <b>SVG</b> to edit it in Figma / Illustrator / Inkscape. Text is plain SVG — open this file in a text editor and change any wording you like.</p>
+  <div class="note"><b>Sizes:</b> 1080×1080 = Instagram feed · 1080×1350 = portrait feed (more screen space, better reach) · 1080×1920 = story/reel · 1280×720 = YouTube thumbnail.
+  <br><b>Fonts:</b> these use system fonts so they render anywhere. If you want your own typeface, edit the <code>font-family</code> in this file.</div>
+  <div id="host"></div>
+</div>
+
+<script>
+/* ---------- shared design tokens ---------- */
+const C={bg:"#0F141A",card:"#171E26",ink:"#E6EBEF",dim:"#94A3B0",line:"#2B3642",acc:"#F07A3D",ok:"#5CBA88",bad:"#E0685C",warn:"#D9A93F"};
+const F="system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
+const MONO="Consolas,'SF Mono',Menlo,monospace";
+
+/* helper: wrap text into tspans */
+function lines(txt,x,y,lh,attrs=""){
+  return txt.map((t,i)=>`<tspan x="${x}" y="${y+i*lh}" ${attrs}>${t}</tspan>`).join("");
+}
+function frame(w,h,inner,bg){
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+    <rect width="${w}" height="${h}" fill="${bg||C.bg}"/>${inner}</svg>`;
+}
+function badge(x,y,txt){
+  return `<rect x="${x}" y="${y}" width="${28+txt.length*15}" height="42" rx="21" fill="none" stroke="${C.acc}" stroke-width="2"/>
+    <text x="${x+14}" y="${y+29}" font-family="${MONO}" font-size="19" fill="${C.acc}" letter-spacing="2">${txt}</text>`;
+}
+function handle(w,h){
+  return `<text x="60" y="${h-52}" font-family="${MONO}" font-size="24" fill="${C.dim}">@yourhandle</text>
+   <text x="${w-60}" y="${h-52}" text-anchor="end" font-family="${MONO}" font-size="24" fill="${C.acc}">interview launchpad</text>`;
+}
+
+/* ---------- the designs ---------- */
+const DESIGNS=[
+{
+ name:"Brand mark / profile picture", file:"logo", w:1080,h:1080,
+ cap:"Use as the Instagram + YouTube profile picture. The arc reads as a launch trajectory; it stays legible at 40px.",
+ svg:()=>frame(1080,1080,`
+  <circle cx="540" cy="540" r="500" fill="none" stroke="${C.line}" stroke-width="8"/>
+  <path d="M240 760 Q540 760 700 380" fill="none" stroke="${C.acc}" stroke-width="26" stroke-linecap="round"/>
+  <circle cx="700" cy="380" r="46" fill="${C.acc}"/>
+  <path d="M240 760 l0 -150" stroke="${C.line}" stroke-width="14" stroke-linecap="round"/>
+  <path d="M240 760 l150 0" stroke="${C.line}" stroke-width="14" stroke-linecap="round"/>
+  <text x="540" y="920" text-anchor="middle" font-family="${F}" font-size="86" font-weight="800" fill="${C.ink}" letter-spacing="-2">LAUNCHPAD</text>`)
+},
+{
+ name:"The hours lie (your best post)", file:"post-hours-lie", w:1080,h:1350,
+ cap:`CAPTION:\nEvery roadmap you saved assumes 15 hours a week. You have five. So you fall behind by week 3, feel like you failed, and quit — when the plan was wrong, not you.\n\n24 weeks × 5 h = 120 hours. Enough for ONE role done properly, ~50 DSA problems known cold, and one project you can defend. Not five roles and 150 problems.\n\nPlan for the hours you actually have.`,
+ svg:()=>frame(1080,1350,`
+  ${badge(60,70,"HARD TRUTH")}
+  <text font-family="${F}" font-size="82" font-weight="800" fill="${C.ink}" letter-spacing="-2">
+    ${lines(["Your prep plan","assumes 15 hours","a week."],60,260,96)}
+  </text>
+  <text font-family="${F}" font-size="82" font-weight="800" fill="${C.acc}" letter-spacing="-2">
+    ${lines(["You have five."],60,580,96)}
+  </text>
+  <rect x="60" y="680" width="960" height="2" fill="${C.line}"/>
+  <text x="60" y="760" font-family="${MONO}" font-size="26" fill="${C.dim}">THE PLAN YOU DOWNLOADED</text>
+  <rect x="60" y="790" width="920" height="64" rx="8" fill="${C.bad}" opacity="0.85"/>
+  <text x="84" y="833" font-family="${F}" font-size="34" font-weight="700" fill="#2A0E0B">15 h / week</text>
+  <text x="60" y="930" font-family="${MONO}" font-size="26" fill="${C.dim}">YOUR ACTUAL LIFE</text>
+  <rect x="60" y="960" width="307" height="64" rx="8" fill="${C.ok}"/>
+  <text x="84" y="1003" font-family="${F}" font-size="34" font-weight="700" fill="#0A2418">5 h</text>
+  <text font-family="${F}" font-size="36" fill="${C.dim}">
+    ${lines(["120 hours total. Enough for ONE role done","properly — not five roles and 150 problems."],60,1130,48)}
+  </text>
+  ${handle(1080,1350)}`)
+},
+{
+ name:"Question autopsy — slide 1 (the question)", file:"post-q-python-1", w:1080,h:1350,
+ cap:"Carousel slide 1 of 2. Pair with the answer slide. Ask people to guess in the comments before swiping — comments drive reach.",
+ svg:()=>frame(1080,1350,`
+  ${badge(60,70,"PYTHON")}
+  <text font-family="${F}" font-size="74" font-weight="800" fill="${C.ink}" letter-spacing="-2">
+    ${lines(["You call this","twice. What","comes back?"],60,270,88)}
+  </text>
+  <rect x="60" y="580" width="960" height="230" rx="14" fill="${C.card}" stroke="${C.line}" stroke-width="2"/>
+  <text font-family="${MONO}" font-size="38" fill="${C.ink}">
+    ${lines(["def add(x, xs=[]):","    xs.append(x)","    return xs"],96,650,60)}
+  </text>
+  <text font-family="${MONO}" font-size="38" fill="${C.acc}">
+    ${lines(["add(1)   →  ?","add(2)   →  ?"],96,900,58)}
+  </text>
+  <text x="60" y="1120" font-family="${F}" font-size="40" font-weight="700" fill="${C.ink}">Guess before you swipe →</text>
+  ${handle(1080,1350)}`)
+},
+{
+ name:"Question autopsy — slide 2 (the answer)", file:"post-q-python-2", w:1080,h:1350,
+ cap:"Slide 2. The explanation IS the value — never post the question without it.",
+ svg:()=>frame(1080,1350,`
+  ${badge(60,70,"ANSWER")}
+  <text font-family="${F}" font-size="70" font-weight="800" fill="${C.ink}" letter-spacing="-2">
+    ${lines(["Most say [2]."],60,250,84)}
+  </text>
+  <text font-family="${F}" font-size="70" font-weight="800" fill="${C.ok}" letter-spacing="-2">
+    ${lines(["It returns [1, 2]."],60,350,84)}
+  </text>
+  <text font-family="${F}" font-size="38" fill="${C.dim}">
+    ${lines(["Default arguments are evaluated ONCE,","when the function is defined — not on","each call. Every call shares one list."],60,500,52)}
+  </text>
+  <rect x="60" y="700" width="960" height="220" rx="14" fill="${C.card}" stroke="${C.ok}" stroke-width="2"/>
+  <text x="96" y="756" font-family="${MONO}" font-size="26" fill="${C.ok}">THE FIX</text>
+  <text font-family="${MONO}" font-size="34" fill="${C.ink}">
+    ${lines(["def add(x, xs=None):","    if xs is None: xs = []"],96,820,52)}
+  </text>
+  <text font-family="${F}" font-size="34" fill="${C.dim}">
+    ${lines(["Asked in Python interviews for a decade.","Still asked, because it still catches people."],60,1030,46)}
+  </text>
+  ${handle(1080,1350)}`)
+},
+{
+ name:"Micro-lesson — @Transactional trap", file:"post-transactional", w:1080,h:1350,
+ cap:"Your highest-value Java/Spring post. High intent audience, low competition, very saveable.",
+ svg:()=>frame(1080,1350,`
+  ${badge(60,70,"SPRING")}
+  <text font-family="${F}" font-size="72" font-weight="800" fill="${C.ink}" letter-spacing="-2">
+    ${lines(["This code has","NO transaction."],60,260,86)}
+  </text>
+  <rect x="60" y="440" width="960" height="290" rx="14" fill="${C.card}" stroke="${C.line}" stroke-width="2"/>
+  <text font-family="${MONO}" font-size="34" fill="${C.ink}">
+    ${lines(["public void a() {","    this.b();      // ← bypasses proxy","}","","@Transactional","public void b() { ... }"],96,500,44)}
+  </text>
+  <text font-family="${F}" font-size="38" fill="${C.dim}">
+    ${lines(["@Transactional works through a PROXY.","Only calls from OUTSIDE the bean get","intercepted. this.b() skips it entirely —","no transaction, no error, silent data loss."],60,810,52)}
+  </text>
+  <text x="60" y="1080" font-family="${F}" font-size="40" font-weight="700" fill="${C.acc}">Fix: move b() into another bean.</text>
+  ${handle(1080,1350)}`)
+},
+{
+ name:"Free diagnostic (pin this)", file:"post-free-diagnostic", w:1080,h:1350,
+ cap:"Your lead magnet. Pin it to your profile. Genuinely useful alone — which is exactly why it sells the paid product.",
+ svg:()=>frame(1080,1350,`
+  ${badge(60,70,"FREE")}
+  <text font-family="${F}" font-size="86" font-weight="800" fill="${C.ink}" letter-spacing="-2">
+    ${lines(["Score yourself","before an","interviewer","does it for you."],60,280,100)}
+  </text>
+  <rect x="60" y="740" width="960" height="2" fill="${C.line}"/>
+  ${[["Python","3/6",C.bad],["SQL","4/4",C.ok],["DSA","4/4",C.ok],["Java","?",C.warn]]
+    .map(([n,s,col],i)=>`
+    <text x="60" y="${820+i*84}" font-family="${F}" font-size="40" fill="${C.ink}">${n}</text>
+    <rect x="330" y="${795+i*84}" width="560" height="14" rx="7" fill="${C.line}"/>
+    <rect x="330" y="${795+i*84}" width="${s==="4/4"?560:s==="3/6"?280:120}" height="14" rx="7" fill="${col}"/>
+    <text x="1020" y="${820+i*84}" text-anchor="end" font-family="${MONO}" font-size="34" fill="${col}">${s}</text>`).join("")}
+  <text x="60" y="1200" font-family="${F}" font-size="38" font-weight="700" fill="${C.acc}">20 questions. Link in bio.</text>
+  ${handle(1080,1350)}`)
+},
+{
+ name:"Product demo cover", file:"post-product", w:1080,h:1350,
+ cap:`CAPTION:\nYour resume decides what you skip. Your diagnostic decides what gets extra hours. Your real free time decides what fits — and it tells you what it had to cut instead of pretending.\n\nRuns entirely on your laptop. Your resume never leaves your device. $9, link in bio.`,
+ svg:()=>frame(1080,1350,`
+  ${badge(60,70,"THE TOOL")}
+  <text font-family="${F}" font-size="78" font-weight="800" fill="${C.ink}" letter-spacing="-2">
+    ${lines(["A prep plan built","around YOUR","resume, deadline","and real hours."],60,270,92)}
+  </text>
+  ${[["1","Reads your resume — on your device only"],["2","20-question diagnostic finds the real gaps"],["3","Generates a braided week-by-week plan"],["4","Tells you what your hours could NOT fit"]]
+    .map(([n,t],i)=>`
+    <circle cx="88" cy="${700+i*104}" r="27" fill="${C.acc}"/>
+    <text x="88" y="${711+i*104}" text-anchor="middle" font-family="${F}" font-size="30" font-weight="800" fill="#1F0E04">${n}</text>
+    <text x="140" y="${712+i*104}" font-family="${F}" font-size="35" fill="${C.ink}">${t}</text>`).join("")}
+  <rect x="60" y="1150" width="440" height="80" rx="12" fill="${C.acc}"/>
+  <text x="280" y="1202" text-anchor="middle" font-family="${F}" font-size="40" font-weight="800" fill="#1F0E04">$9 · link in bio</text>
+  ${handle(1080,1350)}`)
+},
+{
+ name:"Story / reel cover (vertical)", file:"story-launch", w:1080,h:1920,
+ cap:"For stories and as a reel cover. Keep the middle third clear of text — that is where Instagram puts its own UI.",
+ svg:()=>frame(1080,1920,`
+  ${badge(70,140,"IN PUBLIC")}
+  <text font-family="${F}" font-size="96" font-weight="800" fill="${C.ink}" letter-spacing="-3">
+    ${lines(["SDET →","backend/AI","in 24 weeks."],70,420,112)}
+  </text>
+  <text font-family="${F}" font-size="44" fill="${C.dim}">
+    ${lines(["Real scores. Real failures.","Nothing skipped."],70,700,58)}
+  </text>
+  <path d="M70 860 L1010 860" stroke="${C.line}" stroke-width="3"/>
+  <text font-family="${F}" font-size="52" font-weight="700" fill="${C.acc}">
+    ${lines(["Diagnostic: 22/25","Python: 3/6 ← the useful part"],70,960,72)}
+  </text>
+  <text font-family="${F}" font-size="42" fill="${C.dim}">
+    ${lines(["I write Python every day","for a living. That is exactly","why the score matters."],70,1200,56)}
+  </text>
+  <rect x="70" y="1480" width="940" height="96" rx="14" fill="${C.card}" stroke="${C.acc}" stroke-width="3"/>
+  <text x="540" y="1542" text-anchor="middle" font-family="${F}" font-size="44" font-weight="700" fill="${C.acc}">Following along? →</text>
+  ${handle(1080,1920)}`)
+},
+{
+ name:"YouTube thumbnail", file:"yt-thumbnail", w:1280,h:720,
+ cap:"Big type, three words, one face-free focal point. Must be readable at 210px wide — check it before uploading.",
+ svg:()=>frame(1280,720,`
+  <rect x="0" y="0" width="14" height="720" fill="${C.acc}"/>
+  <text font-family="${F}" font-size="104" font-weight="800" fill="${C.ink}" letter-spacing="-3">
+    ${lines(["YOUR PREP PLAN","IS LYING TO YOU"],70,220,116)}
+  </text>
+  <rect x="70" y="380" width="520" height="76" rx="10" fill="${C.bad}" opacity=".9"/>
+  <text x="94" y="432" font-family="${F}" font-size="42" font-weight="700" fill="#2A0E0B">15 h/week assumed</text>
+  <rect x="70" y="480" width="180" height="76" rx="10" fill="${C.ok}"/>
+  <text x="94" y="532" font-family="${F}" font-size="42" font-weight="700" fill="#0A2418">5 h real</text>
+  <text x="70" y="650" font-family="${MONO}" font-size="30" fill="${C.dim}">the honest maths →</text>`)
+}
+];
+
+/* ---------- render + export ---------- */
+const host=document.getElementById("host");
+DESIGNS.forEach((d,i)=>{
+  const svg=d.svg();
+  const el=document.createElement("div");
+  el.className="item";
+  el.innerHTML=`<div class="head"><span class="name">${d.name}</span><span class="dim">${d.w}×${d.h} · ${d.file}</span></div>
+    <div class="prev" id="p${i}">${svg}</div>
+    <div class="row"><button class="p" data-png="${i}">Download PNG (2×)</button>
+      <button data-svg="${i}">Download SVG</button></div>
+    ${d.cap?`<div class="cap">${d.cap}</div>`:""}`;
+  host.appendChild(el);
+});
+function dl(blob,name){
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob); a.download=name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),3000);
+}
+document.addEventListener("click",e=>{
+  const p=e.target.closest("[data-png]"), s=e.target.closest("[data-svg]");
+  if(s){ const d=DESIGNS[+s.dataset.svg];
+    dl(new Blob([d.svg()],{type:"image/svg+xml"}), d.file+".svg"); return; }
+  if(!p) return;
+  const d=DESIGNS[+p.dataset.png], scale=2;
+  const img=new Image();
+  const blob=new Blob([d.svg()],{type:"image/svg+xml;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  img.onload=()=>{
+    const cv=document.createElement("canvas");
+    cv.width=d.w*scale; cv.height=d.h*scale;
+    const ctx=cv.getContext("2d");
+    ctx.fillStyle="#0F141A"; ctx.fillRect(0,0,cv.width,cv.height);
+    ctx.drawImage(img,0,0,cv.width,cv.height);
+    cv.toBlob(b=>{ dl(b,d.file+".png"); URL.revokeObjectURL(url); },"image/png");
+  };
+  img.onerror=()=>{ alert("PNG export needs a normal browser window. Open this file directly from your disk (double-click it), not from inside a zip preview."); URL.revokeObjectURL(url); };
+  img.src=url;
+});
+</script>
+</body>
+</html>

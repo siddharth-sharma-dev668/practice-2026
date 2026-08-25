@@ -1,0 +1,936 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Launchpad</title>
+<style>
+  :root {
+    --bg:#F2F4F6; --surface:#fff; --surface2:#E9EDF1; --ink:#1B2530; --muted:#5C6B78;
+    --line:#D7DEE4; --accent:#D14E12; --accent-ink:#fff; --accent-soft:#F8E4D8;
+    --ok:#237A50; --ok-soft:#DCEFE4; --warn:#96690F; --warn-soft:#F4E8CC; --bad:#B3362B; --bad-soft:#F5DDDA;
+    --shadow:0 1px 3px rgba(27,37,48,.07);
+  }
+  @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+    --bg:#0F141A; --surface:#171E26; --surface2:#212B36; --ink:#E6EBEF; --muted:#94A3B0;
+    --line:#2B3642; --accent:#F07A3D; --accent-ink:#1F0E04; --accent-soft:#3A2517;
+    --ok:#5CBA88; --ok-soft:#1C3427; --warn:#D9A93F; --warn-soft:#362F19; --bad:#E0685C; --bad-soft:#3B211E;
+    --shadow:0 1px 3px rgba(0,0,0,.35);
+  }}
+  :root[data-theme="dark"]{
+    --bg:#0F141A; --surface:#171E26; --surface2:#212B36; --ink:#E6EBEF; --muted:#94A3B0;
+    --line:#2B3642; --accent:#F07A3D; --accent-ink:#1F0E04; --accent-soft:#3A2517;
+    --ok:#5CBA88; --ok-soft:#1C3427; --warn:#D9A93F; --warn-soft:#362F19; --bad:#E0685C; --bad-soft:#3B211E;
+    --shadow:0 1px 3px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 'Segoe UI',system-ui,-apple-system,sans-serif}
+  .wrap{max-width:980px;margin:0 auto;padding:0 20px}
+  code{font-family:Consolas,'SF Mono',monospace;font-size:.88em;background:var(--surface2);padding:1px 5px;border-radius:4px}
+  button{font:inherit;color:inherit;cursor:pointer;background:none;border:none}
+  button:focus-visible,[tabindex]:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  h1{font-size:26px;font-weight:800;margin:2px 0 0;letter-spacing:-.01em}
+  h2{font-size:20px;font-weight:700;margin:0}
+  .go{background:var(--accent);color:var(--accent-ink);padding:10px 20px;border-radius:8px;font-weight:700}
+  .go:hover{filter:brightness(1.08)}
+  .go[disabled]{opacity:.45;cursor:not-allowed;filter:none}
+  .ghost{border:1px solid var(--line);padding:9px 16px;border-radius:8px;font-weight:600;background:var(--surface)}
+  .ghost:hover{background:var(--surface2)}
+  .eyebrow{font-family:Consolas,monospace;font-size:11px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;font-weight:700}
+  header{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--line)}
+  .head-in{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding:16px 0 0;flex-wrap:wrap}
+  nav{display:flex;gap:4px}
+  nav button{padding:10px 13px 12px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent}
+  nav button:hover{color:var(--ink)}
+  nav button.on{color:var(--ink);border-bottom-color:var(--accent)}
+  .topbar{display:flex;align-items:center;gap:11px;padding:11px 0 12px;flex-wrap:wrap}
+  .tb-lbl{font-family:Consolas,monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .bar{flex:1 1 200px;min-width:140px;height:10px;background:var(--surface2);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--ok));transition:width .45s cubic-bezier(.4,0,.2,1)}
+  .tb-pct{font-weight:800;font-size:16px;font-variant-numeric:tabular-nums}
+  .tb-sub{flex-basis:100%;font-size:12.5px;color:var(--muted);margin-top:-4px}
+  .chip{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+  .chip.ok{color:var(--ok);border-color:var(--ok);background:var(--ok-soft)}
+  .chip.warn{color:var(--warn);border-color:var(--warn);background:var(--warn-soft)}
+  .chip.bad{color:var(--bad);border-color:var(--bad);background:var(--bad-soft)}
+  .chip.dim{color:var(--muted)}
+  main{padding:10px 0 60px}
+  .view{display:none}.view.on{display:block}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;box-shadow:var(--shadow);margin-bottom:14px}
+  .hint{color:var(--muted);font-size:13px;margin:6px 0 10px}
+  label.fld{display:block;margin:14px 0 6px;font-weight:600;font-size:13.5px}
+  textarea,input[type=text],select{width:100%;font:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px}
+  textarea{min-height:150px;resize:vertical;font-family:Consolas,monospace;font-size:12.5px}
+  .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:6px}
+  .opt-btn{border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:11px 13px;text-align:left;font-weight:600}
+  .opt-btn:hover{background:var(--surface2)}
+  .opt-btn.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+  .opt-btn small{display:block;font-weight:500;color:var(--muted);font-size:11.5px;margin-top:2px}
+  .steps-dots{display:flex;gap:6px;align-items:center;margin:0 0 12px}
+  .dot{width:26px;height:4px;border-radius:2px;background:var(--surface2)}
+  .dot.on{background:var(--accent)}
+  .drop{border:2px dashed var(--line);border-radius:10px;padding:20px;text-align:center;color:var(--muted);cursor:pointer}
+  .drop.hot{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+  .sig{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .phase{margin-top:24px}
+  .phase-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:9px}
+  .phase-code{font-family:Consolas,monospace;font-weight:700;font-size:12px;color:var(--accent);letter-spacing:.08em}
+  .phase-name{font-weight:700;font-size:16.5px}
+  .wk{background:var(--surface);border:1px solid var(--line);border-radius:9px;margin-bottom:6px;box-shadow:var(--shadow)}
+  .wk-row{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;width:100%;text-align:left;padding:11px 14px;border-radius:9px}
+  .wk-row:hover{background:var(--surface2)}
+  .wk-code{font-family:Consolas,monospace;font-size:12px;font-weight:700;color:var(--muted)}
+  .wk-title{font-weight:600}
+  .wk-sub{font-size:11.5px;color:var(--muted);margin-top:1px}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+  .pill i{width:7px;height:7px;border-radius:50%;background:currentColor}
+  .pill.doing{color:var(--warn);border-color:var(--warn);background:var(--warn-soft)}
+  .pill.done{color:var(--ok);border-color:var(--ok);background:var(--ok-soft)}
+  .back{font-weight:600;color:var(--muted);padding:8px 0;margin-top:6px}
+  .back:hover{color:var(--ink)}
+  .wkpage-head{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin:6px 0 4px}
+  .focusline{font-size:14px;margin:8px 0;color:var(--muted)}
+  .focusline b{color:var(--ink)}
+  .stepbar{display:flex;align-items:center;gap:11px;margin:14px 0 10px;flex-wrap:wrap}
+  .stepbar .bar{height:8px}.stepbar .lbl{font-size:12.5px;color:var(--muted);white-space:nowrap}
+  .step{display:flex;gap:11px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:12px 14px;margin-bottom:7px}
+  .step.done{opacity:.62}
+  .step.done .st-t{text-decoration:line-through}
+  .step input[type=checkbox]{margin-top:3px;width:17px;height:17px;accent-color:var(--accent);flex:none}
+  .st-t{font-weight:600}
+  .st-d{font-size:13px;color:var(--muted);margin-top:3px}
+  .linkchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .linkchips a{font-size:11.5px;font-weight:600;color:var(--accent);text-decoration:none;border:1px solid var(--line);padding:3px 9px;border-radius:999px}
+  .linkchips a:hover{background:var(--accent-soft)}
+  .takequiz{margin-top:9px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+  .qbox{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:15px;margin-bottom:10px}
+  .qsec{font-family:Consolas,monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:700}
+  .qtext{font-weight:600;margin:6px 0 10px}
+  .qn{font-family:Consolas,monospace;color:var(--muted);margin-right:8px}
+  .optn{display:flex;gap:9px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);border-radius:8px;margin-bottom:6px;cursor:pointer}
+  .optn:hover{background:var(--surface2)}
+  .optn input{margin-top:3px;accent-color:var(--accent)}
+  .graded .optn{cursor:default}
+  .optn.right{border-color:var(--ok);background:var(--ok-soft)}
+  .optn.wrong{border-color:var(--bad);background:var(--bad-soft)}
+  .expl{font-size:13px;color:var(--muted);margin-top:6px}
+  .expl:empty{display:none}
+  .result{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:9px;padding:18px;margin-bottom:14px}
+  .result .big{font-size:34px;font-weight:800}
+  .secline{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:15px;box-shadow:var(--shadow)}
+  .tile .lbl{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+  .tile .val{font-size:27px;font-weight:800;margin:3px 0}
+  .tile .val small{font-size:14px;color:var(--muted);font-weight:600}
+  .now{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin:16px 0 4px;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:9px;box-shadow:var(--shadow)}
+  .now .tag{font-family:Consolas,monospace;font-size:11px;letter-spacing:.12em;font-weight:700;color:var(--accent)}
+  .now span{color:var(--muted)}
+  .banner{border:1px solid var(--warn);background:var(--warn-soft);color:var(--ink);border-radius:9px;padding:12px 14px;margin:12px 0;font-size:13.5px}
+  .prow{display:flex;align-items:center;gap:10px;padding:7px 2px}
+  .prow .pn{font-size:13.5px;min-width:120px}
+  .prow .pct{font-family:Consolas,monospace;font-size:11.5px;color:var(--muted);min-width:36px;text-align:right}
+  footer{border-top:1px solid var(--line);color:var(--muted);font-size:12.5px;padding:16px 0 30px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap head-in">
+    <div><div class="eyebrow">Interview Launchpad</div><h1 id="hdr-title">Your adaptive prep plan</h1></div>
+    <nav id="nav" hidden>
+      <button data-v="roadmap" class="on">Roadmap</button>
+      <button data-v="quizzes">Quizzes</button>
+      <button data-v="progress">Progress</button>
+    </nav>
+  </div>
+  <div class="wrap topbar" id="topbar" hidden>
+    <span class="tb-lbl">Progress</span>
+    <span class="bar" id="tb-bar" role="progressbar" aria-label="Overall progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="tb-fill" style="width:0"></i></span>
+    <span class="tb-pct" id="tb-pct">0%</span>
+    <span class="chip dim" id="savechip">…</span>
+    <span class="tb-sub" id="tb-sub"></span>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="storage-warn"></div>
+  <section class="view on" id="view-setup"></section>
+  <div class="now" id="now" hidden></div>
+  <section class="view" id="view-roadmap"></section>
+  <section class="view" id="view-quizzes"></section>
+  <section class="view" id="view-progress"></section>
+</main>
+
+<footer><div class="wrap" id="foot">Everything runs in your browser — your resume never leaves this device.</div></footer>
+
+<script>
+"use strict";
+/* =====================================================================
+   Interview Launchpad — single-file, offline, zero-dependency.
+   Nothing is uploaded anywhere: parsing, planning and progress are all
+   local to this browser. See README for the licence.
+   ===================================================================== */
+
+/* ---------------- roles ---------------- */
+const ROLES = {
+  backend:   { n:"Backend Engineer",  blurb:"APIs, databases, scale, system design",         secs:["Python","SQL","DSA","Web","Java"] },
+  ai:        { n:"AI Engineer",       blurb:"LLM apps, RAG, agents, evals",                   secs:["Python","ML/AI","Web","DSA"] },
+  ml:        { n:"ML Engineer",       blurb:"Models, features, training, serving",            secs:["Python","ML/AI","Stats","SQL"] },
+  data:      { n:"Data Analyst",      blurb:"SQL, statistics, dashboards, storytelling",      secs:["SQL","Stats","Python","ML/AI"] },
+  fullstack: { n:"Full-Stack Engineer",blurb:"Frontend + backend + deployment",               secs:["Python","Web","SQL","DSA"] }
+};
+
+/* ---------------- topic pool (shared across roles) ----------------
+   tr = track, used to braid each week so no week is single-subject.
+   h  = study hours. sec = diagnostic section that gates priority.
+   sk = resume skill key: if the résumé proves it AND the diagnostic
+        section is strong, the topic is compressed to a verify pass.   */
+const T = {
+  "py-core":   {n:"Python core: collections, comprehensions, sorting, big-O of builtins", tr:"lang", h:3, sec:"Python", sk:"python", lk:[["Data structures",   "https://docs.python.org/3/tutorial/datastructures.html"],["Sorting HOWTO","https://docs.python.org/3/howto/sorting.html"],["Time complexity","https://wiki.python.org/moin/TimeComplexity"]]},
+  "py-adv":    {n:"Closures, decorators, generators, typing, error design",               tr:"lang", h:3, sec:"Python", sk:"python", lk:[["Functional HOWTO","https://docs.python.org/3/howto/functional.html"],["typing","https://docs.python.org/3/library/typing.html"]]},
+  "py-test":   {n:"Testing: pytest patterns, fixtures, coverage, what to assert",          tr:"craft",h:2, sec:"Python", sk:"pytest",lk:[["pytest docs","https://docs.pytest.org/"]]},
+  "js-core":   {n:"JavaScript core: closures, async/await, event loop, modules",           tr:"lang", h:3, sec:"Web",    sk:"javascript", lk:[["MDN JS guide","https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide"]]},
+  "react":     {n:"React: components, hooks, state, rendering behaviour",                  tr:"lang", h:3, sec:"Web",    sk:"react", lk:[["React docs","https://react.dev/learn"]]},
+  "java-core": {n:"Java core: collections internals, generics, equals/hashCode, Streams",  tr:"lang", h:3, sec:"Java",   sk:"java", lk:[["Java tutorials","https://dev.java/learn/"]]},
+  "java-conc": {n:"Java concurrency + JVM memory & GC",                                    tr:"lang", h:3, sec:"Java",   sk:"java", lk:[["Concurrency","https://docs.oracle.com/javase/tutorial/essential/concurrency/"]]},
+  "spring":    {n:"Spring: IoC/DI, @Transactional, JPA/Hibernate, Boot auto-config",        tr:"sys",  h:3, sec:"Java",   sk:"spring", lk:[["Spring Boot","https://spring.io/projects/spring-boot"]]},
+  "sql-join":  {n:"SQL: joins mastery, aggregation, GROUP BY semantics",                    tr:"data", h:2, sec:"SQL",    sk:"sql", lk:[["SQL joins","https://www.postgresql.org/docs/current/tutorial-join.html"]]},
+  "sql-cte":   {n:"SQL: subqueries, CTEs, set operations",                                  tr:"data", h:2, sec:"SQL",    sk:"sql", lk:[["WITH queries","https://www.postgresql.org/docs/current/queries-with.html"]]},
+  "sql-win":   {n:"SQL: window functions (the interview favourite)",                        tr:"data", h:3, sec:"SQL",    sk:"sql", lk:[["Window functions","https://www.postgresql.org/docs/current/tutorial-window.html"]]},
+  "sql-perf":  {n:"SQL: EXPLAIN, indexes, why your query is slow",                          tr:"data", h:2, sec:"SQL",    sk:"sql", lk:[["Using EXPLAIN","https://www.postgresql.org/docs/current/using-explain.html"]]},
+  "sql-anal":  {n:"Analytics SQL: cohort, funnel, retention, metric design",                tr:"data", h:3, sec:"SQL",    sk:"sql", lk:[]},
+  "api":       {n:"HTTP & REST done properly: methods, status codes, idempotency, versioning", tr:"sys", h:2, sec:"Web", sk:"rest", lk:[["MDN HTTP","https://developer.mozilla.org/en-US/docs/Web/HTTP"]]},
+  "framework": {n:"Build a real API: routing, validation, dependency injection, migrations", tr:"sys", h:4, sec:"Web",   sk:"fastapi", lk:[["FastAPI","https://fastapi.tiangolo.com/"],["Express","https://expressjs.com/"]]},
+  "auth":      {n:"Auth & security: JWT, OAuth2 flows, RBAC, OWASP API top-10",             tr:"sys",  h:3, sec:"Web",   sk:"jwt", lk:[["OWASP API top 10","https://owasp.org/API-Security/"]]},
+  "db-design": {n:"Data modelling, transactions, isolation levels, N+1",                    tr:"sys",  h:3, sec:"SQL",   sk:"postgres", lk:[["Transaction isolation","https://www.postgresql.org/docs/current/transaction-iso.html"]]},
+  "cache-q":   {n:"Caching & queues: Redis patterns, workers, retry/backoff, dead letters", tr:"sys",  h:3, sec:"Web",   sk:"redis", lk:[["Redis patterns","https://redis.io/docs/latest/develop/"]]},
+  "ship":      {n:"Ship it: Docker, CI/CD, logging, deployment, load testing",              tr:"craft",h:3, sec:"Web",   sk:"docker", lk:[["Docker","https://docs.docker.com/get-started/"],["GitHub Actions","https://docs.github.com/actions"]]},
+  "sysd-1":    {n:"System design I: load balancing, caching, queues, capacity estimation",   tr:"craft",h:3, sec:"Web",   sk:"", lk:[["System design primer","https://github.com/donnemartin/system-design-primer"]]},
+  "sysd-2":    {n:"System design II: sharding, replication, consistency, trade-off talk",    tr:"craft",h:3, sec:"Web",   sk:"", lk:[]},
+  "lld":       {n:"Low-level design / machine coding: 90-minute working-code drills",        tr:"craft",h:3, sec:"DSA",   sk:"", lk:[["Refactoring Guru patterns","https://refactoring.guru/design-patterns"]]},
+  "llm-base":  {n:"LLM foundations: tokens, context, sampling, structured outputs",          tr:"ai",   h:3, sec:"ML/AI", sk:"llm", lk:[["Anthropic docs","https://docs.anthropic.com/"]]},
+  "prompt":    {n:"Serious prompt engineering + JSON-mode reliability",                     tr:"ai",   h:2, sec:"ML/AI", sk:"llm", lk:[]},
+  "tools":     {n:"Tool use / function calling, and an agent loop from scratch",             tr:"ai",   h:3, sec:"ML/AI", sk:"agent", lk:[]},
+  "mcp":       {n:"Build your own MCP server (rare on a junior CV — high signal)",           tr:"ai",   h:3, sec:"ML/AI", sk:"mcp", lk:[["MCP spec","https://modelcontextprotocol.io/"]]},
+  "rag":       {n:"RAG: embeddings, chunking, vector search, hybrid retrieval, citations",   tr:"ai",   h:4, sec:"ML/AI", sk:"rag", lk:[]},
+  "evals":     {n:"Evals: golden sets, LLM-as-judge, regression evals in CI",                tr:"ai",   h:3, sec:"ML/AI", sk:"eval", lk:[]},
+  "guard":     {n:"Guardrails, PII, prompt injection, cost & latency control",               tr:"ai",   h:2, sec:"ML/AI", sk:"", lk:[]},
+  "ml-core":   {n:"ML core: bias-variance, train/val/test, metrics that matter",             tr:"ai",   h:3, sec:"ML/AI", sk:"sklearn", lk:[["sklearn guide","https://scikit-learn.org/stable/user_guide.html"]]},
+  "ml-sk":     {n:"Trees, random forests, gradient boosting, pipelines, cross-validation",   tr:"ai",   h:3, sec:"ML/AI", sk:"sklearn", lk:[]},
+  "ml-real":   {n:"Feature engineering, leakage, imbalanced data, SHAP interpretation",      tr:"ai",   h:3, sec:"ML/AI", sk:"", lk:[]},
+  "ml-dl":     {n:"PyTorch: tensors, autograd, a training loop, transfer learning",          tr:"ai",   h:4, sec:"ML/AI", sk:"pytorch", lk:[["PyTorch tutorials","https://pytorch.org/tutorials/"]]},
+  "mlops":     {n:"MLOps: experiment tracking, serving, monitoring, drift",                  tr:"craft",h:3, sec:"ML/AI", sk:"mlflow", lk:[["MLflow","https://mlflow.org/docs/latest/"]]},
+  "stats":     {n:"Statistics: distributions, sampling, confidence intervals",               tr:"data", h:3, sec:"Stats", sk:"statistics", lk:[]},
+  "ab":        {n:"Hypothesis testing & A/B analysis you can defend",                        tr:"data", h:3, sec:"Stats", sk:"", lk:[]},
+  "viz":       {n:"Excel power tools + BI dashboards + executive storytelling",              tr:"data", h:3, sec:"Stats", sk:"powerbi", lk:[]},
+  "frontend":  {n:"Frontend craft: accessibility, forms, state, performance",               tr:"sys",  h:3, sec:"Web",   sk:"css", lk:[["web.dev","https://web.dev/learn"]]},
+  "behav":     {n:"Behavioural: STAR stories from your own real work",                       tr:"craft",h:2, sec:"",      sk:"", lk:[]},
+  "resume":    {n:"Resume & positioning pass: title framing, bullets that survive scrutiny", tr:"craft",h:2, sec:"",      sk:"", lk:[]}
+};
+
+/* Ordered topic sequence per role. Shared ids reused deliberately. */
+const ROLE_PLAN = {
+  backend:   ["py-core","sql-join","api","py-adv","sql-cte","framework","java-core","sql-win","auth","db-design","java-conc","cache-q","sql-perf","spring","ship","py-test","sysd-1","lld","sysd-2","behav","resume"],
+  ai:        ["py-core","llm-base","api","py-adv","prompt","framework","tools","sql-join","rag","mcp","evals","py-test","guard","ml-core","ship","sysd-1","behav","resume"],
+  ml:        ["py-core","ml-core","sql-join","stats","ml-sk","py-adv","sql-win","ml-real","ab","ml-dl","mlops","framework","llm-base","py-test","ship","behav","resume"],
+  data:      ["sql-join","stats","py-core","sql-cte","sql-win","ab","sql-anal","viz","sql-perf","ml-core","py-adv","behav","resume"],
+  fullstack: ["js-core","api","py-core","react","sql-join","framework","frontend","auth","sql-cte","db-design","ship","py-test","sysd-1","behav","resume"]
+};
+
+/* DSA pattern ladder — spread across the whole plan regardless of role. */
+const DSA = ["Arrays & hashing","Two pointers","Sliding window","Stack","Binary search","Linked lists","Trees I","Trees II","Heaps / priority queue","Backtracking","Graphs I","Graphs II","Intervals","Greedy","1-D dynamic programming","2-D dynamic programming","Tries","Bit manipulation","Math & geometry","Timed mixed set"];
+const DSA_LINK = "https://neetcode.io/roadmap";
+
+/* Capstone ladder per role — one project, grown in stages. */
+const CAPSTONE = {
+  backend:   {n:"Production API service", steps:["Repo + framework skeleton + Docker","Core endpoints + database schema + migrations","Auth, rate limiting, signed requests","Queue + worker with retry/backoff/dead-letter","Caching layer + query tuning with EXPLAIN","Tests + CI pipeline green","Deployed, logged, load-tested","README with architecture diagram + 3-min demo video"]},
+  ai:        {n:"LLM app with an eval harness", steps:["Repo + API skeleton + model call working","Structured outputs + prompt versioning","Tool calling / agent loop","Document ingestion + chunking","Retrieval + citations","Eval harness: golden set + judge (build this EARLY)","Guardrails + cost/latency report","Deployed + recorded walkthrough"]},
+  ml:        {n:"End-to-end ML service", steps:["Problem framing + dataset + honest baseline","EDA + feature pipeline","Model v1 + cross-validation","Leakage audit + imbalance handling","Interpretation (SHAP) + error analysis","Experiment tracking + model registry","Served behind an API + monitored","Project narrative + walkthrough rehearsal"]},
+  data:      {n:"Analytics investigation + dashboard", steps:["Pick a real dataset + write the question","Cleaning + validation notes","Core SQL: cohorts, funnels, retention","Statistical check (is the effect real?)","Dashboard build","Executive summary: 1 page, 3 findings","Timed drill: raw data → pivot → dashboard in 30 min","Recorded 5-min walkthrough"]},
+  fullstack: {n:"Full-stack product slice", steps:["Repo, framework, deploy pipeline day one","Data model + API endpoints","Auth flow end to end","Core UI with real state handling","Accessibility + performance pass","Tests across both layers","Deployed with CI","README + demo video"]}
+};
+
+/* ---------------- question bank ---------------- */
+const QB = {
+"Python":[
+ {q:"def add(x, xs=[]): xs.append(x); return xs — you call add(1), then add(2). The second call returns:",o:["[2]","[1, 2]","[1]","TypeError"],a:1,x:"Default arguments are evaluated once at definition — the same list is shared across calls."},
+ {q:"[x*x for x in range(5) if x % 2] evaluates to:",o:["[0, 1, 4, 9, 16]","[0, 4, 16]","[1, 9]","[1, 4, 9]"],a:2,x:"x % 2 is truthy only for odd x, so 1 and 3 survive → [1, 9]."},
+ {q:"Which can be a dictionary key?",o:["[\"a\", 1] (list)","(\"a\", 1) (tuple)","{\"a\"} (set)","{\"a\": 1} (dict)"],a:1,x:"Keys must be hashable. Tuples are (if their contents are); lists, sets and dicts are mutable and unhashable."},
+ {q:"sorted(words, key=len) does what?",o:["Sorts in place by length","Returns a NEW list sorted by length; equal lengths keep original order","Returns the lengths, sorted","Raises unless words is a list"],a:1,x:"sorted() always returns a new list, and Python's sort is stable — ties keep input order."},
+ {q:"a = [1, 2]; b = a; b.append(3) — what is a?",o:["[1, 2]","[1, 2, 3]","[3]","Error"],a:1,x:"b = a copies the reference, not the list."},
+ {q:"Building a string with s += piece in a loop is O(n²). The idiomatic fix?",o:["Use a bytearray","Collect parts in a list, then \"\".join(parts)","Use recursion","Preallocate the string"],a:1,x:"Strings are immutable, so each += copies everything so far. join makes a single pass."},
+ {q:"x in my_set vs x in my_list — average complexity?",o:["O(1) vs O(n)","O(n) vs O(1)","Both O(1)","Both O(n)"],a:0,x:"Sets hash; lists scan. Converting a lookup list to a set is the most common easy win."},
+ {q:"A generator function (one using yield) differs from a list-returning function because:",o:["It is always faster","It produces values lazily one at a time, holding only current state in memory","It cannot be looped over","It returns a tuple"],a:1,x:"Laziness is the point — you can iterate a stream far larger than memory."}
+],
+"SQL":[
+ {q:"employees LEFT JOIN departments — an employee whose department_id matches nothing:",o:["Is dropped","Appears with NULLs in the department columns","Causes an error","Is duplicated"],a:1,x:"LEFT JOIN keeps every left row; unmatched right columns come back NULL."},
+ {q:"WHERE vs HAVING:",o:["Identical","WHERE filters rows before grouping; HAVING filters groups after aggregation","HAVING is faster","WHERE only works on indexes"],a:1,x:"You cannot filter on an aggregate in WHERE — that is exactly what HAVING is for."},
+ {q:"COUNT(*) vs COUNT(column):",o:["Identical always","COUNT(*) counts rows; COUNT(column) skips NULLs in that column","COUNT(column) is faster always","COUNT(*) ignores duplicates"],a:1,x:"A classic source of silently wrong numbers in reports."},
+ {q:"ROW_NUMBER() OVER (PARTITION BY dept ORDER BY salary DESC) gives you:",o:["The row count per department","A ranking within each department, restarting at 1 per department","A running total","Random ordering"],a:1,x:"PARTITION BY restarts the numbering per group — the standard 'top N per category' tool."},
+ {q:"Your query is slow and EXPLAIN shows a sequential scan on a 10M-row table filtered by user_id. Most likely fix:",o:["Add more RAM","Add an index on user_id","Rewrite it as a subquery","Use SELECT *"],a:1,x:"Index the filter column. The plan is telling you it had to read every row."},
+ {q:"A LEFT JOIN whose WHERE clause filters on the right table's column usually:",o:["Works as expected","Silently behaves like an INNER JOIN, because NULL rows fail the predicate","Raises an error","Returns duplicates"],a:1,x:"Put the condition in the ON clause instead if you want to keep unmatched rows."},
+ {q:"To find users whose SECOND purchase came within 7 days of their first, the natural tool is:",o:["A self-join or a window function (LAG/LEAD)","GROUP BY alone","DISTINCT","A CHECK constraint"],a:0,x:"Ordering events per user and comparing neighbouring rows is exactly what window functions are for."}
+],
+"DSA":[
+ {q:"Average lookup complexity of a hash map:",o:["O(1)","O(log n)","O(n)","O(n log n)"],a:0,x:"Constant on average; O(n) worst case with pathological collisions."},
+ {q:"Binary search requires:",o:["A hash table","A sorted sequence","A balanced tree","Unique values"],a:1,x:"Sortedness is the precondition that makes halving valid."},
+ {q:"Best complexity for a general comparison sort:",o:["O(n)","O(n log n)","O(log n)","O(n²)"],a:1,x:"Comparison sorting has an O(n log n) lower bound. Counting/radix sorts beat it only by not comparing."},
+ {q:"You need the k largest of a 10-million-element stream, with limited memory. Reach for:",o:["Sort everything, take k","A min-heap of size k","A hash map","Binary search"],a:1,x:"O(n log k) time and O(k) memory, and it works on a stream you cannot re-read."},
+ {q:"BFS rather than DFS is the right choice when:",o:["The graph is weighted","You need the shortest path in an unweighted graph","You need to detect cycles","Memory is very tight"],a:1,x:"BFS explores by distance, so it reaches a node by the fewest edges first."},
+ {q:"'Find if any two numbers sum to a target' in O(n) uses:",o:["Nested loops","A hash set of complements seen so far","Sorting then binary search","A stack"],a:1,x:"One pass, checking target − x against what you have already seen."}
+],
+"Web":[
+ {q:"Which HTTP methods are idempotent?",o:["POST, PUT","GET, POST","GET, PUT, DELETE","Only GET"],a:2,x:"Repeating GET/PUT/DELETE leaves the server in the same state; repeating POST usually creates duplicates."},
+ {q:"401 vs 403:",o:["Identical","401 = not authenticated (who are you?); 403 = authenticated but not allowed","401 is a server error","403 means the route is missing"],a:1,x:"Confusing these two is a very common review comment."},
+ {q:"Why is a stateless JWT verified without a database lookup?",o:["It is stored in Redis","The signature is verified cryptographically using a key the server holds","The client is trusted","It never expires"],a:1,x:"That is the trade-off: cheap verification, but you cannot easily revoke one before expiry."},
+ {q:"Putting Redis in front of Postgres for hot read endpoints does what?",o:["Stores more data","Serves repeated reads from memory, cutting latency and database load","Makes writes transactional","Adds JSON support"],a:1,x:"Cache-aside: the cache absorbs repeat reads; the database stays the source of truth."},
+ {q:"An idempotency key on a payment endpoint prevents:",o:["SQL injection","A retried request from charging the customer twice","Rate limiting","CORS errors"],a:1,x:"The client sends a key; the server returns the original result instead of acting again."},
+ {q:"CORS exists to:",o:["Encrypt traffic","Let a server declare which other origins may read its responses in a browser","Compress responses","Prevent SQL injection"],a:1,x:"It is enforced by the browser, not the server — and it is not a substitute for auth."},
+ {q:"N+1 queries in an API endpoint mean:",o:["One query per request","One query for the list, then one more per item — kill it with a join or eager load","Too many indexes","A caching bug"],a:1,x:"The most common performance bug in ORM-backed endpoints."}
+],
+"Stats":[
+ {q:"A p-value of 0.03 means:",o:["A 3% chance the hypothesis is wrong","A 3% chance of seeing data this extreme if the null hypothesis were true","The effect is 3% in size","97% confidence the effect is real"],a:1,x:"It is a statement about the data given the null — not the probability that your hypothesis is true."},
+ {q:"An A/B test is 'not significant' after 200 users. The right conclusion:",o:["There is no effect","Underpowered — you cannot distinguish no effect from an effect too small to detect at this sample size","Ship it anyway","Flip a coin"],a:1,x:"Absence of significance is not evidence of absence. Power analysis first."},
+ {q:"Correlation of 0.9 between ice-cream sales and drownings most likely means:",o:["Ice cream causes drownings","A confounder (temperature) drives both","The data is wrong","Nothing"],a:1,x:"The classic confounding example — always ask what else moves with both."},
+ {q:"Mean vs median for salary data:",o:["Identical","The median resists outliers; a few huge salaries drag the mean upward","Mean is always better","Median needs a normal distribution"],a:1,x:"Skewed distributions are exactly where the median earns its keep."},
+ {q:"A 95% confidence interval means:",o:["95% of data lies inside it","Under repeated sampling, 95% of such intervals would contain the true parameter","There is a 95% chance the value is inside","The sample is 95% accurate"],a:1,x:"The guarantee is about the procedure across samples, not this one interval."}
+],
+"ML/AI":[
+ {q:"What is RAG?",o:["Fine-tuning on your documents","Retrieving relevant documents and putting them in the prompt so answers are grounded","Generating synthetic training data","Running the model twice"],a:1,x:"Retrieve → put in context → generate with citations. No weight updates involved."},
+ {q:"In an agentic system, 'tool use' means:",o:["The model edits its own weights","The model emits a structured call, YOUR code executes it, and the result goes back to the model","Users install plugins","The model browses autonomously by default"],a:1,x:"The model requests; your code decides and executes. That boundary is the whole safety story."},
+ {q:"Your model gets 99% accuracy detecting a disease present in 1% of patients. This is:",o:["Excellent","Possibly useless — predicting 'healthy' always scores 99%; check recall and precision","Proof of overfitting","A data leak"],a:1,x:"Accuracy is the wrong metric on imbalanced data. Interviewers use this to test whether you think."},
+ {q:"Training accuracy 99%, validation accuracy 62%. This is:",o:["Underfitting","Overfitting — it memorised the training set","A good model","A bad metric choice"],a:1,x:"Fix with more data, regularisation, simpler models, or better cross-validation."},
+ {q:"Data leakage is:",o:["A security breach","Information from outside the training set (or from the future) sneaking into features, inflating scores","Losing rows","Too many features"],a:1,x:"The classic: scaling before the train/test split, or a feature computed after the outcome."},
+ {q:"Temperature 0 makes an LLM:",o:["Perfectly deterministic always","Greedy and much more repeatable — but not guaranteed bit-identical across runs or versions","Faster","More creative"],a:1,x:"Batching, hardware and model updates can still shift outputs. Never build a test that assumes exactness."},
+ {q:"Embeddings let you:",o:["Compress files","Represent text as vectors so semantically similar text sits close together","Encrypt prompts","Speed up training"],a:1,x:"That geometry is what makes vector search possible."},
+ {q:"The most under-supplied skill in AI-engineer interviews right now:",o:["Prompt wording","Building evals — golden sets, judges, regression suites in CI","Knowing every model name","Fine-tuning"],a:1,x:"Anyone can demo a happy path. Proving quality does not regress is the rare, senior signal."}
+],
+"Java":[
+ {q:"You put a User in a HashSet, then mutate the field its hashCode() uses. contains(sameUser) now:",o:["Returns true — same reference","Usually returns false — it hashes to a different bucket than where it is stored","Throws","Rehashes automatically"],a:1,x:"Fields used in hashCode should be immutable, or the object gets stranded in the set."},
+ {q:"String a = \"x\", b = \"x\", c = new String(\"x\"); which holds?",o:["a == b and a == c","a == b is true, a == c is false","Both false","a.equals(c) is false"],a:1,x:"Literals are interned; new String() forces a separate object. Always compare with equals()."},
+ {q:"int f() { try { return 1; } finally { return 2; } } returns:",o:["1","2","Compile error","1, discarding 2"],a:1,x:"A return in finally replaces the one from try, swallowing it and any exception. Never return from finally."},
+ {q:"volatile int count, incremented by many threads with count++:",o:["Safe — volatile makes it atomic","Unsafe — volatile gives visibility, not atomicity; count++ is read-modify-write","Safe on 64-bit only","volatile is a hint"],a:1,x:"Use AtomicInteger or synchronized. Asked in nearly every Java concurrency round."},
+ {q:"An object becomes eligible for garbage collection when:",o:["Every reference is set to null","System.gc() is called","It is unreachable from any GC root","It leaves scope"],a:2,x:"Reachability. That is why a static Map that only grows is the classic leak."},
+ {q:"A @Transactional method called from another method in the SAME class:",o:["Runs in a transaction normally","Runs with NO transaction — the internal call bypasses the Spring proxy","Starts a nested transaction","Fails at startup"],a:1,x:"Proxy-based AOP only intercepts calls from outside the bean. The commonest silent @Transactional bug."},
+ {q:"The default scope of a Spring bean:",o:["prototype","singleton — one shared instance, so it must be stateless or thread-safe","request","singleton, made thread-safe by Spring"],a:1,x:"Mutable instance fields on a singleton @Service are a race waiting to happen."},
+ {q:"Fetching 100 orders with a LAZY customer, then reading customer name in a loop, costs:",o:["1 query","101 queries — the classic N+1; fix with a join fetch or @EntityGraph","100 queries","An exception"],a:1,x:"The most common performance bug in Spring Data applications."}
+]};
+
+/* Résumé skill keywords → skill key used by the topic pool. */
+const SKILLS = {
+  python:["python","django","flask","fastapi","pandas","numpy"], java:["java","jvm","j2ee"], spring:["spring","springboot","hibernate"],
+  javascript:["javascript","typescript","node","nodejs"], react:["react","nextjs","vue","angular"], css:["css","html","tailwind","scss"],
+  sql:["sql","postgres","postgresql","mysql","oracle","sqlite","tsql"], postgres:["postgres","postgresql","rdbms","normalization"],
+  redis:["redis","memcached","caching"], docker:["docker","kubernetes","k8s","container"], rest:["rest","restful","api","graphql","grpc"],
+  fastapi:["fastapi","flask","django","express","spring"], jwt:["jwt","oauth","auth","authentication","rbac"],
+  pytest:["pytest","junit","selenium","testing","test automation","qa","sdet","cypress","playwright"],
+  sklearn:["scikit","sklearn","machine learning","regression","classification","xgboost","random forest"],
+  pytorch:["pytorch","tensorflow","keras","deep learning","neural"], mlflow:["mlflow","kubeflow","sagemaker","mlops"],
+  llm:["llm","gpt","claude","openai","gemini","prompt","genai","generative"], rag:["rag","embedding","vector","pinecone","pgvector","faiss","retrieval"],
+  agent:["agent","langchain","langgraph","llamaindex","tool calling","function calling"], mcp:["mcp","model context protocol"],
+  eval:["eval","evaluation","ragas","llm-as-judge","benchmark"], statistics:["statistics","hypothesis","a/b","ab test","regression analysis","probability"],
+  powerbi:["power bi","powerbi","tableau","looker","excel","dax","dashboard"]
+};
+
+/* =====================================================================
+   state + storage
+   ===================================================================== */
+const KEY="ilp.v1";
+let S=null, storageOK=true;
+function blank(){ return {setup:null, plan:null, status:{}, tasks:{}, quiz:{}, dsa:0, step:0, rev:0}; }
+function load(){
+  try{ const r=localStorage.getItem(KEY); S=r?JSON.parse(r):blank(); }
+  catch(e){ storageOK=false; S=blank(); }
+  if(!S||typeof S!=="object") S=blank();
+  S.status=S.status||{}; S.tasks=S.tasks||{}; S.quiz=S.quiz||{}; S.dsa=S.dsa||0; S.rev=S.rev||0;
+}
+function save(){
+  S.rev++;
+  try{ localStorage.setItem(KEY,JSON.stringify(S)); storageOK=true; }
+  catch(e){ storageOK=false; }
+  paintChip(); storageBanner(); renderTop();
+}
+function paintChip(){
+  const el=$("#savechip"); if(!el) return;
+  if(storageOK){ el.className="chip ok"; el.textContent="saved"; el.title="Saved in this browser. Use Progress → Export to keep a portable backup."; }
+  else { el.className="chip bad"; el.textContent="not saved"; el.title="This browser is blocking local storage. Use Progress → Export before you close the tab."; }
+}
+function storageBanner(){
+  const host=$("#storage-warn");
+  host.innerHTML = storageOK ? "" :
+    `<div class="banner"><b>Heads up:</b> this browser is blocking local storage, so your ticks will vanish when you close the tab.
+     Open this file directly from your disk (not from inside a zip viewer or a private window), or use
+     <b>Progress → Export</b> to save a backup file you can re-import.</div>`;
+}
+
+/* helpers */
+const $=(s,e)=>(e||document).querySelector(s);
+const $$=(s,e)=>[...(e||document).querySelectorAll(s)];
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const STATUSES=["todo","doing","done"], SLABEL={todo:"To do",doing:"In progress",done:"Done"};
+const fmtPct=p=>(p>0&&p<10?p.toFixed(1):String(Math.round(p)))+"%";
+const barW=p=>(p>0?Math.max(p,1.5):0)+"%";
+
+/* =====================================================================
+   résumé parsing — entirely local
+   ===================================================================== */
+function parseResume(text){
+  const t=(text||"").toLowerCase();
+  const found={};
+  for(const [key,words] of Object.entries(SKILLS))
+    if(words.some(w=>t.includes(w))) found[key]=true;
+  // years of experience: explicit statement first, then date ranges
+  let yoe=null;
+  const m=t.match(/(\d+(?:\.\d+)?)\+?\s*(?:years?|yrs?)\s*(?:of\s*)?(?:experience|exp)/);
+  if(m) yoe=parseFloat(m[1]);
+  if(yoe==null){
+    const years=[...t.matchAll(/\b(19|20)\d{2}\b/g)].map(x=>+x[0]).filter(y=>y>=1990&&y<=2100);
+    if(years.length>=2){ const span=Math.max(...years)-Math.min(...years); if(span>0&&span<=15) yoe=Math.min(span,12); }
+  }
+  const senior=/\b(senior|lead|principal|staff|architect|manager)\b/.test(t);
+  const fresher=/\b(fresher|intern|graduate|student|no experience)\b/.test(t) && !senior;
+  return {skills:Object.keys(found), yoe, senior, fresher, chars:(text||"").length};
+}
+
+/* =====================================================================
+   plan generation
+   ===================================================================== */
+function sectionPct(sec){
+  const d=S.quiz.diag; if(!d||!d.sections||!d.sections[sec]) return null;
+  const [ok,n]=d.sections[sec].split("/").map(Number);
+  return n? Math.round(100*ok/n) : null;
+}
+function generatePlan(setup){
+  const {role,weeks,hours,resume}=setup;
+  const known=new Set(resume?resume.skills:[]);
+  const ids=ROLE_PLAN[role].slice();
+
+  // Budget: reserve ~30% of every week for DSA, the capstone and review.
+  const studyBudget=weeks*hours*0.7;
+
+  // Score each topic: weak diagnostic section → boost; proven on résumé + strong section → compress.
+  const chosen=[], dropped=[];
+  let spent=0;
+  for(const id of ids){
+    const t=T[id]; if(!t) continue;
+    const pct=t.sec?sectionPct(t.sec):null;
+    const proven=t.sk&&known.has(t.sk);
+    let hrs=t.h, mode="learn";
+    if(proven&&(pct===null||pct>=75)){ hrs=Math.max(1,Math.round(t.h*0.4)); mode="verify"; }
+    else if(pct!==null&&pct<50){ hrs=t.h+1; mode="focus"; }
+    if(spent+hrs>studyBudget && chosen.length>=Math.max(4,Math.ceil(weeks/2))){ dropped.push({n:t.n,h:t.h}); continue; }
+    chosen.push({id,...t,hrs,mode}); spent+=hrs;
+  }
+
+  // Braid: round-robin across tracks so a week is never single-subject.
+  const byTrack={};
+  chosen.forEach(c=>{ (byTrack[c.tr]=byTrack[c.tr]||[]).push(c); });
+  const order=Object.keys(byTrack).sort((a,b)=>byTrack[b].length-byTrack[a].length);
+  const braided=[]; let more=true;
+  while(more){ more=false; for(const tr of order){ const q=byTrack[tr]; if(q&&q.length){ braided.push(q.shift()); more=true; } } }
+
+  // Pack into weeks. Spread EVENLY so no week is ever blank, cap by weekly
+  // hours, and fill genuine slack with spaced revision instead of dead space.
+  const spread=Math.max(1,Math.ceil(braided.length/weeks));
+  const hourCap=Math.max(2,hours*0.7);
+  const cap=CAPSTONE[role], capAt=[];
+  for(let i=0;i<cap.steps.length;i++) capAt.push(Math.min(weeks-1, Math.floor((i+1)*weeks/(cap.steps.length+1))));
+  const dsaPerWeek = hours<=5?2 : hours<=10?3 : 4;
+
+  const plan=[]; let idx=0;
+  for(let w=1;w<=weeks;w++){
+    const topics=[]; let acc=0;
+    while(idx<braided.length && topics.length<spread && (acc<hourCap || topics.length===0) && topics.length<3){
+      topics.push(braided[idx]); acc+=braided[idx].hrs; idx++;
+    }
+    // No new material left? Revisit earlier topics without notes — spacing is
+    // what makes week 3's material survive until the interview.
+    let revision=[];
+    if(!topics.length && chosen.length){
+      const a=chosen[(w*2)%chosen.length], b=chosen[(w*2+1)%chosen.length];
+      revision=[...new Set([a,b])];
+    }
+    plan.push({
+      w, topics, revision,
+      dsa:{pattern:DSA[(w-1)%DSA.length], count:dsaPerWeek},
+      capstone:cap.steps.filter((_,i)=>capAt[i]===w-1),
+      quizSecs:[...new Set([...topics,...revision].map(t=>t.sec).filter(Boolean))],
+      isFinal:w===weeks
+    });
+  }
+  while(idx<braided.length){ plan[plan.length-1].topics.push(braided[idx++]); }
+  return {role,weeks,hours,capstone:cap.n,list:plan,dropped,
+    budget:{total:weeks*hours,study:Math.round(studyBudget),spent},
+    generated:new Date().toISOString().slice(0,10)};
+}
+function stagesOf(plan){
+  const n=plan.list.length, per=Math.ceil(n/4);
+  const names=[["S1","Foundations"],["S2","Build"],["S3","Deepen"],["S4","Prove"]];
+  const out=[];
+  for(let i=0;i<4;i++){
+    const ws=plan.list.slice(i*per,(i+1)*per).map(x=>x.w);
+    if(ws.length) out.push({code:names[i][0],name:names[i][1],weeks:ws});
+  }
+  return out;
+}
+
+/* =====================================================================
+   diagnostic quiz assembly
+   ===================================================================== */
+function diagQuestions(role){
+  const secs=ROLES[role].secs, out=[];
+  const per=Math.ceil(20/secs.length);
+  secs.forEach(sec=>{ (QB[sec]||[]).slice(0,per).forEach(q=>out.push({...q,sec})); });
+  return out;
+}
+function weekQuiz(week){
+  const secs=week.quizSecs.length?week.quizSecs:["Python"];
+  const out=[];
+  secs.forEach(sec=>{ const pool=QB[sec]||[]; pool.slice(0,4).forEach(q=>out.push({...q,sec})); });
+  return out.slice(0,8);
+}
+
+/* =====================================================================
+   setup wizard
+   ===================================================================== */
+let wiz={role:null,weeks:null,hours:null,resumeText:"",resume:null};
+function renderSetup(){
+  const host=$("#view-setup");
+  const step=S.step||0;
+  $("#nav").hidden = !S.plan; $("#topbar").hidden = !S.plan; $("#now").hidden = !S.plan;
+  const dots=`<div class="steps-dots">${[0,1,2,3].map(i=>`<span class="dot ${i<=step?"on":""}"></span>`).join("")}<span class="hint" style="margin:0 0 0 8px">Step ${step+1} of 4</span></div>`;
+
+  if(step===0){
+    host.innerHTML=`${dots}<div class="card">
+      <h2>Start with your resume</h2>
+      <p class="hint">This reads your resume <b>on this device only</b> — nothing is uploaded, there is no server, and it works with your Wi-Fi off. It looks for skills you can already prove so the plan does not waste your time re-teaching them.</p>
+      <div class="drop" id="drop"><b>Drop a .txt / .md / .docx file here</b><br><span style="font-size:12.5px">or click to choose — PDF? open it, select all, copy, and paste below instead</span>
+        <input type="file" id="file" accept=".txt,.md,.docx,.pdf" hidden></div>
+      <label class="fld" for="rt">…or paste your resume text</label>
+      <textarea id="rt" placeholder="Paste your resume here. Bullet points are fine — it only needs the words.">${esc(wiz.resumeText)}</textarea>
+      <div id="sig"></div>
+      <div class="row"><button class="go" id="next0">Continue &rarr;</button>
+        <button class="ghost" id="skip0">Skip — I'll set it up manually</button></div>
+    </div>`;
+    const rt=$("#rt"), drop=$("#drop"), file=$("#file");
+    const scan=()=>{ wiz.resumeText=rt.value; wiz.resume=wiz.resumeText.trim().length>40?parseResume(wiz.resumeText):null; showSig(); };
+    rt.addEventListener("input",scan);
+    drop.addEventListener("click",()=>file.click());
+    drop.addEventListener("dragover",e=>{e.preventDefault();drop.classList.add("hot");});
+    drop.addEventListener("dragleave",()=>drop.classList.remove("hot"));
+    drop.addEventListener("drop",e=>{e.preventDefault();drop.classList.remove("hot");if(e.dataTransfer.files[0])readFile(e.dataTransfer.files[0],rt,scan);});
+    file.addEventListener("change",()=>{ if(file.files[0]) readFile(file.files[0],rt,scan); });
+    $("#next0").addEventListener("click",()=>{ scan(); S.step=1; save(); renderSetup(); });
+    $("#skip0").addEventListener("click",()=>{ wiz.resume=null; S.step=1; save(); renderSetup(); });
+    showSig();
+    return;
+  }
+  if(step===1){
+    host.innerHTML=`${dots}<div class="card">
+      <h2>What are you aiming at?</h2>
+      <p class="hint">Pick the role you want to be interviewed for — not the one you have.</p>
+      <div class="opts" id="roles">${Object.entries(ROLES).map(([k,v])=>
+        `<button class="opt-btn ${wiz.role===k?"sel":""}" data-role="${k}">${esc(v.n)}<small>${esc(v.blurb)}</small></button>`).join("")}</div>
+      <label class="fld">How long until you want to be interview-ready?</label>
+      <div class="opts" id="weeks">${[8,12,16,24].map(w=>
+        `<button class="opt-btn ${wiz.weeks===w?"sel":""}" data-weeks="${w}">${w} weeks<small>${w<=8?"Tight — core only":w<=12?"Focused":w<=16?"Comfortable":"Thorough"}</small></button>`).join("")}</div>
+      <label class="fld">Honest hours per week — the real number, not the hopeful one</label>
+      <div class="opts" id="hours">${[[4,"30–45 min/day"],[7,"~1 hour/day"],[12,"1–2 h/day"],[18,"Full-time push"]].map(([h,d])=>
+        `<button class="opt-btn ${wiz.hours===h?"sel":""}" data-hours="${h}">${h} h/week<small>${d}</small></button>`).join("")}</div>
+      <div class="row"><button class="ghost" id="back1">&larr; Back</button>
+        <button class="go" id="next1" ${wiz.role&&wiz.weeks&&wiz.hours?"":"disabled"}>Continue &rarr;</button></div>
+    </div>`;
+    $$("[data-role]").forEach(b=>b.addEventListener("click",()=>{wiz.role=b.dataset.role;renderSetup();}));
+    $$("[data-weeks]").forEach(b=>b.addEventListener("click",()=>{wiz.weeks=+b.dataset.weeks;renderSetup();}));
+    $$("[data-hours]").forEach(b=>b.addEventListener("click",()=>{wiz.hours=+b.dataset.hours;renderSetup();}));
+    $("#back1").addEventListener("click",()=>{S.step=0;save();renderSetup();});
+    $("#next1").addEventListener("click",()=>{S.step=2;save();renderSetup();});
+    return;
+  }
+  if(step===2){
+    const budget=wiz.weeks*wiz.hours;
+    host.innerHTML=`${dots}<div class="card">
+      <h2>Take the diagnostic — closed book</h2>
+      <p class="hint">About 20 questions matched to <b>${esc(ROLES[wiz.role].n)}</b>. Its only job is to find out where you actually are, so weak areas get more of your hours and strong ones get less. Guessing here costs you later.</p>
+      <div class="banner" style="border-color:var(--line);background:var(--surface2)">
+        <b>Your budget:</b> ${wiz.weeks} weeks × ${wiz.hours} h ≈ <b>${budget} hours</b>.
+        ${budget<60?"That is genuinely tight — expect a core-only plan that refuses to pretend otherwise."
+         :budget<120?"Enough for solid core coverage plus one real project."
+         :budget<250?"Enough for depth and a portfolio project you can defend."
+         :"Enough for real depth across the board."}
+      </div>
+      <div class="row"><button class="ghost" id="back2">&larr; Back</button>
+        <button class="go" id="takediag">Start the diagnostic &rarr;</button>
+        <button class="ghost" id="skipdiag">Skip it (plan will assume average)</button></div>
+    </div>`;
+    $("#back2").addEventListener("click",()=>{S.step=1;save();renderSetup();});
+    $("#takediag").addEventListener("click",()=>{ S.setup={role:wiz.role,weeks:wiz.weeks,hours:wiz.hours,resume:wiz.resume}; save(); runQuiz("diag"); });
+    $("#skipdiag").addEventListener("click",()=>{ S.step=3; S.setup={role:wiz.role,weeks:wiz.weeks,hours:wiz.hours,resume:wiz.resume}; save(); renderSetup(); });
+    return;
+  }
+  // step 3 — build it
+  const d=S.quiz.diag, su=S.setup||wiz;
+  host.innerHTML=`${dots}<div class="card">
+    <h2>Ready to build your plan</h2>
+    <p class="hint">Target: <b>${esc(ROLES[su.role].n)}</b> · ${su.weeks} weeks · ${su.hours} h/week${d?` · diagnostic ${d.score}/${d.total}`:" · diagnostic skipped"}.</p>
+    ${d&&d.sections?`<div>${Object.entries(d.sections).map(([k,v])=>{
+      const [ok,n]=v.split("/").map(Number), p=Math.round(100*ok/n);
+      return `<div class="prow"><span class="pn">${esc(k)}</span><span class="bar"><i style="width:${barW(p)}"></i></span><span class="pct">${v}</span></div>`;
+    }).join("")}</div><p class="hint">Sections under 50% get extra hours; anything your resume already proves gets compressed to a quick verify.</p>`:""}
+    <div class="row"><button class="go" id="build">Generate my plan &rarr;</button>
+      <button class="ghost" id="back3">&larr; Back</button></div></div>`;
+  $("#back3").addEventListener("click",()=>{S.step=2;save();renderSetup();});
+  $("#build").addEventListener("click",()=>{
+    S.setup=su; S.plan=generatePlan(su); S.step=4; save();
+    $("#view-setup").innerHTML="";
+    $("#nav").hidden=false; $("#topbar").hidden=false; $("#now").hidden=false;
+    $("#hdr-title").textContent=ROLES[su.role].n+" · "+su.weeks+" weeks";
+    showView("roadmap"); renderAll();
+    window.scrollTo(0,0);
+  });
+}
+function showSig(){
+  const host=$("#sig"); if(!host) return;
+  const r=wiz.resume;
+  if(!r){ host.innerHTML=`<p class="hint">No resume read yet — that is fine, you can skip this step.</p>`; return; }
+  host.innerHTML=`<div class="sig">
+    ${r.yoe!=null?`<span class="chip ok">~${r.yoe} yr experience detected</span>`:`<span class="chip dim">years of experience unclear</span>`}
+    ${r.senior?`<span class="chip warn">senior-sounding title</span>`:""}
+    ${r.fresher?`<span class="chip dim">early-career</span>`:""}
+    ${r.skills.length?r.skills.map(s=>`<span class="chip ok">${esc(s)}</span>`).join(""):`<span class="chip warn">no known skills matched — paste more of the resume</span>`}
+  </div><p class="hint">Wrong? Just edit the text — nothing here is sent anywhere, and you can skip this step entirely.</p>`;
+}
+function readFile(f,rt,scan){
+  const name=(f.name||"").toLowerCase();
+  if(name.endsWith(".docx")){ readDocx(f).then(txt=>{ rt.value=txt; scan(); })
+    .catch(()=>{ rt.value=""; rt.placeholder="Could not read that .docx — please open it, select all, copy and paste here."; scan(); }); return; }
+  if(name.endsWith(".pdf")){ rt.value=""; rt.placeholder="PDFs cannot be read reliably in a browser without extra software. Open your PDF, press Ctrl+A then Ctrl+C, and paste here."; scan(); return; }
+  const fr=new FileReader();
+  fr.onload=()=>{ rt.value=String(fr.result||""); scan(); };
+  fr.readAsText(f);
+}
+/* .docx is a zip; pull word/document.xml out with the browser's own inflater. */
+async function readDocx(file){
+  const buf=new Uint8Array(await file.arrayBuffer());
+  const dv=new DataView(buf.buffer);
+  let text="";
+  for(let i=0;i<buf.length-3;i++){
+    if(dv.getUint32(i,true)!==0x04034b50) continue;                 // local file header
+    const method=dv.getUint16(i+8,true), comp=dv.getUint32(i+18,true);
+    const nameLen=dv.getUint16(i+26,true), extraLen=dv.getUint16(i+28,true);
+    const name=new TextDecoder().decode(buf.slice(i+30,i+30+nameLen));
+    if(name!=="word/document.xml") continue;
+    const start=i+30+nameLen+extraLen;
+    const body=buf.slice(start,start+comp);
+    let xml;
+    if(method===0) xml=new TextDecoder().decode(body);
+    else {
+      const ds=new DecompressionStream("deflate-raw");
+      const stream=new Blob([body]).stream().pipeThrough(ds);
+      xml=await new Response(stream).text();
+    }
+    text=xml.replace(/<\/w:p>/g,"\n").replace(/<[^>]+>/g," ").replace(/&amp;/g,"&").replace(/[ \t]+/g," ");
+    break;
+  }
+  if(!text.trim()) throw new Error("no document.xml");
+  return text;
+}
+
+/* =====================================================================
+   main app rendering
+   ===================================================================== */
+function showView(n){
+  $$("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===n));
+  $$(".view").forEach(v=>v.classList.toggle("on",v.id==="view-"+n));
+}
+function weekFraction(w){
+  const st=S.status[w]||"todo"; if(st==="done") return 1;
+  const steps=weekSteps(w); if(!steps.length) return st==="doing"?.15:0;
+  const done=steps.filter((_,i)=>S.tasks[w+":"+i]).length/steps.length;
+  return st==="doing"?Math.max(done,.05):done;
+}
+function programPct(){
+  if(!S.plan) return {pct:0,done:0,weeks:0};
+  const ws=S.plan.list.map(x=>x.w);
+  const sum=ws.reduce((a,w)=>a+weekFraction(w),0);
+  return {pct:Math.round(1000*sum/ws.length)/10, weeks:ws.length, done:ws.filter(w=>(S.status[w]||"todo")==="done").length};
+}
+function renderTop(){
+  if(!S.plan||!$("#tb-fill")) return;
+  const p=programPct();
+  $("#tb-fill").style.width=barW(p.pct);
+  $("#tb-bar").setAttribute("aria-valuenow",String(Math.round(p.pct)));
+  $("#tb-pct").textContent=fmtPct(p.pct);
+  const cur=S.plan.list.find(x=>(S.status[x.w]||"todo")!=="done");
+  const steps=cur?weekSteps(cur.w):[];
+  const dc=cur?steps.filter((_,i)=>S.tasks[cur.w+":"+i]).length:0;
+  $("#tb-sub").textContent=`${p.done} of ${p.weeks} weeks complete`+(cur?` · Week ${cur.w}: ${dc}/${steps.length} steps`:" · finished")
+    +` · ${ROLES[S.setup.role].n}`;
+}
+/* Steps are derived from the plan, so they stay stable for tick indices. */
+function weekSteps(w){
+  if(!S.plan) return [];
+  const wk=S.plan.list.find(x=>x.w==w); if(!wk) return [];
+  const steps=[];
+  wk.topics.forEach(t=>steps.push({
+    t:(t.mode==="verify"?"Verify (you may already know this): ":t.mode==="focus"?"Focus area — extra time: ":"Study: ")+t.n,
+    d:(t.mode==="verify"?"Your resume suggests you have this. Skim to confirm, then move on — do not spend a full session here."
+      :t.mode==="focus"?"Your diagnostic flagged this section, so it gets more time than default. Slow down."
+      :"")+` (~${t.hrs} h)`,
+    links:t.lk
+  }));
+  (wk.revision||[]).forEach(t=>steps.push({
+    t:"Spaced revision: "+t.n,
+    d:"No new material this week — that is deliberate. Redo the hardest exercise from this topic WITHOUT looking at your notes. Recalling it cold is what makes it survive until the interview; re-reading it does not.",
+    links:t.lk
+  }));
+  steps.push({t:`${wk.dsa.count} DSA problems — ${wk.dsa.pattern}`,
+    d:"Write them yourself, then save each solution in a dsa/ folder. Pattern recognition is what transfers; volume without review does not.",
+    links:[["NeetCode roadmap",DSA_LINK]]});
+  wk.capstone.forEach(c=>steps.push({t:"Project: "+c, d:"This is the part interviewers actually ask about. Commit it publicly."}));
+  steps.push({t:`Week ${wk.w} quiz`, quiz:"w"+wk.w, d:"Take it at the end of the week, closed book."});
+  if(wk.isFinal) steps.push({t:"Final pass: resume rewrite + mock interview + portfolio README polish",
+    d:"Rehearse each project out loud in under 3 minutes: problem, decisions, trade-offs, measured result."});
+  return steps;
+}
+function renderRoadmap(){
+  const host=$("#view-roadmap");
+  if(!S.plan){ host.innerHTML=""; return; }
+  const stages=stagesOf(S.plan);
+  host.innerHTML=`<p class="hint">Every week braids two or three subjects plus DSA plus a project step — deliberately, so nothing goes cold before your interviews. Click a week to open it.</p>`
+   + stages.map(st=>{
+    const done=st.weeks.filter(w=>S.status[w]==="done").length;
+    const frac=100*st.weeks.reduce((a,w)=>a+weekFraction(w),0)/st.weeks.length;
+    return `<section class="phase">
+      <div class="phase-head"><span class="phase-code">${st.code}</span><span class="phase-name">${st.name}</span>
+        <span class="bar"><i style="width:${barW(frac)}"></i></span>
+        <span class="pct" style="font-family:Consolas,monospace;font-size:11.5px;color:var(--muted)">${done}/${st.weeks.length}</span></div>
+      ${st.weeks.map(w=>{
+        const wk=S.plan.list.find(x=>x.w===w), stt=S.status[w]||"todo";
+        const steps=weekSteps(w), dc=steps.filter((_,i)=>S.tasks[w+":"+i]).length;
+        return `<div class="wk"><button class="wk-row" data-open="${w}">
+          <span class="wk-code">W${String(w).padStart(2,"0")}</span>
+          <span><span class="wk-title">${esc(wk.topics[0]?wk.topics[0].n.split(":")[0]:(wk.capstone.length?"Project + revision":"Consolidation"))}</span>
+            <div class="wk-sub">${esc((wk.topics.length?wk.topics.map(t=>t.tr).filter((v,i,a)=>a.indexOf(v)===i).join(" · "):"spaced revision"))} · ${wk.dsa.count} DSA · ${dc}/${steps.length} steps</div></span>
+          <span class="pill ${stt}" data-pill="${w}" role="button" tabindex="0"><i></i>${SLABEL[stt]}</span>
+        </button></div>`;}).join("")}
+    </section>`;}).join("");
+  $$("[data-open]",host).forEach(b=>b.addEventListener("click",e=>{
+    if(e.target.closest("[data-pill]")) return; renderWeek(b.dataset.open); }));
+  $$("[data-pill]",host).forEach(p=>{
+    const cyc=e=>{ e.stopPropagation(); const w=p.dataset.pill, cur=S.status[w]||"todo";
+      S.status[w]=STATUSES[(STATUSES.indexOf(cur)+1)%3]; save(); renderAll(); };
+    p.addEventListener("click",cyc);
+    p.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();cyc(e);} });
+  });
+}
+function renderWeek(w){
+  const host=$("#view-roadmap"), wk=S.plan.list.find(x=>x.w==w);
+  const steps=weekSteps(w), st=S.status[w]||"todo";
+  const dc=steps.filter((_,i)=>S.tasks[w+":"+i]).length;
+  host.innerHTML=`<button class="back">&larr; All weeks</button>
+    <div class="wkpage-head"><span class="wk-code" style="font-size:14px">W${String(w).padStart(2,"0")}</span>
+      <h2>Week ${w}</h2><span class="pill ${st}" data-pill role="button" tabindex="0"><i></i>${SLABEL[st]}</span></div>
+    <p class="focusline"><b>This week:</b> ${esc(wk.topics.length?wk.topics.map(t=>t.n).join(" · "):"consolidation — spaced revision, project work and DSA, no new material")}</p>
+    <p class="focusline"><b>Project:</b> ${wk.capstone.length?esc(wk.capstone.join(" · ")):"keep it building — no new milestone this week"}</p>
+    <div class="stepbar"><span class="lbl">${dc}/${steps.length} steps</span>
+      <span class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(100*dc/steps.length)}"><i style="width:${barW(100*dc/steps.length)}"></i></span></div>
+    <div>${steps.map((s,i)=>{
+      const done=!!S.tasks[w+":"+i], best=s.quiz?S.quiz[s.quiz]:null;
+      return `<div class="step ${done?"done":""}">
+        <input type="checkbox" data-task="${w}:${i}" ${done?"checked":""} aria-label="mark step done">
+        <span style="flex:1"><span class="st-t">${esc(s.t)}</span>
+          ${s.d?`<div class="st-d">${esc(s.d)}</div>`:""}
+          ${s.links&&s.links.length?`<div class="linkchips">${s.links.map(l=>`<a href="${esc(l[1])}" target="_blank" rel="noopener">${esc(l[0])} ↗</a>`).join("")}</div>`:""}
+          ${s.quiz?`<div class="takequiz"><button class="go" data-quiz="${s.quiz}">${best?"Retake":"Take"} the quiz →</button>${best?` <span class="chip ${best.pct>=70?"ok":"warn"}" style="margin-left:8px">best ${best.score}/${best.total}</span>`:""}</div>`:""}
+        </span></div>`;}).join("")}</div>
+    ${dc===steps.length&&st!=="done"?`<p style="margin-top:12px"><button class="go" id="markdone">All steps done — mark Week ${w} complete ✓</button></p>`:""}`;
+  $(".back",host).addEventListener("click",renderRoadmap);
+  const pill=$("[data-pill]",host), cyc=e=>{ e.preventDefault(); const cur=S.status[w]||"todo";
+    S.status[w]=STATUSES[(STATUSES.indexOf(cur)+1)%3]; save(); renderWeek(w); renderProgress(); renderNow(); };
+  pill.addEventListener("click",cyc);
+  pill.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" ") cyc(e); });
+  $$("[data-task]",host).forEach(cb=>cb.addEventListener("change",()=>{
+    S.tasks[cb.dataset.task]=cb.checked; save(); renderWeek(w); renderProgress(); renderNow(); }));
+  $$("[data-quiz]",host).forEach(b=>b.addEventListener("click",()=>runQuiz(b.dataset.quiz)));
+  const md=$("#markdone",host);
+  if(md) md.addEventListener("click",()=>{ S.status[w]="done"; save(); renderAll(); });
+  window.scrollTo(0,0);
+}
+function renderNow(){
+  const el=$("#now"); if(!S.plan){ el.hidden=true; return; }
+  el.hidden=false; renderTop();
+  const cur=S.plan.list.find(x=>(S.status[x.w]||"todo")!=="done");
+  if(!cur){ el.innerHTML=`<span class="tag">DONE</span><div><b>Every week complete.</b> <span>Rewrite the resume, rehearse the projects, and start applying.</span></div>`; return; }
+  const steps=weekSteps(cur.w), nextI=steps.findIndex((_,i)=>!S.tasks[cur.w+":"+i]);
+  el.innerHTML=`<span class="tag">NOW</span><div style="flex:1"><b>Week ${cur.w}</b>
+    <span>· ${esc(cur.topics.map(t=>t.n.split(":")[0]).join(", "))}${nextI>=0?` · next: ${esc(steps[nextI].t)}`:""}</span></div>
+    <button class="go" id="nowopen">Open Week ${cur.w} →</button>`;
+  $("#nowopen").addEventListener("click",()=>{ showView("roadmap"); renderWeek(cur.w); });
+}
+
+/* ---------------- quizzes ---------------- */
+function quizDef(id){
+  if(id==="diag") return {id,name:"Diagnostic",qs:diagQuestions(S.setup.role),sections:true};
+  const w=+String(id).replace("w","");
+  const wk=S.plan?S.plan.list.find(x=>x.w===w):null;
+  return wk?{id,name:"Week "+w+" quiz",qs:weekQuiz(wk),sections:false}:null;
+}
+function renderQuizList(){
+  const host=$("#view-quizzes");
+  if(!S.plan){ host.innerHTML=""; return; }
+  const items=[{id:"diag",name:"Diagnostic"}].concat(S.plan.list.map(x=>({id:"w"+x.w,name:"Week "+x.w})));
+  host.innerHTML=`<div class="cards">${items.map(it=>{
+    const b=S.quiz[it.id];
+    return `<div class="card" style="margin:0"><h3 style="margin:0 0 6px;font-size:15px">${esc(it.name)}</h3>
+      ${b?`<span class="chip ${b.pct>=70?"ok":"warn"}">best ${b.score}/${b.total} (${b.pct}%)</span>`:`<span class="chip dim">not attempted</span>`}
+      <div style="margin-top:10px"><button class="go" data-q="${it.id}">${b?"Retake":"Start"}</button></div></div>`;}).join("")}</div>`;
+  $$("[data-q]",host).forEach(b=>b.addEventListener("click",()=>runQuiz(b.dataset.q)));
+}
+function runQuiz(id){
+  const quiz=quizDef(id); if(!quiz) return;
+  if(id!=="diag"){ showView("quizzes"); }
+  const host=id==="diag"?$("#view-setup"):$("#view-quizzes");
+  if(id==="diag"){ $$(".view").forEach(v=>v.classList.toggle("on",v.id==="view-setup")); }
+  host.innerHTML=`<div class="wkpage-head"><button class="back" id="qback">&larr; Back</button><h2>${esc(quiz.name)}</h2></div>
+    <p class="hint">Closed book. One answer each, then submit at the bottom.</p><div id="rslot"></div>
+    <div>${quiz.qs.map((q,i)=>`<div class="qbox" data-q="${i}">
+      ${q.sec?`<div class="qsec">${esc(q.sec)}</div>`:""}
+      <p class="qtext"><span class="qn">${String(i+1).padStart(2,"0")}</span>${esc(q.q)}</p>
+      ${q.o.map((o,j)=>`<label class="optn"><input type="radio" name="q${i}" value="${j}"><span>${esc(o)}</span></label>`).join("")}
+      <div class="expl"></div></div>`).join("")}</div>
+    <div class="row"><button class="go" id="qsub">Submit answers</button><span class="hint" id="qnote" style="margin:0"></span></div>`;
+  $("#qback").addEventListener("click",()=>{ if(id==="diag"){ renderSetup(); } else { showView("quizzes"); renderQuizList(); } });
+  $("#qsub").addEventListener("click",()=>gradeQuiz(quiz,host,id));
+  window.scrollTo(0,0);
+}
+function gradeQuiz(quiz,host,id){
+  const boxes=$$(".qbox",host), answers=[];
+  boxes.forEach((b,i)=>{ const s=b.querySelector("input:checked"); answers[i]=s?+s.value:null; });
+  const missing=answers.findIndex(a=>a===null);
+  if(missing>=0){ $("#qnote",host).textContent=answers.filter(a=>a===null).length+" unanswered";
+    boxes[missing].scrollIntoView({behavior:"smooth",block:"center"}); return; }
+  let score=0; const bySec={}, missed=[];
+  boxes.forEach((b,i)=>{
+    const q=quiz.qs[i], right=answers[i]===q.a;
+    if(right) score++; else missed.push((i+1)+(q.sec?" "+q.sec:""));
+    if(q.sec){ bySec[q.sec]=bySec[q.sec]||{ok:0,n:0}; bySec[q.sec].n++; if(right) bySec[q.sec].ok++; }
+    b.classList.add("graded");
+    $$(".optn",b).forEach((o,j)=>{ o.querySelector("input").disabled=true;
+      if(j===q.a) o.classList.add("right"); else if(j===answers[i]) o.classList.add("wrong"); });
+    $(".expl",b).textContent=q.x;
+  });
+  const total=quiz.qs.length, pct=Math.round(100*score/total), prev=S.quiz[quiz.id];
+  if(!prev||pct>=prev.pct){
+    S.quiz[quiz.id]={score,total,pct,missed,date:new Date().toISOString().slice(0,10),
+      sections:quiz.sections?Object.fromEntries(Object.entries(bySec).map(([k,v])=>[k,v.ok+"/"+v.n])):undefined};
+    save();
+  }
+  const verdict=pct>=85?"Strong — this will not be what holds you back.":pct>=65?"Solid base with real gaps — the plan will target them."
+    :"Useful signal. A low score here just means the plan puts your hours where they matter.";
+  $("#rslot",host).innerHTML=`<div class="result"><div class="big">${score}/${total} <small style="font-size:15px;color:var(--muted)">(${pct}%)</small></div>
+    <div style="margin:6px 0 10px">${verdict}</div>
+    ${quiz.sections?Object.entries(bySec).map(([k,v])=>{
+      const sp=Math.round(100*v.ok/v.n);
+      return `<div class="secline"><span>${esc(k)}</span><span><span class="chip ${sp>=75?"ok":sp>=50?"warn":"bad"}">${v.ok}/${v.n}</span></span></div>`;
+    }).join(""):""}
+    <div class="row">${id==="diag"?`<button class="go" id="qdone">Continue &rarr;</button>`:`<button class="go" id="qdone">Back to plan</button>`}
+      <button class="ghost" id="qretake">Retake</button></div></div>`;
+  $("#qretake",host).addEventListener("click",()=>runQuiz(id));
+  $("#qdone",host).addEventListener("click",()=>{
+    if(id==="diag"){ S.step=3; save(); renderSetup(); }
+    else { showView("roadmap"); renderAll(); }
+  });
+  $("#rslot",host).scrollIntoView({behavior:"smooth",block:"start"});
+  if(id!=="diag"){ renderProgress(); renderNow(); }
+}
+
+/* ---------------- progress ---------------- */
+function renderProgress(){
+  const host=$("#view-progress"); if(!S.plan){ host.innerHTML=""; return; }
+  const p=programPct(), qs=Object.values(S.quiz);
+  const avg=qs.length?Math.round(qs.reduce((a,q)=>a+q.pct,0)/qs.length):null;
+  const dsaTarget=S.plan.list.reduce((a,w)=>a+w.dsa.count,0);
+  host.innerHTML=`
+    <div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px">
+      <span><span style="font-size:30px;font-weight:800">${fmtPct(p.pct)}</span> <span class="hint" style="margin:0">of your ${p.weeks}-week plan</span></span>
+      <span class="hint" style="margin:0">${esc(ROLES[S.setup.role].n)} · ${S.setup.hours} h/week</span></div>
+      <span class="bar" style="height:14px;display:block;margin-top:8px" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(p.pct)}"><i style="width:${barW(p.pct)}"></i></span>
+      <p class="hint">Counts finished weeks plus part-credit for steps ticked in the week you are on.</p></div>
+    <div class="tiles">
+      <div class="tile"><div class="lbl">Weeks complete</div><div class="val">${p.done}<small> / ${p.weeks}</small></div>
+        <span class="bar"><i style="width:${barW(100*p.done/p.weeks)}"></i></span></div>
+      <div class="tile"><div class="lbl">Quiz average</div><div class="val">${avg===null?"—":avg+"<small>%</small>"}</div>
+        <div class="hint">${qs.length} taken (best scores)</div></div>
+      <div class="tile"><div class="lbl">DSA solved</div><div class="val">${S.dsa}<small> / ${dsaTarget}</small>
+        <span style="float:right"><button class="ghost" id="dm" aria-label="decrease" style="padding:2px 9px">−</button>
+        <button class="ghost" id="dp" aria-label="increase" style="padding:2px 9px">+</button></span></div>
+        <span class="bar"><i style="width:${barW(Math.min(100,100*S.dsa/dsaTarget))}"></i></span></div>
+    </div>
+    ${(S.plan.dropped&&S.plan.dropped.length)?`<div class="card">
+      <h2 style="font-size:16px">What your ${S.plan.budget.total} hours could not fit</h2>
+      <p class="hint">${S.plan.weeks} weeks × ${S.setup.hours} h leaves about ${S.plan.budget.study} study hours after DSA and project time.
+      These topics did not fit, and pretending otherwise would just set you up to fail. They are listed newest-priority-first —
+      if you find extra hours, add them in this order.</p>
+      ${S.plan.dropped.map(d=>`<div class="prow"><span class="pn" style="flex:1;min-width:0">${esc(d.n)}</span><span class="pct">~${d.h} h</span></div>`).join("")}
+      <p class="hint">Want them in? Start over with a longer timeline or more hours per week — the plan rebuilds around whatever you can actually give it.</p></div>`:""}
+    <div class="card"><h2 style="font-size:16px">Back up your progress</h2>
+      <p class="hint">Your progress lives in this browser only. Export a file before switching machines, clearing history, or if the save chip above ever says “not saved”.</p>
+      <div class="row"><button class="go" id="exp">Export progress file</button>
+        <button class="ghost" id="imp">Import a file</button>
+        <input type="file" id="impf" accept=".json" hidden>
+        <button class="ghost" id="reset" style="margin-left:auto;color:var(--bad)">Start over</button></div>
+      <p class="hint" id="iomsg"></p></div>`;
+  $("#dp",host).addEventListener("click",()=>{S.dsa++;save();renderProgress();});
+  $("#dm",host).addEventListener("click",()=>{S.dsa=Math.max(0,S.dsa-1);save();renderProgress();});
+  $("#exp",host).addEventListener("click",()=>{
+    const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+    a.download="launchpad-progress.json"; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+    $("#iomsg",host).textContent="Exported. Keep that file safe — importing it restores everything.";
+  });
+  $("#imp",host).addEventListener("click",()=>$("#impf",host).click());
+  $("#impf",host).addEventListener("change",e=>{
+    const f=e.target.files[0]; if(!f) return;
+    const fr=new FileReader();
+    fr.onload=()=>{ try{ const o=JSON.parse(String(fr.result));
+        if(!o||!o.plan) throw new Error("no plan in file");
+        S=o; save(); renderAll(); $("#iomsg",$("#view-progress")).textContent="Imported.";
+      }catch(err){ $("#iomsg",host).textContent="That file could not be read as a progress export."; } };
+    fr.readAsText(f);
+  });
+  $("#reset",host).addEventListener("click",()=>{
+    if(!confirm("Delete your plan and all progress on this device? Export first if you want a backup.")) return;
+    S=blank(); try{ localStorage.removeItem(KEY); }catch(e){}
+    wiz={role:null,weeks:null,hours:null,resumeText:"",resume:null};
+    $("#nav").hidden=true; $("#topbar").hidden=true; $("#now").hidden=true;
+    $$(".view").forEach(v=>v.classList.toggle("on",v.id==="view-setup"));
+    renderSetup(); window.scrollTo(0,0);
+  });
+}
+function renderAll(){ renderRoadmap(); renderQuizList(); renderProgress(); renderNow(); }
+
+/* ---------------- boot ---------------- */
+$("#nav").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-v]"); if(!b) return;
+  showView(b.dataset.v);
+  if(b.dataset.v==="roadmap") renderRoadmap();
+  if(b.dataset.v==="quizzes") renderQuizList();
+  if(b.dataset.v==="progress") renderProgress();
+});
+load(); paintChip(); storageBanner();
+if(S.plan&&S.setup){
+  $("#hdr-title").textContent=ROLES[S.setup.role].n+" · "+S.plan.weeks+" weeks";
+  $("#nav").hidden=false; $("#topbar").hidden=false;
+  $$(".view").forEach(v=>v.classList.toggle("on",v.id==="view-roadmap"));
+  renderAll();
+} else {
+  if(S.setup){ wiz={...wiz,...S.setup,resumeText:""}; }
+  renderSetup();
+}
+</script>
+</body>
+</html>
