@@ -43,6 +43,40 @@
   nav button:hover { color: var(--ink); }
   nav button.on { color: var(--ink); border-bottom-color: var(--accent); }
 
+  /* ---- program progress bar: always visible in the sticky header ---- */
+  .topbar { display: flex; align-items: center; gap: 11px; padding: 11px 0 12px; flex-wrap: wrap; }
+  .tb-lbl { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 10.5px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .bar { flex: 1 1 200px; min-width: 140px; height: 10px; background: var(--surface2); border: 1px solid var(--line);
+    border-radius: 999px; overflow: hidden; }
+  .bar i { display: block; height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--ok)); transition: width .45s cubic-bezier(.4,0,.2,1); }
+  .tb-pct { font-family: Archivo, system-ui, sans-serif; font-weight: 800; font-size: 16px;
+    font-variant-numeric: tabular-nums; }
+  .tb-sub { flex-basis: 100%; font-size: 12.5px; color: var(--muted); margin-top: -4px; }
+  .savechip { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 10.5px; letter-spacing: .04em;
+    padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+    color: var(--muted); white-space: nowrap; cursor: help; }
+  .savechip.saving { color: var(--warn); border-color: var(--warn); background: var(--warn-soft); }
+  .savechip.saved  { color: var(--ok);   border-color: var(--ok);   background: var(--ok-soft); }
+  .savechip.err    { color: var(--bad);  border-color: var(--bad);  background: var(--bad-soft); }
+
+  /* ---- per-week step bar + progress-tab bars ---- */
+  .stepbar { display: flex; align-items: center; gap: 11px; margin: 16px 0 12px; flex-wrap: wrap; }
+  .stepbar .bar { height: 8px; }
+  .stepbar .lbl { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .bigbar { margin: 18px 0 4px; }
+  .bigbar .head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 8px;
+    flex-wrap: wrap; }
+  .bigbar .n { font-family: Archivo, system-ui, sans-serif; font-weight: 800; font-size: 30px; letter-spacing: -.02em; }
+  .bigbar .bar { height: 14px; flex: none; display: block; width: 100%; }
+  .prow { display: flex; align-items: center; gap: 10px; padding: 7px 2px; }
+  .prow .pc { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 11px; font-weight: 600;
+    color: var(--accent); min-width: 22px; }
+  .prow .pn { font-size: 13.5px; min-width: 118px; }
+  .prow .pct { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 11.5px; color: var(--muted);
+    min-width: 36px; text-align: right; font-variant-numeric: tabular-nums; }
+
   .now { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; margin: 20px 0 4px; padding: 14px 16px;
     background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
     border-radius: 8px; box-shadow: var(--shadow); }
@@ -205,6 +239,14 @@
       <button data-v="progress">Progress</button>
     </nav>
   </div>
+  <div class="wrap topbar">
+    <span class="tb-lbl">Progress</span>
+    <span class="bar" role="progressbar" aria-label="Overall program progress"
+      aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="tb-bar"><i id="tb-fill" style="width:0"></i></span>
+    <span class="tb-pct" id="tb-pct">0%</span>
+    <span class="savechip" id="savechip">…</span>
+    <span class="tb-sub" id="tb-sub"></span>
+  </div>
 </header>
 
 <main class="wrap">
@@ -345,15 +387,136 @@ const MILESTONES = [
   { d: "Feb 7", n: "FDE-ready — full portfolio, all roles sharpened", wk: 24 }
 ];
 
-/* ---------------- state ---------------- */
+/* ---------------- state + persistence ----------------
+   Two layers, because layer 1 alone silently lost every tick:
+   1. localStorage — instant, but THROWS in the artifact viewer's sandboxed frame
+      (opaque origin), which is why progress reset to 0 on every reload.
+   2. data/progress.json written back into the artifact itself via the `artifact`
+      capability — survives reloads and follows Sid across devices. The files form
+      of publish() does NOT reload this view, so ticking stays flicker-free.       */
 const KEY = "launchpad.v1";
-let S;
-try { S = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { S = {}; }
-S.status = S.status || {};   // weekNum -> todo|doing|done
-S.quiz = S.quiz || {};       // quizId -> {score,total,pct,date,sections?}
-S.dsa = S.dsa || 0;
-S.tasks = S.tasks || {};     // "week:stepIndex" -> true
-function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+const DATA_PATH = "data/progress.json";
+const RANK = { todo: 0, doing: 1, done: 2 };
+
+function blankState() { return { rev: 0, status: {}, quiz: {}, dsa: 0, tasks: {} }; }
+function normalize(o) {
+  const s = Object.assign(blankState(), o || {});
+  s.status = s.status || {};  // weekNum -> todo|doing|done
+  s.quiz = s.quiz || {};      // quizId -> {score,total,pct,date,sections?}
+  s.tasks = s.tasks || {};    // "week:stepIndex" -> bool
+  s.dsa = Number(s.dsa) || 0;
+  s.rev = Number(s.rev) || 0;
+  return s;
+}
+let S = blankState(), localOK = true;
+try { S = normalize(JSON.parse(localStorage.getItem(KEY))); } catch (e) { localOK = false; }
+
+/* Never lose a tick: on two divergent copies keep the more advanced value per field. */
+function merge(a, b) {
+  const hi = (b.rev || 0) > (a.rev || 0) ? b : a, lo = hi === b ? a : b;
+  const out = normalize(JSON.parse(JSON.stringify(hi)));
+  out.rev = Math.max(a.rev || 0, b.rev || 0);
+  out.dsa = Math.max(a.dsa || 0, b.dsa || 0);
+  for (const [id, q] of Object.entries(lo.quiz || {}))
+    if (!out.quiz[id] || (q.pct || 0) > (out.quiz[id].pct || 0)) out.quiz[id] = q;
+  for (const [k, v] of Object.entries(lo.tasks || {}))
+    if (v && !(k in out.tasks)) out.tasks[k] = true;      // an untick is stored as false, so it survives
+  for (const [k, v] of Object.entries(lo.status || {}))
+    if ((RANK[v] || 0) > (RANK[out.status[k]] || 0)) out.status[k] = v;
+  return out;
+}
+
+let cloud = null;                       // artifact namespace, once the viewer grants it
+let mode = "local";                     // local | cloud | readonly
+let saveTimer = null, saving = false, dirty = false, debounce = 1200;
+
+function setChip(cls, text, title) {
+  const el = document.getElementById("savechip");
+  if (!el) return;
+  el.className = "savechip " + cls; el.textContent = text; el.title = title || "";
+}
+function saveNote() {
+  return mode === "cloud" ? "saved in your artifact — survives reload, any device"
+       : mode === "readonly" ? "read-only view — changes won't stick"
+       : localOK ? "saved in this browser only" : "not being saved — reload will clear this";
+}
+function chipIdle() {
+  if (mode === "cloud") setChip("saved", "saved ✓", "Written into the artifact itself — survives reload and follows you across devices.");
+  else if (mode === "readonly") setChip("err", "read-only", "This view can't write to the artifact, so ticks won't persist.");
+  else setChip("", localOK ? "this device only" : "not saved", localOK
+    ? "Saved in this browser's storage only. Open the artifact link for progress that persists everywhere."
+    : "This browser blocks local storage here, so progress lasts only until you reload.");
+}
+
+function save() {
+  S.rev = (S.rev || 0) + 1;
+  try { localStorage.setItem(KEY, JSON.stringify(S)); localOK = true; } catch (e) { localOK = false; }
+  renderTop();
+  if (!cloud) { chipIdle(); return; }
+  dirty = true;
+  setChip("saving", "saving…");
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(flush, debounce);          // batch rapid ticks into one version
+}
+
+async function readCloud() {
+  try {
+    const res = await fetch(DATA_PATH + "?r=" + Date.now(), { cache: "no-store" });
+    if (!res.ok) return null;
+    return normalize(await res.json());
+  } catch (e) { return null; }
+}
+
+async function flush() {
+  if (!cloud || saving || !dirty) return;
+  saving = true; dirty = false;
+  const snapshot = JSON.stringify(S, null, 2);
+  try {
+    await cloud.publish({ [DATA_PATH]: snapshot });
+    saving = false;
+    if (dirty) { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 400); return; }
+    mode = "cloud"; chipIdle();
+  } catch (err) {
+    saving = false;
+    const code = (err && err.code) || "upstream_error";
+    if (code === "conflict") {                       // another view published first — take its version
+      const remote = await readCloud();
+      if (remote) { S = merge(S, remote); renderAll(); }
+      chipIdle();
+    } else if (code === "rate_limited") {
+      debounce = Math.min(15000, debounce * 3); dirty = true;
+      clearTimeout(saveTimer); saveTimer = setTimeout(flush, debounce);
+      setChip("saving", "saving…", "Slowing saves down to respect a rate limit.");
+    } else if (["not_writer", "not_granted", "not_declared", "capability_disabled",
+                "capability_removed", "consent_required"].includes(code)) {
+      cloud = null; mode = (code === "not_writer") ? "readonly" : "local"; chipIdle();
+    } else {                                         // transient: retry once, then fall back quietly
+      dirty = true;
+      setChip("err", "retrying…", "Save failed once; trying again.");
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(flush, 1500 + Math.floor(Math.random() * 1500));
+    }
+  }
+}
+
+/* Light cloud saving up when the viewer answers — never during this first synchronous run. */
+(async () => {
+  if (!(window.claude && typeof window.claude.use === "function")) { chipIdle(); return; }
+  const ns = await window.claude.use("artifact");
+  if (!ns) { chipIdle(); return; }
+  cloud = ns; mode = "cloud";
+  const remote = await readCloud();
+  if (remote) {
+    const before = JSON.stringify(S);
+    S = merge(S, remote);
+    if (JSON.stringify(S) !== before) renderAll();
+  }
+  if (dirty) flush(); else chipIdle();
+})();
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden" && dirty) flush();   // don't lose a tick on tab-away
+});
 
 /* ---------------- helpers ---------------- */
 const $ = (sel, el) => (el || document).querySelector(sel);
@@ -450,7 +613,14 @@ function renderWeek(w) {
     <p class="focusline"><b>Focus:</b> ${esc(wk.f)}</p>
     <p class="focusline"><b>Ship by Sunday:</b> ${esc(wk.s)}</p>
     ${c ? `
-      <p class="hint" style="margin-top:16px">${doneCount}/${steps.length} steps done — work top to bottom, tick as you go (saved on this device).</p>
+      <div class="stepbar">
+        <span class="lbl">${doneCount}/${steps.length} steps</span>
+        <span class="bar" role="progressbar" aria-label="Week ${Number(w)} steps complete" aria-valuemin="0"
+          aria-valuemax="100" aria-valuenow="${Math.round(100 * doneCount / (steps.length || 1))}"
+          ><i style="width:${barWidth(100 * doneCount / (steps.length || 1))}"></i></span>
+        <span class="lbl">${esc(saveNote())}</span>
+      </div>
+      <p class="hint">Work top to bottom, tick as you go.</p>
       <div class="steps">${steps.map((s, i) => stepHTML(w, i, s)).join("")}</div>
       ${doneCount === steps.length && steps.length && st !== "done" ? `<p class="markdone"><button class="go" id="markdone">All steps done — mark Week ${Number(w)} complete ✓</button></p>` : ""}`
     : `<div class="locked"><b style="color:var(--ink)">This week unlocks when you reach it.</b><br>Say <code>start week ${Number(w)}</code> to Claude in chat — the full lesson, exercises, drills and this week's quiz get generated and appear right here (and in your curriculum folder). One week at a time keeps the content matched to your actual level.</div>`}
@@ -467,7 +637,7 @@ function renderWeek(w) {
   pill.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") cycle(e); });
   host.querySelectorAll("[data-task]").forEach(cb => cb.addEventListener("change", () => {
     S.tasks[cb.dataset.task] = cb.checked;
-    save(); renderWeek(w); renderNow();
+    save(); renderWeek(w); renderProgress(); renderNow();
   }));
   host.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click", () => {
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(b.dataset.copy);
@@ -479,7 +649,51 @@ function renderWeek(w) {
   window.scrollTo(0, 0);
 }
 
+/* ---------------- progress math ---------------- */
+/* A week counts 1.0 when complete, else part-credit for the steps ticked — so the
+   bar moves every time Sid ticks something, not once a week. */
+function weekFraction(w) {
+  const st = S.status[w] || "todo";
+  if (st === "done") return 1;
+  const steps = CONTENT[w] ? CONTENT[w].steps : null;
+  if (steps && steps.length) {
+    const frac = steps.filter((_, i) => S.tasks[w + ":" + i]).length / steps.length;
+    return st === "doing" ? Math.max(frac, 0.05) : frac;
+  }
+  return st === "doing" ? 0.15 : 0;
+}
+function programPct() {
+  const ws = Object.keys(WEEKS).map(Number);
+  const sum = ws.reduce((a, w) => a + weekFraction(w), 0);
+  return {
+    pct: Math.round(1000 * sum / ws.length) / 10,
+    weeks: ws.length,
+    done: ws.filter(w => (S.status[w] || "todo") === "done").length
+  };
+}
+const fmtPct = p => (p > 0 && p < 10 ? p.toFixed(1) : String(Math.round(p))) + "%";
+function barWidth(p) { return (p > 0 ? Math.max(p, 1.5) : 0) + "%"; }
+
+function renderTop() {
+  const fill = document.getElementById("tb-fill");
+  if (!fill) return;
+  const p = programPct();
+  fill.style.width = barWidth(p.pct);
+  document.getElementById("tb-bar").setAttribute("aria-valuenow", String(Math.round(p.pct)));
+  document.getElementById("tb-pct").textContent = fmtPct(p.pct);
+  const order = Object.keys(WEEKS).map(Number).sort((a, b) => a - b);
+  const cur = order.find(x => (S.status[x] || "todo") !== "done");
+  const steps = (cur != null && CONTENT[cur]) ? CONTENT[cur].steps : [];
+  const dc = steps.filter((_, i) => S.tasks[cur + ":" + i]).length;
+  document.getElementById("tb-sub").textContent =
+    `${p.done} of ${p.weeks} weeks complete` +
+    (steps.length ? ` · Week ${cur}: ${dc}/${steps.length} steps` : "") +
+    ` · finish line Feb 7, 2027`;
+}
+function renderAll() { renderRoadmap(); renderQuizList(); renderProgress(); renderNow(); }
+
 function renderNow() {
+  renderTop();
   const el = document.getElementById("now");
   const order = Object.keys(WEEKS).map(Number).sort((a, b) => a - b);
   const w = order.find(x => (S.status[x] || "todo") !== "done");
@@ -617,7 +831,31 @@ function renderProgress() {
   const quizzes = Object.values(S.quiz);
   const avg = quizzes.length ? Math.round(quizzes.reduce((a, q) => a + q.pct, 0) / quizzes.length) : null;
 
+  const p = programPct();
   host.innerHTML = `
+    <div class="bigbar">
+      <div class="head">
+        <span><span class="n">${fmtPct(p.pct)}</span> <span class="hint" style="margin:0">of the 25-week program</span></span>
+        <span class="hint" style="margin:0">Aug 21, 2026 → Feb 7, 2027</span>
+      </div>
+      <span class="bar" role="progressbar" aria-label="Overall program progress" aria-valuemin="0"
+        aria-valuemax="100" aria-valuenow="${Math.round(p.pct)}"><i style="width:${barWidth(p.pct)}"></i></span>
+      <p class="hint">Finished weeks plus part-credit for the steps ticked in the week you're on · ${esc(saveNote())}</p>
+    </div>
+
+    <h2 class="sec-h">Phases</h2>
+    <div>${PHASES.map(ph => {
+      const frac = 100 * ph.weeks.reduce((a, w) => a + weekFraction(w), 0) / ph.weeks.length;
+      return `<div class="prow">
+        <span class="pc">${ph.code}</span>
+        <span class="pn">${esc(ph.name)}</span>
+        <span class="bar" role="progressbar" aria-label="${esc(ph.name)} progress" aria-valuemin="0"
+          aria-valuemax="100" aria-valuenow="${Math.round(frac)}"><i style="width:${barWidth(frac)}"></i></span>
+        <span class="pct">${Math.round(frac)}%</span>
+      </div>`;
+    }).join("")}</div>
+
+    <h2 class="sec-h">Counters</h2>
     <div class="tiles">
       <div class="tile">
         <div class="lbl">Weeks complete</div>
@@ -654,7 +892,8 @@ function renderProgress() {
     <p><button class="copy" id="copy">Copy report</button> <span class="hint" id="copied"></span></p>`;
 
   $("#export", host).value = JSON.stringify({ exported: new Date().toISOString().slice(0, 10),
-    weeks: S.status, quizzes: S.quiz, dsa_solved: S.dsa }, null, 2);
+    program_pct: p.pct, saved: mode, rev: S.rev,
+    weeks: S.status, steps_ticked: S.tasks, quizzes: S.quiz, dsa_solved: S.dsa }, null, 2);
   $("#dsa-plus", host).addEventListener("click", () => { S.dsa++; save(); renderProgress(); });
   $("#dsa-minus", host).addEventListener("click", () => { S.dsa = Math.max(0, S.dsa - 1); save(); renderProgress(); });
   $("#copy", host).addEventListener("click", () => {
@@ -673,6 +912,7 @@ document.getElementById("nav").addEventListener("click", e => {
   showView(btn.dataset.v);
   if (btn.dataset.v === "roadmap") renderRoadmap();
   if (btn.dataset.v === "quizzes" && !$("#view-quizzes .qbox")) renderQuizList();
+  if (btn.dataset.v === "progress") renderProgress();   // always fresh: it reads live counters
 });
 
 renderRoadmap();
