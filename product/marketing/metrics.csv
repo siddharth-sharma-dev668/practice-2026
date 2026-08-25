@@ -1,0 +1,17 @@
+week_start,posts,reach,profile_visits,link_clicks,sales,revenue_usd,refunds,best_post,notes
+# Fill one row every Saturday. Takes 10 minutes. The pattern only becomes
+# visible after ~6 rows, so do not skip weeks — a gap costs you the trend.
+#
+# WHERE THE NUMBERS LIVE
+#   reach, profile_visits, saves  -> Instagram: Professional Dashboard > Insights
+#   link_clicks                   -> your link-in-bio tool, or Gumroad page views
+#   sales, revenue, refunds       -> Gumroad > Analytics
+#
+# best_post: the single post with the most SAVES (not likes). Saves predict reach
+# better than any other metric, and reach is what you are actually buying.
+#
+# Leave a cell blank if you genuinely do not have it. Do not guess — a made-up
+# number is worse than a gap, because you will trust it later.
+#
+# EXAMPLE ROW (delete this once you have real data):
+# 2026-09-07,3,1240,38,9,0,0,0,"mutable default args carousel","first week, no link in bio yet"
