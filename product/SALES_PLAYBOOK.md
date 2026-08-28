@@ -13,7 +13,7 @@ Simple model, real numbers, and a decision tree so you always know which one thi
      ↓  ~5–15%
    Link clicks      people who tapped the link in bio
      ↓  ~2–8%
-   Sales            people who paid $19
+   Sales            people who paid ₹4,999
 ```
 
 Multiply it through. To get **10 sales/month** at mid-range rates you need roughly:
@@ -47,7 +47,7 @@ Copy this table into a notebook or a spreadsheet. Fill it in every week without 
 
 **The two metrics most people ignore, which predict everything:**
 - **Saves** — the strongest signal that content is genuinely useful. High saves means the algorithm will keep pushing that post. Track it per post.
-- **Sales conversion on the product page** (Gumroad shows views → sales). Under 2% means your *page* is the problem, not your traffic.
+- **Page conversion** (views → sales). **At ₹4,999 do not expect the 2%+ you would see on a cheap product** — a considered purchase converts lower and slower, and someone may read your page three times across two weeks before buying. Judge it over a month, not a week, and count DM conversations as part of the funnel rather than noise.
 
 ---
 
@@ -76,7 +76,7 @@ Work top to bottom. **Fix one thing at a time**, then wait two weeks. Changing t
 
 ## 4. Levers, in order of return per hour
 
-1. **Sell your time next to the file.** A ₹999–1,499 session out-earns a plausible month of app sales in your first quarter, and it is the only thing on your shelf a free tool cannot clone. 90 min setup.
+1. **Protect the included session — it is what makes ₹4,999 defensible.** At this price the human hour is the anchor, and it is the only part of the offer that cannot be cloned by a free tool or pirated. Deliver it well and ask for a review afterwards. **Watch the ceiling:** 2 slots/week ≈ 8/month, so past ~10 sales a month you must raise the price, unbundle the session as a paid add-on, or stop selling. Decide that before buyers are queuing.
 2. **Talk to the right person.** The documented failure mode here is selling to peers — one post-mortem turned 130k+ Reddit views into 55 store visits and single-digit sales, diagnosed as *"they're my peers, not my buyers."* Your buyer is a 0–3 YOE engineer at a service company or a final-year student who has never heard of Grind 75. This costs zero hours; it is a decision.
 3. **Reply to every comment and DM with a real sentence.** Highest-converting activity available at your size, and it is the first thing that gets skipped. 20 min/week.
 4. **Publish weekly under your own name for a long time.** Nothing else compounds, and nothing substitutes. Both zero-to-audience successes in this niche published for 1–3 years before the paid product landed.
@@ -91,7 +91,7 @@ Work top to bottom. **Fix one thing at a time**, then wait two weeks. Changing t
 - **A share-button row.** Three independent datasets put share-button click-through at **0.2–0.25%** of visitors (GOV.UK over 6.8M pageviews; Moovweb over 61M mobile sessions; Wroblewski over 18M). People screenshot and copy-paste instead.
 - **A checkout upsell at launch.** The earlier draft recommended this; with zero social proof, added choice raises abandonment. Mention the session in the post-purchase email instead.
 - **A/B testing anything.** ~10,000 visitors per variant to resolve effects this size. You will get a false read and act on it.
-- **An affiliate program** — a 30% cut of $19 is $5.70, under most payout floors.
+- **An affiliate program — but this one flipped when the price went up.** At $19 a 30% cut was $5.70 and not worth anyone's effort. At ₹4,999 it is ~₹1,500 per sale, which genuinely is. So this moves from "never" to **"not yet, revisit at month 6"** — it needs a page that already converts and reviews to point at, or affiliates just burn your credibility for you.
 - **Hashtag research.** Instagram capped posts at five hashtags (Dec 2025), removed hashtag-following (Dec 2024), and Mosseri said twice in 2025 they do not improve reach. Use zero to two topic tags and no tools.
 - **Countdown timers, "only 3 left", fake purchase popups.** Resetting timers are a named FTC dark pattern, and scarcity on an infinitely copyable file is self-evidently false to an audience already scanning for scams.
 - **Any "Gumroad statistics 2026" figure.** Gumroad does not publish per-product sales; those numbers are inferred from public rating counts times an undisclosed multiplier. Do not set a target from one.
@@ -109,7 +109,7 @@ Write it in this order. Most people bury the point; do not.
 4. **Three screenshots** — the diagnostic result with section bars, a generated week, the progress view.
 5. **What it is not** — *"Not a job guarantee. Not a course. Not 400 videos you will never watch."* Naming this raises trust and cuts refunds.
 6. **Privacy line** — *"Runs entirely in your browser. Your resume never leaves your device. Works offline."* This is a genuine differentiator; say it loudly.
-7. **Price + what you get** — $19 / ₹999, one HTML file, yours forever, no subscription, no login.
+7. **Price + what you get** — ₹4,999 / $59, one HTML file, yours forever, no subscription, no login.
 8. **Refund policy** — 14 days, no questions, in the first person: *"Email me and I refund it. No form, no questions, and you keep the file."*
 9. **Then stop editing the page.** No changes until 300 unique visitors have landed. You cannot A/B test at your traffic — resolving effects this size needs ~10,000 visitors *per variant*. Build the trust assets once and spend every hour after that on traffic.
 
@@ -117,7 +117,9 @@ Write it in this order. Most people bury the point; do not.
 
 | They think | You say |
 |---|---|
-| "$19 for an HTML file?" | It is a tool, not a document. It scores you, reweights the plan around your gaps, holds your progress, and names what you have to drop — then keeps working with your Wi-Fi off, forever, with no subscription. |
+| "₹5,000 for an HTML file?" | You are not buying a file. You are buying a scored diagnostic, a plan that reweights around your gaps, a live 45-minute debrief with me, and a year of question-pack updates. The file is how the tool is delivered — offline, no login, yours forever. |
+| "That's expensive for a student." | It is, honestly. If ₹5,000 is a stretch right now, take the free diagnostic carousel and use Grind 75 — that combination costs nothing and will get you most of the way. Buy this when the hour with me is worth more to you than the money. |
+| "Why should I trust you at 1 YOE?" | You shouldn't, on authority — I don't have any. Trust the specifics instead: I publish my own diagnostic scores including the bad ones, and the tool tells you what to cut rather than promising you everything. If that is not enough, don't buy it. |
 | "Isn't Grind 75 free?" | Yes, and it is better than me at DSA scheduling — I say so on the page. It won't read your resume, won't score you, and won't tell you what to abandon when the plan doesn't fit. Use both. |
 | "Can't I just ask ChatGPT?" | You can, and it is a reasonable place to start. The difference is this scores you first and holds the result, instead of you re-prompting until it sounds right and then losing it tomorrow. |
 | "Will this get me a job?" | No, and anyone promising that is lying. It tells you what to work on and keeps you honest about the hours. The work is still yours. |
@@ -132,7 +134,7 @@ Write it in this order. Most people bury the point; do not.
 - **Razorpay** — if your buyers are Indian. 2% + GST on the fee, UPI support, direct payout to an Indian bank account. Materially cheaper than any foreign merchant-of-record.
 - **Gumroad** — if your buyers are global. Simplest setup, handles global sales tax as merchant of record, 10% + $0.50.
 - **Not Instamojo** for this product — its own help centre prices digital goods well above physical, penalising exactly what you sell.
-- **Price:** $19 globally, ₹999 in India. Keep 9-endings in both. Note honestly that ₹999 is a judgement, not a measurement — there is no credible data on Indian conversion at this price, which is what the first ten DMs are for.
+- **Price:** $59 globally, ₹4,999 in India. Keep 9-endings in both. Note honestly that ₹999 is a judgement, not a measurement — there is no credible data on Indian conversion at this price, which is what the first ten DMs are for.
 - **Do not withdraw in small amounts.** Fixed per-payout fees make cashing out your first $40 the most expensive habit available to you. Let it accumulate.
 - **Do not register for GST voluntarily** "to look professional." Two notifications (10/2017-IT and 65/2017-CT) exempt you below ₹20 lakh aggregate turnover including exports. Registering converts zero compliance into permanent monthly filings on a product with almost no input credit to recover.
 - **Delivery** — the ZIP from `dist/`. Include the README so the first thing they read tells them to open `app/index.html`.

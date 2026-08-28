@@ -39,25 +39,29 @@ Then re-upload to Gumroad and **buy your own product once** to confirm the downl
 
 ## The product in one paragraph
 
-An interview prep planner that reads your resume locally, scores you with a role-matched diagnostic, and generates a braided week-by-week plan — then **names the topics your hours cannot fit**, in priority order, instead of pretending everything fits. Runs entirely in the browser; the resume never leaves the device. $19 / ₹999, one file, no subscription.
+Interview prep built for an era where assistance is detected and interviews test what you can produce unassisted. It scores you closed-book, generates a plan weighted to your real gaps, **names the topics your hours cannot fit**, and drills the things nobody else tests — unassisted fluency, narrating trade-offs, defending a take-home. Runs entirely in the browser; the resume never leaves the device; no AI inside it, deliberately. **₹4,999 / $59** — app + one live 45-min debrief + 12 months of updates + quarterly re-diagnostics.
 
 ## Why anyone buys it
 
-**Lead with the cut list. Not with "sized to the hours you have."** [Grind 75](https://www.techinterviewhandbook.org/grind75) already does hours-in / ordered-plan-out, free, written by the author of Blind 75, off a repo with 130k+ stars. That framing is lost before you start — so name Grind 75 on your own page, say it is free and better at DSA scheduling, and compete where it does not play:
+**Lead with the AI era.** It is timely, it is true, almost nobody else is selling it, and it turns the product's constraints into features:
 
-1. **It tells you what to abandon.** Nothing free does this, because nothing free is willing to tell someone what they cannot have. This is the whole product.
-2. **It adapts twice** — the diagnostic finds your real gaps, and your resume compresses what you can already prove. Extra hours on weak sections, a quick verify on strong ones.
-3. **The resume never leaves the device.** No server, no account, works with Wi-Fi off — verifiable in ten seconds. In a category full of resume-upload tools with vague privacy policies, that is genuinely differentiated.
-4. **A named engineer publishing real scores.** Neither Grind 75 nor any free AI tool has this. It is also the only asset that compounds.
+> **Everyone prepares with AI now. That is exactly why preparation stopped working.** You end up able to *describe* a solution and unable to *produce* one — watched, unassisted, in fifteen minutes. Interviews test the second thing. Only the second thing.
 
-**Read [RESEARCH_PLAYBOOK.md](RESEARCH_PLAYBOOK.md) before executing any of this** — it is the evidence behind the price, the channel choice, and the positioning above, including where the evidence was weak.
+1. **It trains for the round as it now exists.** Closed-book diagnostic, the verify loop in everyone's first three weeks, an AI-Era section scoring unassisted fluency, narration, live debugging and take-home defence. No AI in the app — turn the Wi-Fi off and it works identically.
+2. **It tells you what to abandon.** Nothing free does this, because nothing free will tell someone what they cannot have.
+3. **The resume never leaves the device.** No server, no account, verifiable in ten seconds — differentiated in a category full of resume-upload tools with vague privacy policies.
+4. **A live hour with a named engineer publishing real scores.** The only part that cannot be cloned or pirated, and what makes ₹4,999 defensible.
+
+**Second angle only:** *"sized to the hours you have."* Never the headline — [Grind 75](https://www.techinterviewhandbook.org/grind75) does that free, by the author of Blind 75. Name it on your own page as free and better at DSA scheduling.
+
+**Read [RESEARCH_PLAYBOOK.md](RESEARCH_PLAYBOOK.md) before executing any of this** — it is the evidence behind the channel choice and positioning, including where the evidence was weak and which claims are bets.
 
 ## Before your first sale
 
-- **Check your JCI employment contract for outside-business / moonlighting clauses.** Many Indian tech contracts restrict paid outside work; some require written disclosure. Handle it before money changes hands.
-- **Selling digital goods in India has GST and income-tax implications** past certain thresholds. Talk to a CA.
-- **Do all commercial activity from your personal laptop and personal accounts.** Never from the work machine or work network.
-- **Never reference JCI, its projects, tooling or screenshots** in any post, ever. "A Fortune 500" is the most you say.
+- **Read your employment contract yourself, before any money changes hands.** Look for "exclusive", "conflict of interest", "whole time", "prior written consent", "outside employment". No Indian law bans a private-sector side product — your exposure is *contractual*. If any of those clauses appear, the next call is an employment lawyer. **Do not self-report to HR before reading:** if no clause exists, disclosure manufactures an approval decision that never needed to exist.
+- **GST: do not register voluntarily.** You are exempt below ₹20 lakh aggregate turnover including exports (notifications 10/2017-IT and 65/2017-CT). Registering converts zero compliance into permanent monthly filings. The one genuinely open question — whether a foreign platform's commission triggers reverse-charge registration — needs a paid CA consult, because published CA opinions contradict each other and no CBIC circular settles it.
+- **Do all commercial activity from your personal laptop, network and accounts.** Copyright Act s.17(c) makes an employer first owner of work made in the course of employment, and standard Indian IT contracts widen that with forward-assignment clauses. Hours and hardware are what you actually control.
+- **Never reference your employer at all** — not by name, not by size, not by industry, not inside an "interview experience" post, and never real questions from an internal loop. "An engineer with one year of experience" is the whole of it. ("A Fortune 500" was in an earlier draft of this file; the research is stricter and right — size plus location plus role identifies a company.)
 
 ## The one rule that matters
 

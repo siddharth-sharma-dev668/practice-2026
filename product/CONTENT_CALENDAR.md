@@ -1,8 +1,8 @@
 # Content Calendar — 12 weeks, ready to post
 
-> **Revised 2026-08-27.** The first version made Instagram primary with a Reels pipeline. Research ([RESEARCH_PLAYBOOK.md](RESEARCH_PLAYBOOK.md)) moved the primary channel to **LinkedIn**, with Instagram kept as a same-asset cross-post and YouTube deferred to month 4. Price is now **$19 / ₹999**. The posts themselves barely change — the distribution does.
+> **Revised 2026-08-27.** The first version made Instagram primary with a Reels pipeline. Research ([RESEARCH_PLAYBOOK.md](RESEARCH_PLAYBOOK.md)) moved the primary channel to **LinkedIn**, with Instagram kept as a same-asset cross-post and YouTube deferred to month 4. Price is now **₹4,999 / $59**. The posts themselves barely change — the distribution does.
 
-**The key insight: your content bank already exists.** The product ships with **49 interview questions** and **40 topics**, each with a written explanation. That is more than 90 posts of teaching material you have already produced. Stop thinking "what do I post" and work through the list.
+**The key insight: your content bank already exists.** The product ships with **56 interview questions** and **46 topics**, each with a written explanation. That is a hundred posts of teaching material you have already produced. Stop thinking "what do I post" and work through the list.
 
 Your second bank is your own prep: every week you study topics, solve DSA, build a capstone step and take a quiz. **That is the content nobody can copy**, because it is happening to you.
 
@@ -37,7 +37,32 @@ The whole plan fits in 3 h/week only because **one asset serves all three channe
 
 **Ratio: 4 useful posts for every 1 selling post.** Break that and growth stops.
 
-**One positioning correction that affects every post:** do not build the message on *"a plan sized to the hours you actually have."* [Grind 75](https://www.techinterviewhandbook.org/grind75) does exactly that, free, by the author of Blind 75. Build it on **the cut list** — *"it names the two things you have to abandon"* — which nothing free will do, because nothing free is willing to tell you what you cannot have.
+---
+
+## The angle that ties it all together: the AI era
+
+**This is your best and most timely hook, and it is true.** Interviews changed faster than prep material did — assistance is detected, take-homes come with a defence round, and trivia lost ground to "explain your reasoning while you work." Which produces the line that should run through everything you post:
+
+> **Everyone prepares with AI now. That is exactly why preparation stopped working.**
+> You end up able to *describe* a solution and unable to *produce* one — watched, unassisted, on the clock. Interviews test the second thing. Only the second thing.
+
+You lived it, so say it: you wrote a nine-line function, never ran it, and both bugs would have died on the first execution. The algorithm was right; the code did not work. **And you test software for a living.** That post writes itself and nobody can copy it, because it happened to you.
+
+**Ten posts from this angle alone** — use one every other week and it will outperform the generic prep content:
+1. "Everyone's prepping with AI. That's why nobody can code in interviews anymore."
+2. "I'm a test engineer. I shipped a 9-line function I never ran. Both bugs were one character."
+3. "Take-homes now come with a defence round. Here's what they actually ask."
+4. "'I know the approach' scores zero in a live round. Here's what scores."
+5. "Practise with autocomplete off. Yes, it feels worse. That's the point."
+6. "The skill that got more valuable in 2026: knowing whether code is correct, not writing it."
+7. "You use Copilot at work. Here's how to say that in an interview without it hurting you."
+8. "Never commit code you couldn't defend line by line. That rule is now an interview strategy."
+9. "'Best practice' is the wrong answer. Name what you gave up instead."
+10. "The last 30 seconds before you say 'I'm done' are worth more than the previous 15 minutes."
+
+**The product connection is honest and effortless:** the diagnostic is closed-book, the plan forbids AI on exercises, "the verify loop" lands in everyone's first three weeks, and the app runs offline with no AI in it. It is built for an era where you have to actually know it.
+
+**Second angle, the cut list:** *"it names the two things you have to abandon."* Do not build the message on *"a plan sized to the hours you actually have"* — [Grind 75](https://www.techinterviewhandbook.org/grind75) does exactly that, free, by the author of Blind 75.
 
 ---
 
@@ -90,7 +115,7 @@ The first line decides everything. Steal these patterns:
 | Wk | Posts |
 |---|---|
 | 7 | **Launch story** (Mon) · autopsy: hashCode mutation in a HashSet (Wed) · "what's inside, honestly" (Fri) · launch reel (Sat) |
-| 8 | Window functions — the SQL round decider · GC eligibility is reachability, not `null` · first buyer feedback · "$19, here's exactly what you get" |
+| 8 | Window functions — the SQL round decider · GC eligibility is reachability, not `null` · first buyer feedback · "₹4,999 — here's exactly what you get, and what you don't" |
 | 9 | `finally` swallowing a `return` · idempotency keys and double charges · "my week 8 quiz score" · testimonial reel |
 | 10 | p-values ≠ probability your hypothesis is true · JWT: why no DB lookup · "what I got wrong building this" · demo reel v2 |
 
@@ -112,7 +137,7 @@ By now one format is outperforming. **Find it and repeat it.** Stop being creati
 ## Weeks 15–16 — Month 4: evergreen + ladder
 
 - Re-run your top 10 posts with new visuals. Old followers forgot; new ones never saw them.
-- Introduce the **₹999–1,499 session** to your email list only, not the feed. (Not a $99 review — that price does not match your signalling at 1 YOE, and Topmate comparables sit around ₹999.)
+- Introduce the **₹1,499 extra session** to your email list only, not the feed. (Not a $99 review — that price does not match your signalling at 1 YOE, and Topmate comparables sit around ₹999.)
 - Build the 30-post evergreen bank so a bad week costs you nothing.
 
 ---
@@ -155,7 +180,7 @@ By now one format is outperforming. **Find it and repeat it.** Stop being creati
 > **11–15 s:** 20-question diagnostic, then section bars — SQL red
 > **15–20 s:** A 12-week plan appears; SQL topics marked "focus area, extra time"
 
-**Caption:** Grind 75 will build you a free plan sized to your week, and it is better at that than I am — I say so on my own page. What it will not do is score you first, then tell you which two things to abandon when the plan still does not fit. That is the part I built, because that is the part I needed. Runs entirely on your laptop; your resume never leaves your device. $19, link in bio.
+**Caption:** Grind 75 will build you a free plan sized to your week, and it is better at that than I am — I say so on my own page. What it will not do is score you first, then tell you which two things to abandon when the plan still does not fit. That is the part I built, because that is the part I needed. Runs entirely on your laptop; your resume never leaves your device. ₹4,999 · link in bio.
 
 ---
 

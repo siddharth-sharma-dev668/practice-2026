@@ -1,28 +1,45 @@
-# Launch Plan — Interview Launchpad ($19 / ₹999)
+# Launch Plan — Interview Launchpad (₹4,999 / $59)
 
-**Built:** 2026-08-25 · **Revised:** 2026-08-27 after go-to-market research · **Horizon:** 16 weeks · **Your time cost:** ~3 h/week
+**Built:** 2026-08-25 · **Revised:** 2026-08-28 — research pass, then repriced to ₹4,999 as a continuous system · **Horizon:** 16 weeks · **Your time cost:** ~3 h/week
 
-> **This plan was revised.** The first version priced at $9 and made Instagram the primary channel. A 17-agent research pass ([RESEARCH_PLAYBOOK.md](RESEARCH_PLAYBOOK.md)) found better evidence against both, plus a positioning problem: "a plan sized to the hours you actually have" is exactly what **Grind 75** does — free, by the author of Blind 75, off a repo with 130k+ stars. Read that document; it is the reasoning behind everything below.
+> **Revision history matters here, so it is recorded.** v1 was $9 with Instagram primary. The [research pass](RESEARCH_PLAYBOOK.md) moved it to $19 with LinkedIn primary and found a positioning problem — "a plan sized to the hours you actually have" is exactly what **Grind 75** does, free, by the author of Blind 75. v3 (this one) repriced to **₹4,999** and turned the product from a file into a **continuous system**, because those two changes only work together.
 
 ---
 
 ## 0. Read this before anything else
 
+### Why ₹4,999 and not ₹999
+
+The research pushed the price up and stopped at $19. Going to ₹4,999 (~$59) goes further, and the evidence supports the direction: **no indie seller in this niche at $5–30 could be found with any reported sales, while every verifiable success sits at $35+.** ₹4,999 is inside the band where things actually sell.
+
+**But price and product have to move together.** ₹4,999 for a static HTML file would generate refunds and bad word of mouth — at that price an Indian 0–3 YOE engineer is spending a serious fraction of a month's take-home and comparing you against courses with video and mentorship. So the product is no longer a file. It is:
+
+| What's included | Why it justifies the price |
+|---|---|
+| The app — diagnostic, adaptive plan, cut list, progress | The core tool |
+| **One live 45-min diagnostic debrief** (recorded, redeem within 90 days) | The human hour is the anchor. No free tool can clone it, and it is the only part that cannot be pirated |
+| **12 months of question-pack + topic updates**, emailed | Turns one purchase into ongoing value — and gives you a reason to contact buyers all year |
+| **Quarterly re-diagnostic pack** — retake, see the delta | The research's key structural fix: *a file has no second contact* |
+
 ### The honest revenue math
 
-At **$19** through Gumroad (10% + $0.50) you net **≈ $16.60 per sale**.
+At **₹4,999** through Razorpay (2% + GST on the fee) you net **≈ ₹4,880**. At **$59** through Gumroad (10% + $0.50) you net **≈ $52.60** — a 10.8% fee ratio, the best of any price you have considered.
 
-| Sales/month | Net/month | What that requires |
+| Sales/month | Net/month | Sanity check |
 |---|---|---|
-| 10 | ~$166 | A small warm audience — achievable by month 3 |
-| 36 | ~$600 (₹50k) | A working content engine, sustained |
-| 150 | ~$2,490 | A real audience. Rare inside 12 months. |
+| 3 | ~₹14,600 | Plausible by month 3 with real proof |
+| **11** | **~₹53,700** | Your ₹50k target — needs 11 buyers, not 77 |
+| 20 | ~₹97,600 | Requires a genuine audience |
 
-**Why not $9.** The flat $0.50 alone is 5.6% of a $9 sale — all-in **15.6%**, versus ~13% at $19. Digital chargebacks run ~1.8% with $15–30 dispute fees, so **one dispute wipes out three $9 sales**. And the finding that settled it: across the research, *no indie seller in interview prep at the $5–30 band could be found with any reported sales at all*, while every verifiable success sits at $35+. The $5–30 careers band is where templates and PDFs go to die, and $9 tells the buyer which category you are in.
+That is the whole argument for the higher price: **11 sales a month instead of 77.** Eleven conversations is a thing a person with 3 h/week can actually have. Seventy-seven purchases from cold traffic is not.
 
-**Realistic expectation — this is the number that matters:** the research puts **~85–90% odds of earning under $100/month for the first three months**, reasoned from Gumroad's own July 2025 distribution (of 37,006 creators who earned anything, 8,507 cleared $100 that month). **Month 1 expected value is zero sales.** That is not pessimism and it is not failure — it is the base rate. Most people quit in month 2, which is exactly why month 3 works for those who don't.
+### The three things that get harder at ₹4,999 — do not skip these
 
-**The ceiling problem, stated honestly:** both zero-to-audience successes in this niche published under their own name for **1–3 years** before the paid product landed. Nothing compresses that. So take near-term money from your calendar (a paid session) and let the file compound slowly behind it. Ladder in §5.
+1. **It is no longer an impulse buy.** Nobody spends ₹5,000 from a cold link. Expect a longer cycle: they read something of yours, they follow you, *then* they buy — often after a question in your DMs. This makes the free diagnostic and your named credibility load-bearing, not optional.
+2. **Refunds hurt more and expectations are higher.** One refund is ₹4,999, not ₹800. The defence is honesty on the sales page: state exactly what it is, name Grind 75, and never imply a job outcome.
+3. **Your calendar is now the ceiling.** Two sessions a week is ~8/month. Past roughly 10 sales a month you must either raise the price again, make the session an optional paid add-on instead of included, or stop selling. That is a good problem — but decide *before* you have a queue of unhappy buyers waiting on a call.
+
+**Realistic expectation, unchanged:** **~85–90% odds of under $100/month for the first three months**, and **month 1 expected value is zero sales.** A higher price does not fix the cold start; it only means fewer sales are needed once trust exists. Both verifiable successes in this niche published under their own name for **1–3 years** before the product landed.
 
 ### Your real constraint: you have 30–60 min/day, total
 
@@ -45,7 +62,7 @@ If a week collapses, drop the posts, not your prep. The prep is the asset; the c
 
 ### One thing to settle before your first sale
 
-You work at Johnson Controls. **Check your employment contract for outside-business / moonlighting clauses before you take money.** Many Indian tech contracts restrict paid outside work, some require written disclosure. Also, selling digital goods in India has GST and income-tax implications once you cross thresholds — talk to a CA, not to me. None of this stops you; all of it is cheaper to handle now than after 200 sales.
+You are salaried. **Check your employment contract for outside-business / moonlighting clauses before you take money.** Many Indian tech contracts restrict paid outside work, some require written disclosure. Also, selling digital goods in India has GST and income-tax implications once you cross thresholds — talk to a CA, not to me. None of this stops you; all of it is cheaper to handle now than after 200 sales.
 
 ---
 
@@ -62,7 +79,7 @@ You work at Johnson Controls. **Check your employment contract for outside-busin
 
 ### Payment + delivery
 - [ ] Set up **exactly ONE payment rail**, chosen by where your first ten conversations came from. INR-first → **Razorpay** (2% + GST on the fee, materially cheaper than any foreign merchant-of-record). USD-first → **Gumroad** (simplest, handles global tax as merchant of record). Do not build a dual-rail geo-detected checkout before you have a single buyer.
-- [ ] Product: `Interview Launchpad`, price **$19 / ₹999**, deliver the ZIP from `dist/`.
+- [ ] Product: `Interview Launchpad`, price **₹4,999 / $59**, deliver the ZIP from `dist/`.
 - [ ] Turn on "ask for email" and Gumroad's own analytics.
 - [ ] **Buy your own product once** at full price. Check the receipt, the download, the file opening on a clean machine. A broken download is the most expensive bug you can ship.
 
@@ -71,10 +88,23 @@ You work at Johnson Controls. **Check your employment contract for outside-busin
 - [ ] Put the refund policy on the Gumroad page itself, not buried in the file.
 
 ### Positioning — fix this before writing any content
-- [ ] **Delete "sized to the hours you actually have" from the hero.** Grind 75 does exactly that, free, and better. Using that framing invites the comparison and loses it.
-- [ ] **Lead with the cut list instead:** *"It names the two things you have to abandon."* Nothing free does this, because nothing free is willing to tell you what you cannot have.
-- [ ] **Name Grind 75 on your own page** and say it is free and better than you at DSA scheduling. Honesty is cheaper than being caught, and it converts the comparison into a credibility signal.
-- [ ] Supporting bullets: runs locally, nothing uploaded, works offline · one payment, no subscription, no account · a named engineer publishing real scores.
+
+**The lead is the AI era. This is your sharpest and most timely angle, and it is true.**
+
+Interviews changed faster than prep material did. Assistance is now detected, take-homes come with a defence round, and trivia lost ground to "explain your reasoning while you work." Which produces the paradox that sells this product:
+
+> **Everyone now prepares with AI. That is exactly why preparation stopped working.**
+> You end up able to *describe* a solution and unable to *produce* one, watched, in fifteen minutes. Interviews test the second thing. Only the second thing.
+
+You have lived this and should say so: you wrote a nine-line function, never ran it, and it failed on every input from two one-character slips. The algorithm was right; the code did not work. In a live round that scores zero — and you test software for a living.
+
+- [ ] **Hero line:** *"Interviews stopped rewarding people who can describe the answer. This gets you fluent enough to produce it — unassisted, watched, on the clock."*
+- [ ] **Second line, the cut list:** *"And it names the two things you have to abandon, because your hours are real."*
+- [ ] **Delete "sized to the hours you actually have" as the lead.** Grind 75 does exactly that, free, and better. It stays as a supporting bullet, never the headline.
+- [ ] **Name Grind 75 on your own page** — free, and better at DSA scheduling. Honesty is cheaper than being caught and converts the comparison into credibility.
+- [ ] Supporting bullets: a diagnostic that is closed-book by design · runs locally, nothing uploaded, works offline (no AI in the loop — that is the point) · a live hour with a named engineer · 12 months of updates.
+
+**Why this angle beats the others:** it is timely, it is verifiable, almost nobody else is selling it, and it makes the product's constraints into features — closed-book diagnostic, no AI assistance on exercises, works offline. The whole thing is built for an era where you have to actually know it.
 
 ### Content bank — 9 posts
 Formats and captions are in `CONTENT_CALENDAR.md`.
@@ -116,7 +146,7 @@ Formats and captions are in `CONTENT_CALENDAR.md`.
 **Goal: first 10–25 sales. Revenue: ~$160–400.**
 
 - **Week 7 — the launch post.** Not "buy my thing." Tell the story: *"I failed a Python question I should have known. Here is what I built so it doesn't happen again."* Then the link. Story-first outsells feature-first at this size.
-- **Price ladder, honoured as a real deadline:** *"$19 for the first 100 buyers, then $29."* Not an experiment — you will learn nothing about elasticity at your traffic, so treat it as a commitment and keep it.
+- **Price ladder, honoured as a real deadline:** *"₹4,999 for the first 50 buyers, then ₹6,999."* Not an experiment — you will learn nothing about elasticity at your traffic, so treat it as a commitment and keep it.
 - **Get 5–8 real, named reviews via a disclosed beta.** Give free copies to real job-seekers, get written permission to quote them by name and role, and label the block *"Beta testers — received a free copy in exchange for an honest review."* **Never write, edit, or paraphrase a testimonial:** the FTC's consumer-reviews rule (effective 21 Oct 2024) bans fake and incentivised-positive reviews, and the US is your largest potential market. Free-for-honest-review with disclosure is the compliant version.
 - **Start the email list properly.** One short email a week: one useful thing, no pitch. It is the only audience you own.
 - **Then stop touching the page.** Impose a rule: no changes until 300 unique visitors have landed. You cannot A/B test anything — a split test needs roughly 10,000 visitors *per variant* to resolve effects this size. Every hour after launch goes to traffic, not to tweaking.
@@ -144,19 +174,30 @@ Formats and captions are in `CONTENT_CALENDAR.md`.
 
 **Goal: predictable, and no longer dependent on you posting daily.**
 
-### The product ladder
+### The offer — one SKU, deliberately
 
-| Tier | Price | What it is | Why it works |
-|---|---|---|---|
-| Free | $0 | The 20-question diagnostic as a carousel + a sample week | Costs nothing, proves competence, builds the list |
-| **Core** | **$19 / ₹999** | Interview Launchpad — the app | Out of the PDF band, fees drop to ~13% |
-| **Session** | **₹999–1,499 / $19–29** | 45-min diagnostic debrief, 2 slots/week, recorded | The only thing on your shelf a free tool cannot clone |
+| Tier | Price | What it is |
+|---|---|---|
+| Free | ₹0 | The 20-question diagnostic as a carousel + one sample week. Your lead magnet, pinned. |
+| **Interview Launchpad** | **₹4,999 / $59** | The app + one live 45-min debrief + 12 months of updates + quarterly re-diagnostics |
+| Extra sessions | ₹1,499 each | For buyers who want another after the included one |
 
-**Sell ONE thing at launch.** With zero social proof, a three-column pricing grid adds abandonment rather than revenue. Mention the session in the post-purchase email, not on the sales page.
+**One SKU on the page.** With zero social proof, a pricing grid adds abandonment rather than revenue. The extra session is mentioned only in the post-purchase email.
 
-**On the session price:** the earlier plan said $99. That is wrong for your signalling at 1 YOE — Topmate comparables for mock-interview-plus-resume-review sit around ₹999. Price it at your level and say so plainly on the page: *"I am one year in and mid-transition. If you want advice from a staff engineer, book one of them instead."* That sentence is a feature, not a weakness — and the scarcity is honest, because two slots a week is genuinely your calendar.
+**Say your level out loud on the sales page:** *"I am one year in and mid-transition. You are buying a tool and an hour with someone one step ahead of you, not advice from a staff engineer. If you want that, book one of them instead."* That sentence prevents the mismatch that causes refunds, and at ₹4,999 preventing one refund is worth more than a marginal sale.
 
-**The arithmetic worth noticing:** one session out-earns a plausible *month* of app sales in your first quarter. If you need revenue this quarter, sell sessions. If you want a bestseller, keep publishing under your own name and stop measuring the app monthly.
+**Honest scarcity:** two session slots a week, because that is genuinely your calendar. Do not manufacture urgency beyond it — a scarcity claim on an infinitely copyable file is self-evidently false to an audience already scanning for scams.
+
+### Delivering the "12 months of updates" without infrastructure
+
+This is what makes ₹4,999 defensible, and it needs no server, no login, and no subscription billing:
+
+- **Monthly:** email the updated `index.html` with new question packs. The footer shows a version stamp (`v2026.08.28 · 56 questions`) so buyers can see at a glance that what they received is newer.
+- **Quarterly:** email a re-diagnostic pack. They retake, compare to their first score, and see the delta — *"System design 18 → 47."* That is a second contact and a far better thing to share than a plan.
+- **Bump `VERSION` and `BANK_COUNT` in the app** each time. Two constants at the top of the file.
+- **Budget:** roughly 60 minutes a month. Write the questions from what you are already studying that month — the same dual-purpose trick that makes the content nearly free.
+
+If you ever stop shipping updates, **say so and stop charging for them.** A promise of 12 months that quietly becomes three is the fastest way to earn the refund requests this price makes expensive.
 
 ### Systematise
 - [ ] A 30-post evergreen bank you can re-run when a week collapses
@@ -191,6 +232,6 @@ Roughly 170 minutes, in this order.
 - [ ] **Post the price question; start the ten DMs (30 min).**
 - [ ] Run the product start to finish on your laptop, then on your phone
 - [ ] Send it to 3 job-hunting friends; watch, don't help
-- [ ] Create the product at **$19 / ₹999**, upload the ZIP, buy it yourself at full price
+- [ ] Create the product at **₹4,999 / $59**, upload the ZIP, buy it yourself at full price
 
 Nothing goes public until the 9-post bank exists and the contract is read.

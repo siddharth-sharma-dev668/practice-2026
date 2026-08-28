@@ -4,6 +4,19 @@ Thanks for buying this. Here is everything you need to know, in about 60 seconds
 
 ---
 
+## What you bought
+
+| | |
+|---|---|
+| **This app** | Diagnostic, adaptive plan, progress tracking. Yours forever, no subscription, no login. |
+| **One live 45-min debrief** | Reply to your receipt to book it. Recorded so you can rewatch. Two slots a week, so book early — redeem within 90 days. |
+| **12 months of updates** | New question packs and topics, emailed. The footer of this app shows a version stamp, so you can always tell whether what you have is current. |
+| **Quarterly re-diagnostic** | A fresh pack every ~3 months. Retake it, compare with your first score, and see what actually moved. |
+
+**About the debrief, honestly:** you are getting an hour with an engineer one step ahead of you, not a staff engineer. If you want senior-level career advice, book one of them instead — there are good people on Topmate. What this hour is good for: reading your diagnostic with you, deciding what to cut, and being told the truth about your plan.
+
+---
+
 ## Start here
 
 1. **Unzip this folder** somewhere permanent — your Documents folder, not your Downloads, and **not inside the zip preview window**.
@@ -53,12 +66,30 @@ Watch that chip. Green *saved* means it is working. That is the only status that
 
 ---
 
+## The thing this is actually built around
+
+Interviews changed faster than prep material did. Assistance is detected now, take-homes come with a defence round, and trivia lost ground to "explain your reasoning while you work." Which creates a trap:
+
+> **Everyone prepares with AI now. That is exactly why preparation stopped working.**
+> You end up able to *describe* a solution and unable to *produce* one — watched, unassisted, in fifteen minutes. Interviews test the second thing. Only the second thing.
+
+So this app is deliberately built the way the interview works, not the way studying feels good:
+
+- **The diagnostic is closed-book.** Looking things up gives you a score that flatters you and a plan aimed at the wrong gaps.
+- **Every plan puts "the verify loop" in the first three weeks** — run it, or dry-run one input aloud, before you call it done. The most common way a strong candidate fails a live round is submitting something that looks right and was never executed.
+- **The AI-Era section of your diagnostic** scores things nobody else tests: unassisted fluency, narrating trade-offs, debugging while watched, defending a take-home.
+- **No AI runs inside this app.** Turn your Wi-Fi off and it works identically. That is not a limitation — it is the point.
+
+**Do not use AI while doing the exercises.** Docs are fine, assistants are not. Practising with help trains the one skill the interview does not measure.
+
+---
+
 ## Honest expectations
 
 - **This will not get you a job.** It decides what you study and keeps you honest about the hours. The work is still yours.
 - **The explanations are concise on purpose.** Every topic links to primary documentation — read that, not a summary of it.
 - **~50 well-understood DSA problems beat 150 half-remembered ones**, but be aware that strong candidates often arrive with more. If you find extra hours, DSA is where the first one should go.
-- **Do not use this during a live interview.** Interview processes in 2026 increasingly detect assistance, and getting caught is worse than being unprepared.
+- **Never use this, or any assistant, during a live interview.** Detection is now routine, and being caught is far worse than being unprepared.
 
 ---
 

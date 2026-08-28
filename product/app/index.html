@@ -164,7 +164,10 @@
   <section class="view" id="view-progress"></section>
 </main>
 
-<footer><div class="wrap" id="foot">Everything runs in your browser — your resume never leaves this device.</div></footer>
+<footer><div class="wrap" id="foot">
+  Everything runs in your browser — your resume never leaves this device.
+  <span id="ver" style="float:right;font-family:Consolas,monospace;font-size:11.5px"></span>
+</div></footer>
 
 <script>
 "use strict";
@@ -174,13 +177,20 @@
    local to this browser. See README for the licence.
    ===================================================================== */
 
+/* Bump this on every content update you send to buyers — it is how they can see
+   at a glance that the file they just received is newer than the one they had. */
+const VERSION = "2026.08.28";
+const BANK_COUNT = 56;
+
 /* ---------------- roles ---------------- */
+/* Every role's diagnostic includes AI-Era: interviews changed, and a candidate
+   who is technically strong but cannot perform unassisted still fails. */
 const ROLES = {
-  backend:   { n:"Backend Engineer",  blurb:"APIs, databases, scale, system design",         secs:["Python","SQL","DSA","Web","Java"] },
-  ai:        { n:"AI Engineer",       blurb:"LLM apps, RAG, agents, evals",                   secs:["Python","ML/AI","Web","DSA"] },
-  ml:        { n:"ML Engineer",       blurb:"Models, features, training, serving",            secs:["Python","ML/AI","Stats","SQL"] },
-  data:      { n:"Data Analyst",      blurb:"SQL, statistics, dashboards, storytelling",      secs:["SQL","Stats","Python","ML/AI"] },
-  fullstack: { n:"Full-Stack Engineer",blurb:"Frontend + backend + deployment",               secs:["Python","Web","SQL","DSA"] }
+  backend:   { n:"Backend Engineer",  blurb:"APIs, databases, scale, system design",         secs:["Python","SQL","DSA","Web","Java","AI-Era"] },
+  ai:        { n:"AI Engineer",       blurb:"LLM apps, RAG, agents, evals",                   secs:["Python","ML/AI","Web","DSA","AI-Era"] },
+  ml:        { n:"ML Engineer",       blurb:"Models, features, training, serving",            secs:["Python","ML/AI","Stats","SQL","AI-Era"] },
+  data:      { n:"Data Analyst",      blurb:"SQL, statistics, dashboards, storytelling",      secs:["SQL","Stats","Python","ML/AI","AI-Era"] },
+  fullstack: { n:"Full-Stack Engineer",blurb:"Frontend + backend + deployment",               secs:["Python","Web","SQL","DSA","AI-Era"] }
 };
 
 /* ---------------- topic pool (shared across roles) ----------------
@@ -228,16 +238,31 @@ const T = {
   "viz":       {n:"Excel power tools + BI dashboards + executive storytelling",              tr:"data", h:3, sec:"Stats", sk:"powerbi", lk:[]},
   "frontend":  {n:"Frontend craft: accessibility, forms, state, performance",               tr:"sys",  h:3, sec:"Web",   sk:"css", lk:[["web.dev","https://web.dev/learn"]]},
   "behav":     {n:"Behavioural: STAR stories from your own real work",                       tr:"craft",h:2, sec:"",      sk:"", lk:[]},
-  "resume":    {n:"Resume & positioning pass: title framing, bullets that survive scrutiny", tr:"craft",h:2, sec:"",      sk:"", lk:[]}
+  "resume":    {n:"Resume & positioning pass: title framing, bullets that survive scrutiny", tr:"craft",h:2, sec:"",      sk:"", lk:[]},
+
+  /* ---- AI-era interview craft ----
+     Interviews changed faster than prep material did. Assistance is now
+     detected, take-homes get a defence round, and trivia lost ground to
+     "explain your reasoning while you work". None of that is learnable by
+     reading — it is learnable only by practising unassisted. These topics
+     are cross-cutting: every role gets them.                              */
+  "verify":    {n:"The verify loop: run it, dry-run it, prove it — before you call it done",  tr:"craft",h:1, sec:"AI-Era", sk:"", lk:[]},
+  "unassist":  {n:"Unassisted fluency: typing a working solution cold — no autocomplete, no AI", tr:"craft",h:3, sec:"AI-Era", sk:"", lk:[]},
+  "narrate":   {n:"Thinking out loud: narrating trade-offs while you code (this replaced trivia)", tr:"craft",h:2, sec:"AI-Era", sk:"", lk:[]},
+  "debuglive": {n:"Debugging under observation: reading a stack trace and narrating the fix",  tr:"craft",h:2, sec:"AI-Era", sk:"", lk:[]},
+  "defend":    {n:"Defending a take-home: the follow-up round that catches generated code",   tr:"craft",h:2, sec:"AI-Era", sk:"", lk:[]},
+  "aitools":   {n:"Talking about AI tools credibly: what to claim, what you must be able to prove", tr:"ai", h:2, sec:"AI-Era", sk:"", lk:[]}
 };
 
 /* Ordered topic sequence per role. Shared ids reused deliberately. */
+/* "verify" sits at position 2 in every role deliberately: the commonest reason a
+   correct approach fails a live round is that it was never executed. */
 const ROLE_PLAN = {
-  backend:   ["py-core","sql-join","api","py-adv","sql-cte","framework","java-core","sql-win","auth","db-design","java-conc","cache-q","sql-perf","spring","ship","py-test","sysd-1","lld","sysd-2","behav","resume"],
-  ai:        ["py-core","llm-base","api","py-adv","prompt","framework","tools","sql-join","rag","mcp","evals","py-test","guard","ml-core","ship","sysd-1","behav","resume"],
-  ml:        ["py-core","ml-core","sql-join","stats","ml-sk","py-adv","sql-win","ml-real","ab","ml-dl","mlops","framework","llm-base","py-test","ship","behav","resume"],
-  data:      ["sql-join","stats","py-core","sql-cte","sql-win","ab","sql-anal","viz","sql-perf","ml-core","py-adv","behav","resume"],
-  fullstack: ["js-core","api","py-core","react","sql-join","framework","frontend","auth","sql-cte","db-design","ship","py-test","sysd-1","behav","resume"]
+  backend:   ["py-core","verify","sql-join","api","unassist","py-adv","sql-cte","framework","narrate","java-core","sql-win","auth","db-design","debuglive","java-conc","cache-q","sql-perf","spring","ship","py-test","aitools","sysd-1","lld","defend","sysd-2","behav","resume"],
+  ai:        ["py-core","verify","llm-base","api","unassist","py-adv","prompt","framework","narrate","tools","sql-join","rag","mcp","evals","aitools","py-test","guard","debuglive","ml-core","ship","defend","sysd-1","behav","resume"],
+  ml:        ["py-core","verify","ml-core","sql-join","unassist","stats","ml-sk","py-adv","narrate","sql-win","ml-real","ab","ml-dl","aitools","mlops","framework","debuglive","llm-base","py-test","ship","defend","behav","resume"],
+  data:      ["sql-join","verify","stats","py-core","unassist","sql-cte","sql-win","ab","narrate","sql-anal","viz","sql-perf","aitools","ml-core","py-adv","debuglive","defend","behav","resume"],
+  fullstack: ["js-core","verify","api","py-core","unassist","react","sql-join","framework","narrate","frontend","auth","sql-cte","db-design","debuglive","ship","py-test","aitools","sysd-1","defend","behav","resume"]
 };
 
 /* DSA pattern ladder — spread across the whole plan regardless of role. */
@@ -317,6 +342,15 @@ const QB = {
  {q:"A @Transactional method called from another method in the SAME class:",o:["Runs in a transaction normally","Runs with NO transaction — the internal call bypasses the Spring proxy","Starts a nested transaction","Fails at startup"],a:1,x:"Proxy-based AOP only intercepts calls from outside the bean. The commonest silent @Transactional bug."},
  {q:"The default scope of a Spring bean:",o:["prototype","singleton — one shared instance, so it must be stateless or thread-safe","request","singleton, made thread-safe by Spring"],a:1,x:"Mutable instance fields on a singleton @Service are a race waiting to happen."},
  {q:"Fetching 100 orders with a LAZY customer, then reading customer name in a loop, costs:",o:["1 query","101 queries — the classic N+1; fix with a join fetch or @EntityGraph","100 queries","An exception"],a:1,x:"The most common performance bug in Spring Data applications."}
+],
+"AI-Era":[
+ {q:"You prepared with an AI assistant. You can describe the approach clearly, but cannot type a working version in 15 minutes unassisted. In a live proctored round this scores:",o:["Well — the approach is what matters","Roughly zero — the round measures what you can produce live, not what you can describe","Partial credit for the explanation","Depends on the interviewer"],a:1,x:"\"I know how to do this\" and \"I can do this now, watched, without help\" are different skills. Only the second one is being tested, and preparing with assistance systematically trains the first."},
+ {q:"Why do more companies now add a defence or follow-up round after a take-home?",o:["To check formatting","Because generated submissions pass the take-home and fall apart under questioning about the choices in them","To negotiate salary earlier","To test typing speed"],a:1,x:"The take-home stopped being a filter once anyone could produce a clean one. The defence round is the filter now — expect to justify every decision in code you submitted."},
+ {q:"An interviewer asks why you chose a queue instead of a direct call. The strongest answer:",o:["Because it is best practice","The actual trade-off you weighed and what you gave up — latency, complexity, delivery guarantees","Because it scales","Because the tutorial did it that way"],a:1,x:"Naming what you sacrificed is the signal. \"Best practice\" tells the interviewer you inherited the decision rather than made it."},
+ {q:"The most effective way to prepare for a monitored or proctored coding round:",o:["Watch more solution walkthroughs","Practise writing solutions with autocomplete and AI turned off, timed","Memorise more patterns","Read the editorial after each problem"],a:1,x:"Train under the conditions you will be tested in. Autocomplete and assistance during practice hide exactly the gap the interview will find."},
+ {q:"You use an AI coding assistant daily at work. Asked about it in an interview, the safest honest answer is:",o:["Say you don't use one","Describe how you use it, and be ready to explain any code it produced for you","Say it writes most of your code","Avoid the topic"],a:1,x:"Using tools is normal and claiming otherwise is a lie that unravels. What sinks candidates is shipping code they cannot explain — so the rule is: never commit what you could not defend line by line."},
+ {q:"With models able to generate working code, the skill that has become MORE valuable in engineering interviews is:",o:["Typing speed","Memorising algorithms","Verification — reading code critically, testing it, and proving it behaves","Knowing more frameworks"],a:2,x:"Generating a plausible solution is now cheap; knowing whether it is correct is not. This is also why testing and eval experience reads as senior."},
+ {q:"Your solution looks right and you are about to say you are done. The highest-value final step:",o:["Explain the time complexity","Run it, or dry-run one concrete input aloud, before declaring it finished","Ask if you can use a library","Refactor for readability"],a:1,x:"Untested code that looks correct is the single most common way a strong candidate fails a live round. One concrete input catches most slips — a wrong variable name, an off-by-one, a typo the reader's eye skips."}
 ]};
 
 /* Résumé skill keywords → skill key used by the topic pool. */
@@ -921,6 +955,8 @@ $("#nav").addEventListener("click",e=>{
   if(b.dataset.v==="quizzes") renderQuizList();
   if(b.dataset.v==="progress") renderProgress();
 });
+const verEl=$("#ver");
+if(verEl) verEl.textContent="v"+VERSION+" · "+Object.values(QB).reduce((a,q)=>a+q.length,0)+" questions";
 load(); paintChip(); storageBanner();
 if(S.plan&&S.setup){
   $("#hdr-title").textContent=ROLES[S.setup.role].n+" · "+S.plan.weeks+" weeks";
