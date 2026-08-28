@@ -183,14 +183,132 @@ const VERSION = "2026.08.28";
 const BANK_COUNT = 56;
 
 /* ---------------- roles ---------------- */
-/* Every role's diagnostic includes AI-Era: interviews changed, and a candidate
-   who is technically strong but cannot perform unassisted still fails. */
+/* ---------------- target roles ----------------
+   ANY role to ANY role. The user types where they want to go in free text;
+   matchRole() finds the nearest archetype by alias, and anything unmatched
+   falls back to a generic software-engineer profile rather than refusing.
+   must/nice are skill keys from SKILLS — they drive the resume fit report.
+   fam picks the study sequence. Every diagnostic includes AI-Era: a candidate
+   who is technically strong but cannot perform unassisted still fails.      */
 const ROLES = {
-  backend:   { n:"Backend Engineer",  blurb:"APIs, databases, scale, system design",         secs:["Python","SQL","DSA","Web","Java","AI-Era"] },
-  ai:        { n:"AI Engineer",       blurb:"LLM apps, RAG, agents, evals",                   secs:["Python","ML/AI","Web","DSA","AI-Era"] },
-  ml:        { n:"ML Engineer",       blurb:"Models, features, training, serving",            secs:["Python","ML/AI","Stats","SQL","AI-Era"] },
-  data:      { n:"Data Analyst",      blurb:"SQL, statistics, dashboards, storytelling",      secs:["SQL","Stats","Python","ML/AI","AI-Era"] },
-  fullstack: { n:"Full-Stack Engineer",blurb:"Frontend + backend + deployment",               secs:["Python","Web","SQL","DSA","AI-Era"] }
+  backend:   { n:"Backend Engineer", fam:"backend", blurb:"APIs, databases, scale",
+    alias:["backend","back end","back-end","api","server side","microservice","java developer","python developer","node developer","node js","nodejs","node.js","spring","django","golang","php developer",".net developer","rails"],
+    must:["python|java|javascript","sql","rest","git"], nice:["docker","postgres","redis","cloud","pytest","dsa","cicd"], secs:["Python","SQL","DSA","Web","Java","AI-Era"] },
+  frontend:  { n:"Frontend Engineer", fam:"frontend", blurb:"UI, React, performance, accessibility",
+    alias:["frontend","front end","front-end","react","ui developer","angular","vue","web developer"],
+    must:["javascript","css","git"], nice:["react","rest","dsa","cicd","cloud"], secs:["Web","Python","DSA","AI-Era"] },
+  fullstack: { n:"Full-Stack Engineer", fam:"fullstack", blurb:"Frontend + backend + deploy",
+    alias:["full stack","fullstack","full-stack","mern","mean","web app developer"],
+    must:["javascript","sql","rest","git"], nice:["react","css","docker","cloud","python"], secs:["Python","Web","SQL","DSA","AI-Era"] },
+  ai:        { n:"AI / LLM Engineer", fam:"ai", blurb:"LLM apps, RAG, agents, evals",
+    alias:["ai engineer","llm","genai","gen ai","generative","prompt engineer","ai developer","agent","rag","applied ai","aiml"],
+    must:["python","llm","rest","git"], nice:["rag","agent","eval","mcp","sql","docker","cloud"], secs:["Python","ML/AI","Web","DSA","AI-Era"] },
+  ml:        { n:"ML Engineer", fam:"ml", blurb:"Models, features, training, serving",
+    alias:["machine learning","ml engineer","mle","deep learning","computer vision","nlp engineer","data scientist","ds"],
+    must:["python","sklearn","statistics","sql"], nice:["pytorch","mlflow","spark","cloud","docker"], secs:["Python","ML/AI","Stats","SQL","AI-Era"] },
+  data:      { n:"Data Analyst", fam:"data", blurb:"SQL, statistics, dashboards, storytelling",
+    alias:["data analyst","analyst","business analyst","bi ","business intelligence","reporting","mis","product analyst"],
+    must:["sql","excel","statistics"], nice:["powerbi","python","etl","nosql"], secs:["SQL","Stats","Python","ML/AI","AI-Era"] },
+  dataeng:   { n:"Data Engineer", fam:"dataeng", blurb:"Pipelines, warehouses, scale",
+    alias:["data engineer","etl developer","pipeline","warehouse","big data","spark developer","informatica","snowflake"],
+    must:["sql","python","etl","git"], nice:["spark","cloud","docker","nosql","cicd"], secs:["SQL","Python","DSA","Web","AI-Era"] },
+  devops:    { n:"DevOps / SRE / Cloud", fam:"devops", blurb:"CI/CD, infra, reliability",
+    alias:["devops","sre","site reliability","platform engineer","cloud engineer","infrastructure","kubernetes","aws engineer","system engineer","sysadmin"],
+    must:["linux","cloud","cicd","git"], nice:["k8s","docker","python","security","sql"], secs:["Web","Python","SQL","DSA","AI-Era"] },
+  qa:        { n:"QA / SDET / Automation", fam:"qa", blurb:"Test frameworks, automation, quality gates",
+    alias:["qa","sdet","test engineer","automation","tester","quality","selenium","manual testing","qa analyst"],
+    must:["pytest|javascript|java","git"], nice:["python","sql","cicd","rest","docker","dsa"], secs:["Python","Web","SQL","DSA","AI-Era"] },
+  mobile:    { n:"Mobile Engineer", fam:"frontend", blurb:"Android, iOS, cross-platform",
+    alias:["mobile","android","ios","flutter","react native","kotlin developer","swift developer","app developer"],
+    must:["mobile","git"], nice:["rest","javascript","sql","dsa","cicd"], secs:["Web","Python","DSA","AI-Era"] },
+  security:  { n:"Security Engineer", fam:"devops", blurb:"AppSec, cloud security, review",
+    alias:["security","appsec","cyber","infosec","penetration","soc analyst","vapt"],
+    must:["security","linux","git"], nice:["cloud","python","rest","k8s"], secs:["Web","Python","SQL","DSA","AI-Era"] },
+  /* tier 2 = only used when no specific role matched. Its aliases are generic
+     words ("engineer", "developer") that would otherwise outrank real matches. */
+  swe:       { n:"Software Engineer (general)", fam:"backend", blurb:"The safe default for any dev role", tier:2,
+    alias:["software engineer","sde","software developer","programmer","developer","engineer","swe","associate engineer","member technical staff","coder"],
+    must:["python|java|javascript","git","dsa"], nice:["sql","rest","docker","cloud","pytest"], secs:["Python","SQL","DSA","Web","AI-Era"] }
+};
+const FALLBACK_ROLE="swe";
+
+/* Free-text role -> archetype. Specific roles are matched first, longest alias
+   winning within that tier, so "backend engineer" lands on Backend rather than
+   being swallowed by the generic word "engineer". */
+function matchRole(text){
+  const t=" "+String(text||"").toLowerCase().trim()+" ";
+  if(!t.trim()) return null;
+  for(const tier of [1,2]){
+    let best=null, bestLen=0;
+    for(const [k,r] of Object.entries(ROLES)){
+      if((r.tier||1)!==tier) continue;
+      for(const a of r.alias)
+        if(t.includes(a) && a.length>bestLen){ best=k; bestLen=a.length; }
+    }
+    if(best) return best;
+  }
+  return null;
+}
+
+/* Resume vs target role. Deliberately a keyword heuristic, and the UI says so —
+   it is a checklist that catches the obvious, not a recruiter. */
+function analyseFit(resume, roleKey){
+  const role=ROLES[roleKey], have=new Set(resume?resume.skills:[]);
+  const hit=req=>req.split("|").some(s=>have.has(s));
+  const label=req=>req.split("|").map(s=>SKILL_LABEL[s]||s).join(" or ");
+  const must=role.must.map(r=>({req:r,label:label(r),ok:hit(r)}));
+  const nice=role.nice.map(r=>({req:r,label:label(r),ok:hit(r)}));
+  const mustOk=must.filter(m=>m.ok).length, niceOk=nice.filter(n=>n.ok).length;
+  // must-haves carry 75% of the score: missing one is what gets a resume filtered out
+  const score=Math.round(100*(0.75*(mustOk/(must.length||1))+0.25*(niceOk/(nice.length||1))));
+  return {score,must,nice,mustMissing:must.filter(m=>!m.ok),niceMissing:nice.filter(n=>!n.ok),
+    verdict: score>=80?"strong":score>=55?"partial":"early"};
+}
+const SKILL_LABEL={python:"Python",java:"Java",spring:"Spring",javascript:"JavaScript/TypeScript",react:"React",
+  css:"HTML/CSS",sql:"SQL",postgres:"a relational database",redis:"caching (Redis)",docker:"Docker",rest:"REST API work",
+  fastapi:"a web framework",jwt:"auth (JWT/OAuth)",pytest:"automated testing",sklearn:"scikit-learn / classical ML",
+  pytorch:"PyTorch / deep learning",mlflow:"MLOps tooling",llm:"LLM API work",rag:"RAG / vector search",
+  agent:"agents / tool calling",mcp:"MCP",eval:"evals",statistics:"statistics",powerbi:"a BI tool",excel:"Excel",
+  git:"Git",linux:"Linux/shell",cloud:"a cloud platform",cicd:"CI/CD",k8s:"Kubernetes/IaC",security:"security practice",
+  mobile:"mobile development",etl:"data pipelines",spark:"Spark / big data",nosql:"a NoSQL store",dsa:"data structures & algorithms"};
+
+/* What to actually put on the resume for each gap — the "perfect resume" step. */
+const FIX={
+  sql:"Add one bullet with a real query you wrote and what it was for: \"Wrote cohort-retention queries over 2M rows; cut a manual report from 3h to 5min.\"",
+  rest:"Name the endpoints you built and the load they took: \"Built 12 REST endpoints serving ~40k requests/day.\"",
+  docker:"State that you containerised something and it shipped: \"Dockerised the service; multi-stage build cut image size 60%.\"",
+  git:"Put your GitHub URL in the header. An empty profile is worse than none — pin two real repos first.",
+  pytest:"Quantify coverage or bugs caught: \"Raised critical-path coverage to 85%; caught 6 regressions pre-release.\"",
+  dsa:"Not a resume line — it is the screening round. Log solved problems and be ready to code live.",
+  cloud:"Name the provider and the service, not just \"cloud\": \"Deployed on AWS ECS with S3 + CloudWatch.\"",
+  cicd:"Say what the pipeline does: \"GitHub Actions pipeline: tests, build, deploy on merge.\"",
+  llm:"Ship one small thing and describe the mechanism: \"Built a document-extraction CLI on the Claude API with structured outputs.\"",
+  rag:"Describe retrieval honestly: \"Chunked 400 docs, pgvector + hybrid search, answers with citations.\"",
+  eval:"This is the rarest signal in AI hiring — say it plainly: \"Built a 60-case golden set with LLM-as-judge scoring in CI.\"",
+  agent:"\"Wrote an agent loop from scratch: tool schema, execution, result feedback.\" Say from scratch if it was.",
+  mcp:"\"Built an MCP server exposing N tools.\" Almost nobody at your level has this — make it prominent.",
+  sklearn:"Name the model, the metric, and the baseline: \"Gradient boosting, F1 0.81 vs 0.62 baseline, 5-fold CV.\"",
+  pytorch:"\"Fine-tuned a text classifier in PyTorch; accuracy 0.89 on a held-out set.\"",
+  mlflow:"\"Tracked 40 experiments in MLflow; served the winner behind FastAPI with drift monitoring.\"",
+  statistics:"Show you can defend a number: \"Ran an A/B test, computed power ahead of time, reported CIs not just means.\"",
+  excel:"\"Built a pivot-driven workbook with XLOOKUP + what-if scenarios used weekly by 3 stakeholders.\"",
+  powerbi:"Link a public dashboard or screenshot it in your README.",
+  etl:"\"Airflow DAG ingesting 5 sources nightly with retries and alerting on failure.\"",
+  spark:"\"PySpark job aggregating 50GB daily; cut runtime 3x by fixing a shuffle.\"",
+  nosql:"\"Modelled access patterns in DynamoDB/Mongo and why, not just that you used it.\"",
+  linux:"\"Comfortable in bash: wrote deploy/log-parsing scripts.\" Say it if it is true; it is assumed for infra roles.",
+  k8s:"\"Deployed to Kubernetes with Helm; wrote liveness/readiness probes.\"",
+  security:"\"Fixed OWASP top-10 findings: parameterised queries, rate limits, secrets out of code.\"",
+  mobile:"Link the app or the store listing. An unlinked mobile claim reads as coursework.",
+  javascript:"Show it in a repo, not a skills list. One working app beats five listed frameworks.",
+  react:"\"Built a React app with real state handling; explain one performance fix you made.\"",
+  css:"\"Responsive, accessible layouts — keyboard navigation and contrast checked.\"",
+  java:"If it is rusty, say nothing until you refresh it. A Java claim invites HashMap and @Transactional questions.",
+  spring:"\"Spring Boot service with @Transactional boundaries and JPA; explain the N+1 you fixed.\"",
+  postgres:"\"Tuned a slow query with EXPLAIN; added the right index and cut p95 by X%.\"",
+  redis:"\"Cache-aside with Redis; cut repeat-read latency from 400ms to 30ms.\"",
+  jwt:"\"JWT auth with refresh tokens and role-based access.\"",
+  fastapi:"Name the framework and that it shipped: \"FastAPI service, deployed, with OpenAPI docs.\""
 };
 
 /* ---------------- topic pool (shared across roles) ----------------
@@ -251,13 +369,24 @@ const T = {
   "narrate":   {n:"Thinking out loud: narrating trade-offs while you code (this replaced trivia)", tr:"craft",h:2, sec:"AI-Era", sk:"", lk:[]},
   "debuglive": {n:"Debugging under observation: reading a stack trace and narrating the fix",  tr:"craft",h:2, sec:"AI-Era", sk:"", lk:[]},
   "defend":    {n:"Defending a take-home: the follow-up round that catches generated code",   tr:"craft",h:2, sec:"AI-Era", sk:"", lk:[]},
-  "aitools":   {n:"Talking about AI tools credibly: what to claim, what you must be able to prove", tr:"ai", h:2, sec:"AI-Era", sk:"", lk:[]}
+  "aitools":   {n:"Talking about AI tools credibly: what to claim, what you must be able to prove", tr:"ai", h:2, sec:"AI-Era", sk:"", lk:[]},
+
+  /* ---- widened coverage so any target role has a real sequence ---- */
+  "css-core":  {n:"HTML/CSS layout: flexbox, grid, responsive, semantic markup",              tr:"lang", h:3, sec:"Web",   sk:"css",   lk:[["MDN CSS layout","https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout"]]},
+  "linux-core":{n:"Linux and shell: processes, permissions, logs, scripting the boring parts", tr:"craft",h:3, sec:"Web",   sk:"linux", lk:[["Linux Journey","https://linuxjourney.com/"]]},
+  "cloud-core":{n:"Cloud fundamentals: compute, storage, networking, IAM, and the bill",       tr:"sys",  h:3, sec:"Web",   sk:"cloud", lk:[["AWS getting started","https://aws.amazon.com/getting-started/"]]},
+  "etl-core":  {n:"Pipelines: batch vs stream, idempotent loads, backfills, orchestration",    tr:"data", h:3, sec:"SQL",   sk:"etl",   lk:[["Airflow concepts","https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/index.html"]]}
 };
 
 /* Ordered topic sequence per role. Shared ids reused deliberately. */
-/* "verify" sits at position 2 in every role deliberately: the commonest reason a
-   correct approach fails a live round is that it was never executed. */
+/* "verify" sits at position 2 in every sequence deliberately: the commonest reason
+   a correct approach fails a live round is that it was never executed.
+   Keyed by FAMILY — several archetypes share a sequence. */
 const ROLE_PLAN = {
+  frontend:  ["js-core","verify","api","react","unassist","css-core","py-core","frontend","narrate","sql-join","auth","framework","debuglive","ship","py-test","aitools","sysd-1","defend","behav","resume"],
+  dataeng:   ["sql-join","verify","py-core","sql-cte","unassist","etl-core","sql-win","py-adv","narrate","sql-perf","db-design","cache-q","debuglive","ship","aitools","sysd-1","defend","behav","resume"],
+  devops:    ["linux-core","verify","ship","api","unassist","py-core","cloud-core","cache-q","narrate","auth","sql-join","db-design","debuglive","py-test","aitools","sysd-1","sysd-2","defend","behav","resume"],
+  qa:        ["py-core","verify","py-test","api","unassist","sql-join","py-adv","framework","narrate","auth","ship","sql-win","debuglive","evals","aitools","lld","defend","behav","resume"],
   backend:   ["py-core","verify","sql-join","api","unassist","py-adv","sql-cte","framework","narrate","java-core","sql-win","auth","db-design","debuglive","java-conc","cache-q","sql-perf","spring","ship","py-test","aitools","sysd-1","lld","defend","sysd-2","behav","resume"],
   ai:        ["py-core","verify","llm-base","api","unassist","py-adv","prompt","framework","narrate","tools","sql-join","rag","mcp","evals","aitools","py-test","guard","debuglive","ml-core","ship","defend","sysd-1","behav","resume"],
   ml:        ["py-core","verify","ml-core","sql-join","unassist","stats","ml-sk","py-adv","narrate","sql-win","ml-real","ab","ml-dl","aitools","mlops","framework","debuglive","llm-base","py-test","ship","defend","behav","resume"],
@@ -275,7 +404,11 @@ const CAPSTONE = {
   ai:        {n:"LLM app with an eval harness", steps:["Repo + API skeleton + model call working","Structured outputs + prompt versioning","Tool calling / agent loop","Document ingestion + chunking","Retrieval + citations","Eval harness: golden set + judge (build this EARLY)","Guardrails + cost/latency report","Deployed + recorded walkthrough"]},
   ml:        {n:"End-to-end ML service", steps:["Problem framing + dataset + honest baseline","EDA + feature pipeline","Model v1 + cross-validation","Leakage audit + imbalance handling","Interpretation (SHAP) + error analysis","Experiment tracking + model registry","Served behind an API + monitored","Project narrative + walkthrough rehearsal"]},
   data:      {n:"Analytics investigation + dashboard", steps:["Pick a real dataset + write the question","Cleaning + validation notes","Core SQL: cohorts, funnels, retention","Statistical check (is the effect real?)","Dashboard build","Executive summary: 1 page, 3 findings","Timed drill: raw data → pivot → dashboard in 30 min","Recorded 5-min walkthrough"]},
-  fullstack: {n:"Full-stack product slice", steps:["Repo, framework, deploy pipeline day one","Data model + API endpoints","Auth flow end to end","Core UI with real state handling","Accessibility + performance pass","Tests across both layers","Deployed with CI","README + demo video"]}
+  fullstack: {n:"Full-stack product slice", steps:["Repo, framework, deploy pipeline day one","Data model + API endpoints","Auth flow end to end","Core UI with real state handling","Accessibility + performance pass","Tests across both layers","Deployed with CI","README + demo video"]},
+  frontend:  {n:"Real frontend app", steps:["Repo + build tooling + deploy on day one","Component structure and state decisions written down","Fetching, loading and error states done properly","Responsive layout, no horizontal scroll anywhere","Accessibility pass: keyboard, labels, contrast","Performance pass: measure, fix one thing, show the before/after","Tests on the logic, not the pixels","README with screenshots + a live link"]},
+  dataeng:   {n:"Working data pipeline", steps:["Pick real messy sources + write the contract","Ingestion with retries and idempotent loads","Warehouse schema and why it is shaped that way","Transformations with tests on the data, not just the code","Orchestration on a schedule with failure alerting","A backfill you actually ran","Cost and runtime numbers before/after one optimisation","README with the DAG diagram + data-quality report"]},
+  devops:    {n:"Deployed platform slice", steps:["A small app to operate (borrow one — the app is not the point)","Containerise it, multi-stage, non-root","CI pipeline: test, build, publish","Infra as code, committed and reproducible","Deploy with health checks and rollback","Logs, metrics, and one alert that actually fires","A documented incident: what broke, how you saw it, how you fixed it","README with the architecture + runbook"]},
+  qa:        {n:"Automation framework that proves quality", steps:["Pick a real target app and write the test strategy first","Framework skeleton: fixtures, config, reporting","API-layer tests with contract assertions","UI tests where they earn their cost — no more","Test data management and isolation","Wire it into CI with a quality gate that can fail a build","Flake hunt: find one, prove the root cause, fix it","README with coverage, run instructions, and what you chose NOT to automate"]}
 };
 
 /* ---------------- question bank ---------------- */
@@ -366,7 +499,13 @@ const SKILLS = {
   llm:["llm","gpt","claude","openai","gemini","prompt","genai","generative"], rag:["rag","embedding","vector","pinecone","pgvector","faiss","retrieval"],
   agent:["agent","langchain","langgraph","llamaindex","tool calling","function calling"], mcp:["mcp","model context protocol"],
   eval:["eval","evaluation","ragas","llm-as-judge","benchmark"], statistics:["statistics","hypothesis","a/b","ab test","regression analysis","probability"],
-  powerbi:["power bi","powerbi","tableau","looker","excel","dax","dashboard"]
+  powerbi:["power bi","powerbi","tableau","looker","dax","dashboard"], excel:["excel","vlookup","xlookup","pivot","spreadsheet"],
+  git:["git","github","gitlab","bitbucket","version control"], linux:["linux","unix","bash","shell script"],
+  cloud:["aws","azure","gcp","google cloud","cloud","ec2","s3","lambda"], cicd:["ci/cd","cicd","jenkins","github actions","gitlab ci","pipeline"],
+  k8s:["kubernetes","k8s","helm","terraform","ansible"], security:["security","owasp","penetration","vulnerability","encryption","iam"],
+  mobile:["android","ios","kotlin","swift","flutter","react native"], etl:["etl","elt","airflow","dbt","data pipeline","ingestion"],
+  spark:["spark","hadoop","databricks","pyspark","big data"], nosql:["mongodb","cassandra","dynamodb","nosql","elasticsearch"],
+  dsa:["data structures","algorithms","leetcode","dsa","competitive programming"]
 };
 
 /* =====================================================================
@@ -440,7 +579,11 @@ function sectionPct(sec){
 function generatePlan(setup){
   const {role,weeks,hours,resume}=setup;
   const known=new Set(resume?resume.skills:[]);
-  const ids=ROLE_PLAN[role].slice();
+  const ids=(ROLE_PLAN[ROLES[role].fam]||ROLE_PLAN[ROLES[FALLBACK_ROLE].fam]).slice();
+  /* A must-have the resume does not evidence is the reason it gets filtered out,
+     so those topics get boosted regardless of what the diagnostic said. */
+  const fit=analyseFit(setup.resume,role);
+  const gapSkills=new Set(fit.mustMissing.concat(fit.niceMissing).flatMap(m=>m.req.split("|")));
 
   // Budget: reserve ~30% of every week for DSA, the capstone and review.
   const studyBudget=weeks*hours*0.7;
@@ -455,6 +598,7 @@ function generatePlan(setup){
     let hrs=t.h, mode="learn";
     if(proven&&(pct===null||pct>=75)){ hrs=Math.max(1,Math.round(t.h*0.4)); mode="verify"; }
     else if(pct!==null&&pct<50){ hrs=t.h+1; mode="focus"; }
+    if(t.sk&&gapSkills.has(t.sk)&&!proven){ hrs=t.h+1; mode="gap"; }   // resume gap outranks a decent quiz score
     if(spent+hrs>studyBudget && chosen.length>=Math.max(4,Math.ceil(weeks/2))){ dropped.push({n:t.n,h:t.h}); continue; }
     chosen.push({id,...t,hrs,mode}); spent+=hrs;
   }
@@ -470,7 +614,7 @@ function generatePlan(setup){
   // hours, and fill genuine slack with spaced revision instead of dead space.
   const spread=Math.max(1,Math.ceil(braided.length/weeks));
   const hourCap=Math.max(2,hours*0.7);
-  const cap=CAPSTONE[role], capAt=[];
+  const cap=CAPSTONE[ROLES[role].fam]||CAPSTONE[ROLES[FALLBACK_ROLE].fam], capAt=[];
   for(let i=0;i<cap.steps.length;i++) capAt.push(Math.min(weeks-1, Math.floor((i+1)*weeks/(cap.steps.length+1))));
   const dsaPerWeek = hours<=5?2 : hours<=10?3 : 4;
 
@@ -565,8 +709,11 @@ function renderSetup(){
   if(step===1){
     host.innerHTML=`${dots}<div class="card">
       <h2>What are you aiming at?</h2>
-      <p class="hint">Pick the role you want to be interviewed for — not the one you have.</p>
-      <div class="opts" id="roles">${Object.entries(ROLES).map(([k,v])=>
+      <p class="hint">Type the role you want to be interviewed for — <b>not the one you have</b>. Any role, any starting point: test engineer → backend, support → developer, backend → AI. Whatever you type is matched to the closest track.</p>
+      <input type="text" id="roletext" placeholder="e.g. backend engineer, AI engineer, data analyst, DevOps, SDET…"
+        value="${esc(wiz.roleText||"")}" autocomplete="off">
+      <div id="rolematch"></div>
+      <div class="opts" id="roles" style="margin-top:10px">${Object.entries(ROLES).map(([k,v])=>
         `<button class="opt-btn ${wiz.role===k?"sel":""}" data-role="${k}">${esc(v.n)}<small>${esc(v.blurb)}</small></button>`).join("")}</div>
       <label class="fld">How long until you want to be interview-ready?</label>
       <div class="opts" id="weeks">${[8,12,16,24].map(w=>
@@ -577,7 +724,22 @@ function renderSetup(){
       <div class="row"><button class="ghost" id="back1">&larr; Back</button>
         <button class="go" id="next1" ${wiz.role&&wiz.weeks&&wiz.hours?"":"disabled"}>Continue &rarr;</button></div>
     </div>`;
-    $$("[data-role]").forEach(b=>b.addEventListener("click",()=>{wiz.role=b.dataset.role;renderSetup();}));
+    const rtx=$("#roletext");
+    const showMatch=()=>{
+      wiz.roleText=rtx.value;
+      const m=matchRole(rtx.value);
+      if(rtx.value.trim()) wiz.role=m||FALLBACK_ROLE;   // never dead-end on an unmatched role
+      const host=$("#rolematch");
+      if(!rtx.value.trim()){ host.innerHTML=`<p class="hint">Or pick a track directly below.</p>`; return; }
+      host.innerHTML = m
+        ? `<p class="hint">Matched to <b>${esc(ROLES[m].n)}</b> — ${esc(ROLES[m].blurb)}. Wrong? Pick a different track below.</p>`
+        : `<p class="hint">No exact match, so this will use <b>${esc(ROLES[FALLBACK_ROLE].n)}</b> — a solid general track. Pick a closer one below if there is one.</p>`;
+      $$("[data-role]").forEach(b=>b.classList.toggle("sel",b.dataset.role===(m||wiz.role)));
+    };
+    rtx.addEventListener("input",showMatch);
+    showMatch();
+    $$("[data-role]").forEach(b=>b.addEventListener("click",()=>{
+      wiz.role=b.dataset.role; wiz.roleText=ROLES[b.dataset.role].n; renderSetup(); }));
     $$("[data-weeks]").forEach(b=>b.addEventListener("click",()=>{wiz.weeks=+b.dataset.weeks;renderSetup();}));
     $$("[data-hours]").forEach(b=>b.addEventListener("click",()=>{wiz.hours=+b.dataset.hours;renderSetup();}));
     $("#back1").addEventListener("click",()=>{S.step=0;save();renderSetup();});
@@ -586,9 +748,43 @@ function renderSetup(){
   }
   if(step===2){
     const budget=wiz.weeks*wiz.hours;
+    const fit=analyseFit(wiz.resume,wiz.role);
+    const roleName=ROLES[wiz.role].n;
+    const vtxt={strong:"Your resume already reads like this role.",
+                partial:"Your resume is partway there. The gaps below are what gets it filtered out.",
+                early:"Your resume does not currently read like this role. That is fixable, and this is the list."}[fit.verdict];
+    const vcls={strong:"ok",partial:"warn",early:"bad"}[fit.verdict];
     host.innerHTML=`${dots}<div class="card">
-      <h2>Take the diagnostic — closed book</h2>
-      <p class="hint">About 20 questions matched to <b>${esc(ROLES[wiz.role].n)}</b>. Its only job is to find out where you actually are, so weak areas get more of your hours and strong ones get less. Guessing here costs you later.</p>
+      <h2>Does your resume match ${esc(roleName)}?</h2>
+      ${!wiz.resume?`<div class="banner">You skipped the resume step, so there is nothing to compare. Go back and paste it — this screen is the most useful one in the tool.</div>`:`
+      <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:10px 0 6px">
+        <span style="font-size:40px;font-weight:800">${fit.score}%</span>
+        <span class="chip ${vcls}">${fit.verdict}</span>
+        <span class="hint" style="margin:0;flex:1;min-width:180px">${esc(vtxt)}</span>
+      </div>
+      <span class="bar" style="height:14px;display:block" role="progressbar" aria-label="Resume match" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${fit.score}"><i style="width:${barW(fit.score)}"></i></span>
+      <p class="hint">A keyword check against what this role is normally expected to show — not a recruiter, and not magic. It catches the obvious omissions, which is most of them.</p>
+
+      <h2 style="font-size:16px;margin-top:18px">Expected, and on your resume</h2>
+      <div class="sig">${fit.must.concat(fit.nice).filter(x=>x.ok).map(x=>`<span class="chip ok">${esc(x.label)}</span>`).join("")||`<span class="chip dim">nothing matched — paste more of the resume</span>`}</div>
+
+      ${fit.mustMissing.length?`<h2 style="font-size:16px;margin-top:18px">Missing — these are the filters</h2>
+      <p class="hint">A ${esc(roleName)} posting assumes these. Missing one is the usual reason a resume never gets read.</p>
+      <div>${fit.mustMissing.map(m=>`<div class="step"><span style="flex:1">
+        <span class="st-t">Add: ${esc(m.label)}</span>
+        <div class="st-d">${esc(FIX[m.req.split("|")[0]]||"Show it with something shipped and a number attached, not a skills-list entry.")}</div>
+      </span></div>`).join("")}</div>`:`<p class="hint" style="margin-top:16px"><b>No must-haves missing.</b> That is a genuinely good sign.</p>`}
+
+      ${fit.niceMissing.length?`<h2 style="font-size:16px;margin-top:18px">Would strengthen it</h2>
+      <div>${fit.niceMissing.map(m=>`<div class="step"><span style="flex:1">
+        <span class="st-t">${esc(m.label)}</span>
+        <div class="st-d">${esc(FIX[m.req.split("|")[0]]||"Worth adding once the must-haves are covered.")}</div>
+      </span></div>`).join("")}</div>`:""}
+
+      <div class="banner" style="border-color:var(--ok);background:var(--ok-soft);margin-top:16px">
+        <b>What happens next:</b> every gap above is built into your plan as a <b>RESUME GAP</b> step — study it, then finish with something you can actually put on the resume. A rewritten bullet with no evidence behind it fails the interview instead of the screen.
+      </div>`}
+
       <div class="banner" style="border-color:var(--line);background:var(--surface2)">
         <b>Your budget:</b> ${wiz.weeks} weeks × ${wiz.hours} h ≈ <b>${budget} hours</b>.
         ${budget<60?"That is genuinely tight — expect a core-only plan that refuses to pretend otherwise."
@@ -596,13 +792,15 @@ function renderSetup(){
          :budget<250?"Enough for depth and a portfolio project you can defend."
          :"Enough for real depth across the board."}
       </div>
+      <h2 style="font-size:16px">Now score yourself — closed book</h2>
+      <p class="hint">About 20 questions matched to ${esc(roleName)}. The resume check above says what you can <i>claim</i>; this says what you can <i>defend</i>. Guessing here costs you later.</p>
       <div class="row"><button class="ghost" id="back2">&larr; Back</button>
         <button class="go" id="takediag">Start the diagnostic &rarr;</button>
         <button class="ghost" id="skipdiag">Skip it (plan will assume average)</button></div>
     </div>`;
     $("#back2").addEventListener("click",()=>{S.step=1;save();renderSetup();});
-    $("#takediag").addEventListener("click",()=>{ S.setup={role:wiz.role,weeks:wiz.weeks,hours:wiz.hours,resume:wiz.resume}; save(); runQuiz("diag"); });
-    $("#skipdiag").addEventListener("click",()=>{ S.step=3; S.setup={role:wiz.role,weeks:wiz.weeks,hours:wiz.hours,resume:wiz.resume}; save(); renderSetup(); });
+    $("#takediag").addEventListener("click",()=>{ S.setup={role:wiz.role,roleText:wiz.roleText||ROLES[wiz.role].n,weeks:wiz.weeks,hours:wiz.hours,resume:wiz.resume}; save(); runQuiz("diag"); });
+    $("#skipdiag").addEventListener("click",()=>{ S.step=3; S.setup={role:wiz.role,roleText:wiz.roleText||ROLES[wiz.role].n,weeks:wiz.weeks,hours:wiz.hours,resume:wiz.resume}; save(); renderSetup(); });
     return;
   }
   // step 3 — build it
@@ -710,8 +908,10 @@ function weekSteps(w){
   const wk=S.plan.list.find(x=>x.w==w); if(!wk) return [];
   const steps=[];
   wk.topics.forEach(t=>steps.push({
-    t:(t.mode==="verify"?"Verify (you may already know this): ":t.mode==="focus"?"Focus area — extra time: ":"Study: ")+t.n,
+    t:(t.mode==="verify"?"Verify (you may already know this): ":t.mode==="gap"?"RESUME GAP — build evidence: "
+      :t.mode==="focus"?"Focus area — extra time: ":"Study: ")+t.n,
     d:(t.mode==="verify"?"Your resume suggests you have this. Skim to confirm, then move on — do not spend a full session here."
+      :t.mode==="gap"?"Your target role expects this and your resume does not show it. This is not just study — finish with something you can put ON the resume: a repo, a number, a shipped thing."
       :t.mode==="focus"?"Your diagnostic flagged this section, so it gets more time than default. Slow down."
       :"")+` (~${t.hrs} h)`,
     links:t.lk
@@ -911,6 +1111,16 @@ function renderProgress(){
       if you find extra hours, add them in this order.</p>
       ${S.plan.dropped.map(d=>`<div class="prow"><span class="pn" style="flex:1;min-width:0">${esc(d.n)}</span><span class="pct">~${d.h} h</span></div>`).join("")}
       <p class="hint">Want them in? Start over with a longer timeline or more hours per week — the plan rebuilds around whatever you can actually give it.</p></div>`:""}
+    ${(()=>{ const fit=analyseFit(S.setup.resume,S.setup.role);
+      if(!S.setup.resume) return "";
+      return `<div class="card"><h2 style="font-size:16px">Resume vs ${esc(ROLES[S.setup.role].n)}</h2>
+      <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+        <span style="font-size:28px;font-weight:800">${fit.score}%</span>
+        <span class="bar" style="flex:1"><i style="width:${barW(fit.score)}"></i></span></div>
+      <p class="hint">${fit.mustMissing.length
+        ? "Still missing: <b>"+fit.mustMissing.map(m=>esc(m.label)).join(", ")+"</b>. These appear in your plan as RESUME GAP steps — each one should end with something you can put on the resume."
+        : "No must-haves missing. Keep the evidence current as you finish each project step."}</p>
+      <p class="hint">Re-run this after a few weeks: paste your updated resume via <b>Start over</b> (export your progress first) and see whether the number moved.</p></div>`; })()}
     <div class="card"><h2 style="font-size:16px">Back up your progress</h2>
       <p class="hint">Your progress lives in this browser only. Export a file before switching machines, clearing history, or if the save chip above ever says “not saved”.</p>
       <div class="row"><button class="go" id="exp">Export progress file</button>

@@ -39,7 +39,29 @@ The whole plan fits in 3 h/week only because **one asset serves all three channe
 
 ---
 
-## The angle that ties it all together: the AI era
+## The primary hook: "does your resume match the job you want?"
+
+**This replaced the role-specific angle, and it is a much bigger market.** The old framing spoke to backend candidates, or AI candidates. This one speaks to **anyone changing anything** — test engineer → backend, support → developer, analyst → data engineer, service company → product company. Same tool, same post, far more people who see themselves in it.
+
+**Why it works as content:** the gap between a resume and a target role is something everyone privately worries about and almost nobody gets an honest answer on. You can give that answer away for free, repeatedly, and it demonstrates the product every time.
+
+**Ten posts from this angle:**
+1. "Your resume isn't bad. It just doesn't match the job you're applying for. Those are different problems."
+2. "'Add SQL to your skills section' is useless advice. Here's the bullet that actually works." *(show a real before/after)*
+3. "The 4 things a backend posting assumes you already have. Missing one is why you never hear back."
+4. "Test engineer → backend: here's exactly what's missing from your resume, and the order to fix it."
+5. "Support → developer. It's a shorter jump than you think, and here are the three gaps."
+6. "I scored my own resume against the job I want. It came out 60%. Here's what was missing." *(use your real number)*
+7. "You can claim a skill or you can defend it. Interviews only care about the second one."
+8. "Stop rewriting your resume. Go build the one thing it's missing, then rewrite it."
+9. "Every gap on your resume should end in a number. No number, no bullet."
+10. "Same resume, three different target roles, three different scores. The resume isn't the variable — the target is."
+
+**The free lead magnet writes itself:** a "score your resume against the role you want" carousel — the four must-haves for five common roles, so people can check themselves in 30 seconds. Pin it.
+
+---
+
+## The second angle: the AI era
 
 **This is your best and most timely hook, and it is true.** Interviews changed faster than prep material did — assistance is detected, take-homes come with a defence round, and trivia lost ground to "explain your reasoning while you work." Which produces the line that should run through everything you post:
 

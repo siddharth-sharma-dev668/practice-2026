@@ -39,20 +39,33 @@ Then re-upload to Gumroad and **buy your own product once** to confirm the downl
 
 ## The product in one paragraph
 
-Interview prep built for an era where assistance is detected and interviews test what you can produce unassisted. It scores you closed-book, generates a plan weighted to your real gaps, **names the topics your hours cannot fit**, and drills the things nobody else tests — unassisted fluency, narrating trade-offs, defending a take-home. Runs entirely in the browser; the resume never leaves the device; no AI inside it, deliberately. **₹4,999 / $59** — app + one live 45-min debrief + 12 months of updates + quarterly re-diagnostics.
+**Any role to any role.** You paste your resume, type the job you actually want — test engineer → backend, support → developer, backend → AI, anything → anything — and it tells you three things in order: **does your resume match that role**, **what to add so it does**, and **what you can actually defend** once you score yourself closed-book. Then it builds the plan, with every resume gap as a step that must end in real evidence. Runs entirely in the browser; the resume never leaves the device; no AI inside it, deliberately. **₹4,999 / $59** — app + one live 45-min debrief + 12 months of updates + quarterly re-diagnostics.
 
 ## Why anyone buys it
 
-**Lead with the AI era.** It is timely, it is true, almost nobody else is selling it, and it turns the product's constraints into features:
+### The hook: does your resume match the job you want?
+
+Universal, immediately useful, and it works for **anyone in any domain** — which is the point. Not "a backend prep tool." A tool that takes *your* resume and *your* target and shows the gap between them, whatever those two things are.
+
+The order matters and it is the product:
+
+1. **Match** — a score, what's already there, and what's missing. Missing a must-have is the usual reason a resume never gets read.
+2. **Fix** — the specific bullet to add for each gap, with the evidence it needs. *"Wrote cohort-retention queries over 2M rows; cut a manual report from 3h to 5min"* — not "add SQL to your skills."
+3. **Score yourself** — closed-book. The resume says what you can *claim*; the diagnostic says what you can *defend*. Both matter and they are different.
+4. **Then the plan** — every gap becomes a `RESUME GAP` step that ends with something you can put on the resume. A rewritten bullet with nothing behind it fails the interview instead of the screen.
+
+### The second angle: the AI era
 
 > **Everyone prepares with AI now. That is exactly why preparation stopped working.** You end up able to *describe* a solution and unable to *produce* one — watched, unassisted, in fifteen minutes. Interviews test the second thing. Only the second thing.
 
-1. **It trains for the round as it now exists.** Closed-book diagnostic, the verify loop in everyone's first three weeks, an AI-Era section scoring unassisted fluency, narration, live debugging and take-home defence. No AI in the app — turn the Wi-Fi off and it works identically.
-2. **It tells you what to abandon.** Nothing free does this, because nothing free will tell someone what they cannot have.
-3. **The resume never leaves the device.** No server, no account, verifiable in ten seconds — differentiated in a category full of resume-upload tools with vague privacy policies.
-4. **A live hour with a named engineer publishing real scores.** The only part that cannot be cloned or pirated, and what makes ₹4,999 defensible.
+This turns the product's constraints into features: closed-book diagnostic, the verify loop in everyone's first three weeks, an AI-Era section scoring unassisted fluency, narration, live debugging and take-home defence — and no AI in the app at all. Turn the Wi-Fi off and it works identically.
 
-**Second angle only:** *"sized to the hours you have."* Never the headline — [Grind 75](https://www.techinterviewhandbook.org/grind75) does that free, by the author of Blind 75. Name it on your own page as free and better at DSA scheduling.
+### The rest
+- **It tells you what to abandon** when your hours don't fit. Nothing free will tell someone what they cannot have.
+- **The resume never leaves the device.** No server, no account, verifiable in ten seconds — differentiated in a category full of resume-upload tools with vague privacy policies.
+- **A live hour with a named engineer publishing real scores.** The only part that cannot be cloned or pirated, and what makes ₹4,999 defensible.
+
+**Never the headline:** *"sized to the hours you have."* [Grind 75](https://www.techinterviewhandbook.org/grind75) does that free, by the author of Blind 75 — name it on your own page as free and better at DSA scheduling.
 
 **Read [RESEARCH_PLAYBOOK.md](RESEARCH_PLAYBOOK.md) before executing any of this** — it is the evidence behind the channel choice and positioning, including where the evidence was weak and which claims are bets.
 
