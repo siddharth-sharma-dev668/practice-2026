@@ -39,15 +39,18 @@ Then re-upload to Gumroad and **buy your own product once** to confirm the downl
 
 ## The product in one paragraph
 
-An interview prep planner that reads your resume locally, runs a role-matched diagnostic, and generates a braided week-by-week plan sized to the hours you actually have — then tells you honestly what those hours could not fit. Runs entirely in the browser; the resume never leaves the device. $9, one file, no subscription.
+An interview prep planner that reads your resume locally, scores you with a role-matched diagnostic, and generates a braided week-by-week plan — then **names the topics your hours cannot fit**, in priority order, instead of pretending everything fits. Runs entirely in the browser; the resume never leaves the device. $19 / ₹999, one file, no subscription.
 
 ## Why anyone buys it
 
-Three things nothing else in this market does:
+**Lead with the cut list. Not with "sized to the hours you have."** [Grind 75](https://www.techinterviewhandbook.org/grind75) already does hours-in / ordered-plan-out, free, written by the author of Blind 75, off a repo with 130k+ stars. That framing is lost before you start — so name Grind 75 on your own page, say it is free and better at DSA scheduling, and compete where it does not play:
 
-1. **It respects the hours you actually have.** Every free roadmap assumes 15 h/week. Most people have five, fall behind by week 3, and quit believing they failed. This one plans for five and *shows you what it dropped*.
-2. **It adapts twice** — the diagnostic finds your real gaps, and your resume compresses what you can already prove. You get extra hours on your weak sections and a quick verify on your strong ones.
-3. **The resume never leaves the device.** No server, no account, works with Wi-Fi off. In a category full of resume-upload tools with vague privacy policies, this is genuinely differentiated — and it is verifiable in ten seconds.
+1. **It tells you what to abandon.** Nothing free does this, because nothing free is willing to tell someone what they cannot have. This is the whole product.
+2. **It adapts twice** — the diagnostic finds your real gaps, and your resume compresses what you can already prove. Extra hours on weak sections, a quick verify on strong ones.
+3. **The resume never leaves the device.** No server, no account, works with Wi-Fi off — verifiable in ten seconds. In a category full of resume-upload tools with vague privacy policies, that is genuinely differentiated.
+4. **A named engineer publishing real scores.** Neither Grind 75 nor any free AI tool has this. It is also the only asset that compounds.
+
+**Read [RESEARCH_PLAYBOOK.md](RESEARCH_PLAYBOOK.md) before executing any of this** — it is the evidence behind the price, the channel choice, and the positioning above, including where the evidence was weak.
 
 ## Before your first sale
 

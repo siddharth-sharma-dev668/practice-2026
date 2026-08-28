@@ -29,7 +29,7 @@
 <div class="wrap">
   <h1>Marketing Studio</h1>
   <p class="lead">Every graphic below is a live SVG. Hit <b>PNG</b> for a 2× raster ready to post, or <b>SVG</b> to edit it in Figma / Illustrator / Inkscape. Text is plain SVG — open this file in a text editor and change any wording you like.</p>
-  <div class="note"><b>Sizes:</b> 1080×1080 = Instagram feed · 1080×1350 = portrait feed (more screen space, better reach) · 1080×1920 = story/reel · 1280×720 = YouTube thumbnail.
+  <div class="note"><b>Sizes:</b> 1080×1080 = profile picture / square feed · 1080×1350 = portrait feed (more screen space, better reach) · 1080×1920 = story/reel · 1280×720 = YouTube thumbnail.
   <br><b>Fonts:</b> these use system fonts so they render anywhere. If you want your own typeface, edit the <code>font-family</code> in this file.</div>
   <div id="host"></div>
 </div>
@@ -61,7 +61,7 @@ function handle(w,h){
 const DESIGNS=[
 {
  name:"Brand mark / profile picture", file:"logo", w:1080,h:1080,
- cap:"Use as the Instagram + YouTube profile picture. The arc reads as a launch trajectory; it stays legible at 40px.",
+ cap:"Use as the LinkedIn + Instagram profile picture. The arc reads as a launch trajectory; it stays legible at 40px.",
  svg:()=>frame(1080,1080,`
   <circle cx="540" cy="540" r="500" fill="none" stroke="${C.line}" stroke-width="8"/>
   <path d="M240 760 Q540 760 700 380" fill="none" stroke="${C.acc}" stroke-width="26" stroke-linecap="round"/>
@@ -72,7 +72,7 @@ const DESIGNS=[
 },
 {
  name:"The hours lie (your best post)", file:"post-hours-lie", w:1080,h:1350,
- cap:`CAPTION:\nEvery roadmap you saved assumes 15 hours a week. You have five. So you fall behind by week 3, feel like you failed, and quit — when the plan was wrong, not you.\n\n24 weeks × 5 h = 120 hours. Enough for ONE role done properly, ~50 DSA problems known cold, and one project you can defend. Not five roles and 150 problems.\n\nPlan for the hours you actually have.`,
+ cap:`CAPTION:\nEvery roadmap you saved assumes 15 hours a week. You have five. So you fall behind by week 3, feel like you failed, and quit — when the plan was wrong, not you.\n\n24 weeks × 5 h = 120 hours. Enough for ONE role done properly, ~50 DSA problems known cold, and one project you can defend. Not five roles and 150 problems.\n\nGrind 75 will size a free plan to your week and it is better at that than I am. What it will not do is tell you which two things to abandon when the plan still does not fit.`,
  svg:()=>frame(1080,1350,`
   ${badge(60,70,"HARD TRUTH")}
   <text font-family="${F}" font-size="82" font-weight="800" fill="${C.ink}" letter-spacing="-2">
@@ -173,7 +173,7 @@ const DESIGNS=[
 },
 {
  name:"Product demo cover", file:"post-product", w:1080,h:1350,
- cap:`CAPTION:\nYour resume decides what you skip. Your diagnostic decides what gets extra hours. Your real free time decides what fits — and it tells you what it had to cut instead of pretending.\n\nRuns entirely on your laptop. Your resume never leaves your device. $9, link in bio.`,
+ cap:`CAPTION:\nYour resume decides what you skip. Your diagnostic decides what gets extra hours. Your real free time decides what fits — and it tells you what it had to cut instead of pretending.\n\nRuns entirely on your laptop. Your resume never leaves your device. $19, link in bio.`,
  svg:()=>frame(1080,1350,`
   ${badge(60,70,"THE TOOL")}
   <text font-family="${F}" font-size="78" font-weight="800" fill="${C.ink}" letter-spacing="-2">
@@ -185,7 +185,7 @@ const DESIGNS=[
     <text x="88" y="${711+i*104}" text-anchor="middle" font-family="${F}" font-size="30" font-weight="800" fill="#1F0E04">${n}</text>
     <text x="140" y="${712+i*104}" font-family="${F}" font-size="35" fill="${C.ink}">${t}</text>`).join("")}
   <rect x="60" y="1150" width="440" height="80" rx="12" fill="${C.acc}"/>
-  <text x="280" y="1202" text-anchor="middle" font-family="${F}" font-size="40" font-weight="800" fill="#1F0E04">$9 · link in bio</text>
+  <text x="280" y="1202" text-anchor="middle" font-family="${F}" font-size="40" font-weight="800" fill="#1F0E04">$19 · link in bio</text>
   ${handle(1080,1350)}`)
 },
 {

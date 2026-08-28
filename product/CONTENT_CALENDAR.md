@@ -1,8 +1,27 @@
 # Content Calendar — 12 weeks, ready to post
 
-**The key insight: your content bank already exists.** The product ships with **49 interview questions** and **40 topics**, each with a written explanation. That is more than 90 posts of teaching material you have already produced. Stop thinking "what do I post" and start working through the list.
+> **Revised 2026-08-27.** The first version made Instagram primary with a Reels pipeline. Research ([RESEARCH_PLAYBOOK.md](RESEARCH_PLAYBOOK.md)) moved the primary channel to **LinkedIn**, with Instagram kept as a same-asset cross-post and YouTube deferred to month 4. Price is now **$19 / ₹999**. The posts themselves barely change — the distribution does.
+
+**The key insight: your content bank already exists.** The product ships with **49 interview questions** and **40 topics**, each with a written explanation. That is more than 90 posts of teaching material you have already produced. Stop thinking "what do I post" and work through the list.
 
 Your second bank is your own prep: every week you study topics, solve DSA, build a capstone step and take a quiz. **That is the content nobody can copy**, because it is happening to you.
+
+---
+
+## Where it goes — one asset, three placements
+
+The whole plan fits in 3 h/week only because **one asset serves all three channels.** The moment you start making channel-specific video, the budget breaks.
+
+| Channel | Role | Format | Time/week |
+|---|---|---|---|
+| **LinkedIn** | **Primary.** Personal profile, never a company page | 1 document/image post. Product link in the **first comment**, not the body | 45 min |
+| **Instagram** | Secondary, genuinely free | The *same* image, cross-posted. Bio link only | 15 min |
+| **r/developersIndia** | Reputation only — **no links for 8 weeks** | Text answers to real questions | 20 min |
+| YouTube | Deferred to month 4 | — | 0 |
+
+**Why not Reels-first:** video costs several times a static post to produce, which is decisive at 3 h/week, and the Instagram-specific format claims did not survive verification. Instagram stays because cross-posting an existing image is nearly free — not because it earns its own pipeline.
+
+**Reddit rule:** read the sidebar yourself before your first comment. Reddit blocks automated fetching, so no tool can verify those rules for you. Contribution first, always — and never cross-post the same link across subreddits, which trips site-wide spam detection and can cost you the account.
 
 ---
 
@@ -10,13 +29,15 @@ Your second bank is your own prep: every week you study topics, solve DSA, build
 
 | # | Pillar | Format | Why it works | Frequency |
 |---|---|---|---|---|
-| 1 | **Question autopsy** | Carousel (4–6 slides) | Immediately useful; saves and shares well; proves you know your subject | 1–2 / week |
-| 2 | **Hard truth** | Single image or 15-s reel | Opinion travels. This is your differentiator — everyone else sells fantasy timelines | 1 / week |
-| 3 | **Build in public** | Story-style post or reel | Authenticity; people root for a person, not a product | 1 / week |
-| 4 | **Micro-lesson** | Carousel | Bookmark bait — the N+1 and `@Transactional` posts will outperform everything | 1 / week |
-| 5 | **Product** | Reel (screen recording) | Only sells after pillars 1–4 have earned attention | 1 / 2 weeks |
+| 1 | **Question autopsy** | Carousel / document post (4–6 slides) | Immediately useful; saves well; proves you know your subject | 1–2 / week |
+| 2 | **Hard truth** | Single image | Opinion travels. Frame around **the cut**, not around hours | 1 / week |
+| 3 | **Build in public** | Story-style post | People root for a person, not a product. Real scores, real misses | 1 / week |
+| 4 | **Micro-lesson** | Carousel | Save bait — the N+1 and `@Transactional` posts will outperform everything | 1 / week |
+| 5 | **Product** | Screen recording ending on the cut list | Only sells after pillars 1–4 have earned attention | 1 / 2 weeks |
 
 **Ratio: 4 useful posts for every 1 selling post.** Break that and growth stops.
+
+**One positioning correction that affects every post:** do not build the message on *"a plan sized to the hours you actually have."* [Grind 75](https://www.techinterviewhandbook.org/grind75) does exactly that, free, by the author of Blind 75. Build it on **the cut list** — *"it names the two things you have to abandon"* — which nothing free will do, because nothing free is willing to tell you what you cannot have.
 
 ---
 
@@ -69,7 +90,7 @@ The first line decides everything. Steal these patterns:
 | Wk | Posts |
 |---|---|
 | 7 | **Launch story** (Mon) · autopsy: hashCode mutation in a HashSet (Wed) · "what's inside, honestly" (Fri) · launch reel (Sat) |
-| 8 | Window functions — the SQL round decider · GC eligibility is reachability, not `null` · first buyer feedback · "$9, here's exactly what you get" |
+| 8 | Window functions — the SQL round decider · GC eligibility is reachability, not `null` · first buyer feedback · "$19, here's exactly what you get" |
 | 9 | `finally` swallowing a `return` · idempotency keys and double charges · "my week 8 quiz score" · testimonial reel |
 | 10 | p-values ≠ probability your hypothesis is true · JWT: why no DB lookup · "what I got wrong building this" · demo reel v2 |
 
@@ -91,7 +112,7 @@ By now one format is outperforming. **Find it and repeat it.** Stop being creati
 ## Weeks 15–16 — Month 4: evergreen + ladder
 
 - Re-run your top 10 posts with new visuals. Old followers forgot; new ones never saw them.
-- Introduce **Plus ($29)** and the **$99 review** to your email list only, not the feed.
+- Introduce the **₹999–1,499 session** to your email list only, not the feed. (Not a $99 review — that price does not match your signalling at 1 YOE, and Topmate comparables sit around ₹999.)
 - Build the 30-post evergreen bank so a bad week costs you nothing.
 
 ---
@@ -134,7 +155,7 @@ By now one format is outperforming. **Find it and repeat it.** Stop being creati
 > **11–15 s:** 20-question diagnostic, then section bars — SQL red
 > **15–20 s:** A 12-week plan appears; SQL topics marked "focus area, extra time"
 
-**Caption:** Your resume decides what you skip. Your diagnostic decides what gets extra hours. Your real free time decides what fits — and it tells you what it had to cut instead of pretending. Runs entirely on your laptop; your resume never leaves your device. $9, link in bio.
+**Caption:** Grind 75 will build you a free plan sized to your week, and it is better at that than I am — I say so on my own page. What it will not do is score you first, then tell you which two things to abandon when the plan still does not fit. That is the part I built, because that is the part I needed. Runs entirely on your laptop; your resume never leaves your device. $19, link in bio.
 
 ---
 

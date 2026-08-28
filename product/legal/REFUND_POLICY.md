@@ -6,7 +6,7 @@
 
 ## Why it is this generous
 
-At $9, arguing about refunds costs more than paying them. A frictionless refund also removes the last hesitation before purchase, which sells more copies than the refunds cost you. And someone who gets their money back politely will still recommend you; someone who has to fight for it will tell everyone.
+At $19, arguing about refunds costs more than paying them. A frictionless refund also removes the last hesitation before purchase, which sells more copies than the refunds cost you. And someone who gets their money back politely will still recommend you; someone who has to fight for it will tell everyone.
 
 ## Put this on the product page
 
@@ -16,11 +16,11 @@ Letting them keep the file is deliberate: it costs nothing (the file is already 
 
 ## What to expect
 
-Typical refund rates for a $9 digital product: **2–5%.** Above 8% means the sales page is over-promising — fix the page, not the policy. Track it in Gumroad → Analytics.
+Typical refund rates for a $19 digital product: **2–5%.** Above 8% means the sales page is over-promising — fix the page, not the policy. Track it in Gumroad → Analytics.
 
 ## Chargebacks
 
-If someone files a card chargeback instead of asking you, do not fight it over $9. The fee and the time cost more than the sale. Refund, note the buyer, move on.
+If someone files a card chargeback instead of asking you, do not fight it over $19. The fee and the time cost more than the sale. Refund, note the buyer, move on.
 
 ## One thing worth doing
 

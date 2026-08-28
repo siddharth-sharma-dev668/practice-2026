@@ -1,6 +1,8 @@
-# Launch Plan — Interview Launchpad ($9)
+# Launch Plan — Interview Launchpad ($19 / ₹999)
 
-**Built:** 2026-08-25 · **Horizon:** 16 weeks (Sep 2026 → Dec 2026) · **Your time cost:** ~3 h/week
+**Built:** 2026-08-25 · **Revised:** 2026-08-27 after go-to-market research · **Horizon:** 16 weeks · **Your time cost:** ~3 h/week
+
+> **This plan was revised.** The first version priced at $9 and made Instagram the primary channel. A 17-agent research pass ([RESEARCH_PLAYBOOK.md](RESEARCH_PLAYBOOK.md)) found better evidence against both, plus a positioning problem: "a plan sized to the hours you actually have" is exactly what **Grind 75** does — free, by the author of Blind 75, off a repo with 130k+ stars. Read that document; it is the reasoning behind everything below.
 
 ---
 
@@ -8,20 +10,19 @@
 
 ### The honest revenue math
 
-You asked for a revenue stream, so here is the arithmetic rather than a motivational number.
-
-At **$9** after Gumroad's cut (~10% + payment fees) you net **≈ $7.80 per sale**.
+At **$19** through Gumroad (10% + $0.50) you net **≈ $16.60 per sale**.
 
 | Sales/month | Net/month | What that requires |
 |---|---|---|
-| 10 | ~$78 | A small warm audience, achievable by month 2 |
-| 50 | ~$390 | ~2–5k engaged followers, or one post that travels |
-| 150 | ~$1,170 | A genuinely working content engine + a reel that breaks out |
-| 500 | ~$3,900 | A real brand. Rare inside 12 months. Do not plan on it. |
+| 10 | ~$166 | A small warm audience — achievable by month 3 |
+| 36 | ~$600 (₹50k) | A working content engine, sustained |
+| 150 | ~$2,490 | A real audience. Rare inside 12 months. |
 
-**Realistic expectation:** months 1–2 are **near zero** — that is not failure, that is every new account. Month 3 is where the first meaningful money usually appears, and only if you post consistently. Most people quit in month 2, which is precisely why month 3 works for the people who don't.
+**Why not $9.** The flat $0.50 alone is 5.6% of a $9 sale — all-in **15.6%**, versus ~13% at $19. Digital chargebacks run ~1.8% with $15–30 dispute fees, so **one dispute wipes out three $9 sales**. And the finding that settled it: across the research, *no indie seller in interview prep at the $5–30 band could be found with any reported sales at all*, while every verifiable success sits at $35+. The $5–30 careers band is where templates and PDFs go to die, and $9 tells the buyer which category you are in.
 
-**The structural problem with a single $9 product:** to reach ₹50,000/month (~$600) you need ~77 sales *every month*, forever, from cold traffic. That is a treadmill. The fix is not a higher price on the same thing — it is **one cheap product that earns trust, and one expensive thing for people who already trust you.** Ladder in §5. Ship the $9 first.
+**Realistic expectation — this is the number that matters:** the research puts **~85–90% odds of earning under $100/month for the first three months**, reasoned from Gumroad's own July 2025 distribution (of 37,006 creators who earned anything, 8,507 cleared $100 that month). **Month 1 expected value is zero sales.** That is not pessimism and it is not failure — it is the base rate. Most people quit in month 2, which is exactly why month 3 works for those who don't.
+
+**The ceiling problem, stated honestly:** both zero-to-audience successes in this niche published under their own name for **1–3 years** before the paid product landed. Nothing compresses that. So take near-term money from your calendar (a paid session) and let the file compound slowly behind it. Ladder in §5.
 
 ### Your real constraint: you have 30–60 min/day, total
 
@@ -54,13 +55,14 @@ You work at Johnson Controls. **Check your employment contract for outside-busin
 
 ### Product
 - [ ] Open `app/index.html` on your personal laptop, run the whole flow yourself as if you were a buyer. Every step.
-- [ ] Do it again on your phone. Most Instagram traffic is mobile — if it is awkward on a phone, fix that first.
+- [ ] Do it again on your phone. Most social traffic is mobile — if it is awkward on a phone, fix that first.
+- [ ] **Open Grind 75 and generate the 5 h/week × 16 weeks plan yourself. Screenshot it.** You need to know exactly what your free competitor outputs before you write another line of copy. This is 15 minutes and it is not optional.
 - [ ] Give it to **3 real friends** who are job-hunting. Watch them use it without helping. Note every place they hesitate.
 - [ ] Fix only what they actually tripped over. Ignore your own aesthetic opinions for now.
 
 ### Payment + delivery
-- [ ] Create a **Gumroad** account (global cards + easy delivery). Add **Razorpay** later if Indian buyers ask for UPI.
-- [ ] Product: `Interview Launchpad`, price **$9**, deliver the ZIP from `dist/`.
+- [ ] Set up **exactly ONE payment rail**, chosen by where your first ten conversations came from. INR-first → **Razorpay** (2% + GST on the fee, materially cheaper than any foreign merchant-of-record). USD-first → **Gumroad** (simplest, handles global tax as merchant of record). Do not build a dual-rail geo-detected checkout before you have a single buyer.
+- [ ] Product: `Interview Launchpad`, price **$19 / ₹999**, deliver the ZIP from `dist/`.
 - [ ] Turn on "ask for email" and Gumroad's own analytics.
 - [ ] **Buy your own product once** at full price. Check the receipt, the download, the file opening on a clean machine. A broken download is the most expensive bug you can ship.
 
@@ -68,16 +70,24 @@ You work at Johnson Controls. **Check your employment contract for outside-busin
 - [ ] Read `DISCLAIMER.md` — it says no job is guaranteed. Keep it that way; it is both honest and what protects you.
 - [ ] Put the refund policy on the Gumroad page itself, not buried in the file.
 
-### Content bank — 9 posts
-Pull them straight from what you already have. Formats and captions are in `CONTENT_CALENDAR.md`.
-- [ ] 3 × "interview question autopsy" (use the diagnostic questions — you have 49 of them)
-- [ ] 3 × "hard truth about prep" (the honest-hours angle — this is your sharpest differentiator)
-- [ ] 2 × "here is what I am building and why" (your own story, no pitch)
-- [ ] 1 × 20-second screen recording of the plan generating itself
+### Positioning — fix this before writing any content
+- [ ] **Delete "sized to the hours you actually have" from the hero.** Grind 75 does exactly that, free, and better. Using that framing invites the comparison and loses it.
+- [ ] **Lead with the cut list instead:** *"It names the two things you have to abandon."* Nothing free does this, because nothing free is willing to tell you what you cannot have.
+- [ ] **Name Grind 75 on your own page** and say it is free and better than you at DSA scheduling. Honesty is cheaper than being caught, and it converts the comparison into a credibility signal.
+- [ ] Supporting bullets: runs locally, nothing uploaded, works offline · one payment, no subscription, no account · a named engineer publishing real scores.
 
-### Account setup
-- [ ] Instagram bio: **what you do for whom** + link. Not adjectives. Example: *"SDET → backend/AI in 24 weeks, in public. I build the prep tool I needed. Free question bank ↓"*
-- [ ] Same handle on YouTube. Post the reels there as Shorts — same file, second audience, zero extra work.
+### Content bank — 9 posts
+Formats and captions are in `CONTENT_CALENDAR.md`.
+- [ ] 3 × "interview question autopsy" (use the question bank — you have 49)
+- [ ] 3 × "hard truth about prep" — but frame these around **the cut**, not around hours
+- [ ] 2 × "here is what I am building and why" (your own story, no pitch)
+- [ ] 1 × screen recording of the plan generating, ending on the cut list
+
+### Account setup — LinkedIn first
+- [ ] **LinkedIn is now your primary channel.** Post from your personal profile, not a company page. Headline: what you do for whom, not adjectives — e.g. *"Software engineer, 1 YOE. Documenting a test-engineering → backend/AI transition in public: real scores, real misses."*
+- [ ] **Instagram: same handle, same assets.** It stays a real channel, but it runs on the LinkedIn image rather than its own Reels pipeline — that is what keeps it inside the time budget. Bio: one line + link.
+- [ ] **Reddit: create the account now and start using it as a human.** No links for eight weeks. Account age and comment history are the entry ticket.
+- [ ] **YouTube: claim the handle, post nothing until month 4.** Highest production cost per unit of output and the slowest feedback loop of anything available to you.
 
 **Do not launch yet.**
 
@@ -85,40 +95,48 @@ Pull them straight from what you already have. Formats and captions are in `CONT
 
 ## 2. Weeks 3–6 — Month 1: audience before offer
 
-**Goal: 300–800 followers and 20 email addresses. Revenue target: $0.** Yes, zero. You are buying evidence that people want this before you ask anyone for money.
+**Goal: 20 real conversations and 20 email addresses. Revenue target: $0.** Yes, zero. You are buying evidence that people want this before you ask anyone for money.
 
-- **Post 3×/week** (Mon / Wed / Fri) + 1 reel. Never break the rhythm; the algorithm rewards consistency far more than quality spikes.
-- **Give away the best thing you have for free**: a "20-question diagnostic — score yourself" carousel. It is genuinely useful alone, and it is a live demo of the product's core idea.
-- **Talk to people.** Reply to every comment with a real sentence. Comment on 5 bigger accounts in your niche daily. For a new account, distribution comes from conversations, not from posting into the void.
-- **Soft-mention the product** from week 5 only: "I built this for myself; DM me if you want early access." Sell to nobody; learn what they ask.
+**The weekly rhythm (~80 min of posting, batched Sunday):**
+- **LinkedIn, 1 document post/week (45 min).** A single page exported from your own diagnostic output, or one week of your own plan. From your personal profile. Product link in the first comment, not the body.
+- **Instagram, same asset (15 min).** Cross-post the LinkedIn image. This is near-free *because* it shares the asset — the moment you start producing Instagram-only Reels, the budget breaks.
+- **Reddit, 20 min/week.** Answer one question properly in r/developersIndia. **No links, for eight weeks.** Contribution first, always — and read the sidebar rules yourself, because Reddit blocks automated fetching and nobody can verify them for you.
+- **Reply to every comment and DM with a real sentence.** At your size this converts far better than posting, and it is the first thing that gets skipped.
 
-**Checkpoint (end of week 6):** are people *asking* about it unprompted? If yes → launch. If no → your content is wrong, not your product. Change the angle before you change the price.
+**Validate the buyer, cheaply.** Post one price question publicly and DM the first ten people who engage. Ten real answers beat every benchmark in the research — because there is no credible conversion benchmark for a sub-$30 digital product sold from a cold account. That gap is real; the research looked for it and could not find it.
+
+**Know who you are selling to.** The documented failure mode in this category is selling to peers. One post-mortem: 130k+ Reddit views produced 55 store visits and single-digit sales, diagnosed by the author as *"they're my peers, not my buyers."* Your buyer is a 0–3 YOE engineer at a service company, or a final-year student, who has never heard of Grind 75. Not a developer who could build this in a weekend.
+
+**Checkpoint (end of week 6):** are people asking about it unprompted? If yes → launch. If no → your **audience** is wrong before your copy is. Change who you are talking to, not the price.
 
 ---
 
 ## 3. Weeks 7–10 — Month 2: launch
 
-**Goal: first 25 sales. Revenue: ~$200.**
+**Goal: first 10–25 sales. Revenue: ~$160–400.**
 
-- **Week 7 — the launch post.** Not "buy my thing." Tell the story: *"I failed a Python question I should have known. Here is what I built so it doesn't happen again."* Then the link. Story-first outsells feature-first by a wide margin at this size.
-- **Launch price $6 for 72 hours** ("first 50 people"), then $9. Urgency works and it seeds early reviews.
-- **Ask every buyer for one sentence of feedback.** Those sentences become your Instagram testimonials, which do more for conversion than anything you write yourself.
-- **Post 4×/week** now: 2 teaching, 1 build-in-public, 1 product.
-- **Start the email list properly.** Gumroad captures buyer emails — send one short email a week: one useful thing, no pitch. This is the only channel you own; Instagram can throttle you tomorrow.
+- **Week 7 — the launch post.** Not "buy my thing." Tell the story: *"I failed a Python question I should have known. Here is what I built so it doesn't happen again."* Then the link. Story-first outsells feature-first at this size.
+- **Price ladder, honoured as a real deadline:** *"$19 for the first 100 buyers, then $29."* Not an experiment — you will learn nothing about elasticity at your traffic, so treat it as a commitment and keep it.
+- **Get 5–8 real, named reviews via a disclosed beta.** Give free copies to real job-seekers, get written permission to quote them by name and role, and label the block *"Beta testers — received a free copy in exchange for an honest review."* **Never write, edit, or paraphrase a testimonial:** the FTC's consumer-reviews rule (effective 21 Oct 2024) bans fake and incentivised-positive reviews, and the US is your largest potential market. Free-for-honest-review with disclosure is the compliant version.
+- **Start the email list properly.** One short email a week: one useful thing, no pitch. It is the only audience you own.
+- **Then stop touching the page.** Impose a rule: no changes until 300 unique visitors have landed. You cannot A/B test anything — a split test needs roughly 10,000 visitors *per variant* to resolve effects this size. Every hour after launch goes to traffic, not to tweaking.
 
-**If you get 0 sales in 2 weeks:** the problem is almost never price at $9. It is that nobody understands what they get in the first 3 seconds. Rewrite the first line of the sales page and the first frame of the reel. Test one change at a time.
+**If you get 0 sales in 2 weeks:** it is almost never the price. It is that nobody understands what they get in the first three seconds, or that you are talking to the wrong people. Check the audience first, the hero line second.
+
+**Week 8 — run the gate.** If impressions-to-link-clicks stays under **0.5% for four consecutive weeks**, the audience is wrong. Change *who you are talking to* — not the price, not the copy. This gate exists because the LinkedIn recommendation is a bet, and you should find out in eight weeks rather than eight months.
 
 ---
 
 ## 4. Weeks 11–14 — Month 3: find what works and repeat it
 
-**Goal: 60–120 total sales. Revenue: ~$500–950.**
+**Goal: 25–60 total sales. Revenue: ~$400–1,000.** Adjust down without drama if month 2 came in low — the base rate says most people are under $100/month here.
 
-- **Read the analytics** (`SALES_PLAYBOOK.md` §4). Find your single best-performing post. Make four more like it. Most accounts have one format that works — your job is to notice it and stop being creative.
-- **Double down on Shorts/Reels.** Short video is still the cheapest reach available to a new account.
-- **Add social proof everywhere:** buyer count, screenshots of real feedback, before/after diagnostic scores.
-- **First upsell test** (§5): offer a $29 "resume + plan review" to buyers only. 5 buyers taking it = another $145 for maybe 4 hours of your time.
-- **Fix the product from real feedback.** Ship one improvement, then post about shipping it. Visible improvement is itself marketing.
+- **Read the analytics** (`SALES_PLAYBOOK.md` §4). Find your single best post by **saves**, not likes. Make four more like it. Most accounts have exactly one format that works; the job is to notice it and stop being creative.
+- **List the session on Topmate**, 2 slots/week. This is where near-term revenue actually comes from — one session out-earns a plausible month of app sales right now.
+- **Add real social proof:** the named beta reviews, your own before/after diagnostic scores. Never a fabricated buyer count.
+- **Book one paid CA consult (~₹1,500–3,000). Two questions only:** how to characterise this income for filing, and whether a foreign platform's commission triggers a reverse-charge GST registration for an otherwise-unregistered individual. Two published CA opinions directly contradict each other on the second and no CBIC circular settles it. Do not resolve this from blog posts — the downside is permanent monthly compliance.
+- **If a foreign payout is coming, email your bank's trade-forex desk (20 min).** From 1 Oct 2026, FEMA (Export and Import of Goods and Services) Regulations 2026 replaces SOFTEX with a monthly consolidated EDF. Ask for their process for a resident individual under ₹10 lakh/year, in writing, *before* the first payout lands.
+- **Fix the product from real feedback.** Ship one improvement, then post about shipping it — visible improvement is itself marketing.
 
 ---
 
@@ -126,16 +144,19 @@ Pull them straight from what you already have. Formats and captions are in `CONT
 
 **Goal: predictable, and no longer dependent on you posting daily.**
 
-### The product ladder (this is what breaks the $9 treadmill)
+### The product ladder
 
 | Tier | Price | What it is | Why it works |
 |---|---|---|---|
-| Free | $0 | The 20-question diagnostic carousel + a sample week | Costs nothing, proves competence, builds the list |
-| **Core** | **$9** | Interview Launchpad — the app | Impulse-priced, no decision friction |
-| Plus | $29 | Launchpad + role-specific question bank (200 Q) + resume checklist | ~30% of buyers take a bigger version if offered at checkout |
-| Service | $99 | 1:1 resume + plan review, 45 min, recorded | Caps at your hours — but it is the fastest cash and teaches you what buyers actually struggle with |
+| Free | $0 | The 20-question diagnostic as a carousel + a sample week | Costs nothing, proves competence, builds the list |
+| **Core** | **$19 / ₹999** | Interview Launchpad — the app | Out of the PDF band, fees drop to ~13% |
+| **Session** | **₹999–1,499 / $19–29** | 45-min diagnostic debrief, 2 slots/week, recorded | The only thing on your shelf a free tool cannot clone |
 
-**Sell Plus at checkout as a Gumroad upsell**, not later by email. Decision momentum is highest at the moment of purchase.
+**Sell ONE thing at launch.** With zero social proof, a three-column pricing grid adds abandonment rather than revenue. Mention the session in the post-purchase email, not on the sales page.
+
+**On the session price:** the earlier plan said $99. That is wrong for your signalling at 1 YOE — Topmate comparables for mock-interview-plus-resume-review sit around ₹999. Price it at your level and say so plainly on the page: *"I am one year in and mid-transition. If you want advice from a staff engineer, book one of them instead."* That sentence is a feature, not a weakness — and the scarcity is honest, because two slots a week is genuinely your calendar.
+
+**The arithmetic worth noticing:** one session out-earns a plausible *month* of app sales in your first quarter. If you need revenue this quarter, sell sessions. If you want a bestseller, keep publishing under your own name and stop measuring the app monthly.
 
 ### Systematise
 - [ ] A 30-post evergreen bank you can re-run when a week collapses
@@ -151,19 +172,25 @@ Pull them straight from what you already have. Formats and captions are in `CONT
 2. **Do not promise jobs.** "Get placed in 90 days" is a lie, it attracts refund requests and angry DMs, and it is what every scam account in this niche says. Your credibility is your only real moat.
 3. **Do not buy followers or engagement.** It poisons your reach permanently and converts at zero.
 4. **Do not rebuild the product for months before selling.** Ship at "good enough for a friend to use," then improve from real feedback.
-5. **Do not post JCI internals.** Employer, project names, screenshots, tooling specifics — none of it, ever. "A Fortune 500" is all you say.
-6. **Do not ignore the first 10 buyers.** They will tell you exactly what to build and will become your testimonials if you treat them well.
+5. **Do not name or hint at your employer.** Not by name, not by size, not by industry, not inside an "interview experience" post, and never real questions from an internal loop. Describe yourself as an engineer with one year of experience and stop there. The earlier draft of this plan said "a Fortune 500" was acceptable — the research is stricter and it is right: in a small market, size plus location plus role identifies a company.
+6. **Do not ignore the first 10 buyers.** They will tell you exactly what to build and become your named testimonials if you treat them well.
+7. **Read your own employment contract before publishing anything with your name and a price on it.** Look for "exclusive", "conflict of interest", "whole time", "prior written consent", "outside employment". There is no central Indian law banning a private-sector side product — your exposure is *contractual*. If any of those clauses appear, the next call is an employment lawyer, not HR. And do not self-report before reading: if no such clause exists, disclosure manufactures an approval decision that never needed to exist.
+8. **Hard hardware separation.** Personal laptop, personal network, personal email, personal GitHub/payment accounts. The product should not exist on the work machine at all. Copyright Act s.17(c) makes the employer first owner of work made in the course of employment, and standard Indian IT contracts widen that with forward-assignment clauses — hours and hardware are what you actually control.
 
 ---
 
 ## 7. Week-one checklist (start here tomorrow)
 
-- [ ] Run the product yourself, start to finish, on your personal laptop
-- [ ] Run it on your phone
-- [ ] Send it to 3 job-hunting friends; watch, don't help
-- [ ] Create the Gumroad product at $9, upload the ZIP, buy it yourself
-- [ ] Check your employment contract for moonlighting clauses
-- [ ] Write 3 posts from `CONTENT_CALENDAR.md` week 1
-- [ ] Set the Instagram bio and handle; claim the same name on YouTube
+Roughly 170 minutes, in this order.
 
-Nothing goes public until the 9-post bank exists.
+- [ ] **Read your employment contract and handbook (30 min).** This is a gate, not a task. Do it before anything with your name on it goes public.
+- [ ] **Hardware separation (20 min).** Move `product/` to the personal laptop. Personal network, personal accounts, nothing on the work machine.
+- [ ] **Open Grind 75, generate the 5 h/week × 16 week plan, screenshot it (15 min).** Know your free competitor's output before writing copy.
+- [ ] **Rewrite the hero + three bullets (45 min):** the cut list first, then local/no-upload, then one payment no subscription. Add the Grind 75 comparison row.
+- [ ] **Read the r/developersIndia sidebar rules yourself (10 min).** Non-delegable — Reddit blocks automated fetching, so no tool can verify these for you. Then answer one question in-sub, no links (20 min).
+- [ ] **Post the price question; start the ten DMs (30 min).**
+- [ ] Run the product start to finish on your laptop, then on your phone
+- [ ] Send it to 3 job-hunting friends; watch, don't help
+- [ ] Create the product at **$19 / ₹999**, upload the ZIP, buy it yourself at full price
+
+Nothing goes public until the 9-post bank exists and the contract is read.
