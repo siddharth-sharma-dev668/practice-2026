@@ -40,6 +40,21 @@ function swipe(){ return `<text x="60" y="1300" font-family="${MONO}" font-size=
 function eyebrow(txt){ return `<text x="60" y="95" font-family="${MONO}" font-size="26" fill="${C.acc}" letter-spacing="2">${txt}</text>`; }
 
 const SLIDES=[
+{n:"Cover — bar chart hook", svg:()=>frame(`
+  ${eyebrow("REAL NUMBERS")}
+  <text font-family="${F}" font-size="66" font-weight="800" fill="${C.ink}" letter-spacing="-2">
+    ${lines(["One cache.","~20% off p95","latency."],60,240,78)}
+  </text>
+  <text x="60" y="560" font-family="${MONO}" font-size="24" fill="${C.dim}" letter-spacing="1">BEFORE</text>
+  <rect x="60" y="580" width="960" height="70" rx="10" fill="${C.bad}" opacity="0.85"/>
+  <text x="90" y="627" font-family="${F}" font-size="34" font-weight="800" fill="#2A0E0B">p95: baseline</text>
+  <text x="60" y="700" font-family="${MONO}" font-size="24" fill="${C.dim}" letter-spacing="1">AFTER — REDIS CACHE-ASIDE</text>
+  <rect x="60" y="720" width="768" height="70" rx="10" fill="${C.ok}"/>
+  <text x="90" y="767" font-family="${F}" font-size="34" font-weight="800" fill="#0A2418">p95: ↓ ~20%</text>
+  <text font-family="${F}" font-size="34" font-weight="700" fill="${C.acc}">
+    ${lines(["Swipe to see how →"],60,880,44)}
+  </text>
+  ${pageNum(1,6)}`)},
 {n:"Cover", svg:()=>frame(`
   ${eyebrow("REAL NUMBERS")}
   <text font-family="${F}" font-size="72" font-weight="800" fill="${C.ink}" letter-spacing="-2">
@@ -49,7 +64,7 @@ const SLIDES=[
   <text font-family="${F}" font-size="40" fill="${C.dim}">
     ${lines(["Here's what I actually found —","and what I still don't have a","good answer for."],60,770,52)}
   </text>
-  ${swipe()}${pageNum(1,5)}`)},
+  ${swipe()}${pageNum(2,6)}`)},
 {n:"What p95 means", svg:()=>frame(`
   ${eyebrow("QUICK DEFINITION")}
   <text font-family="${F}" font-size="62" font-weight="800" fill="${C.ink}" letter-spacing="-2">
@@ -62,7 +77,7 @@ const SLIDES=[
   <text font-family="${F}" font-size="38" fill="${C.dim}">
     ${lines(["Not the average — averages hide","the worst realistic case. p95 is","closer to what your slowest real","users actually feel."],60,650,50)}
   </text>
-  ${swipe()}${pageNum(2,5)}`)},
+  ${swipe()}${pageNum(3,6)}`)},
 {n:"Suspected vs actual", svg:()=>frame(`
   ${eyebrow("THE INVESTIGATION")}
   <text font-family="${F}" font-size="46" font-weight="700" fill="${C.dim}">
@@ -75,7 +90,7 @@ const SLIDES=[
   <text font-family="${F}" font-size="42" font-weight="700" fill="${C.ink}">
     ${lines(["A hot read endpoint was hitting","the database directly — for data","that barely changed request","to request."],60,660,54)}
   </text>
-  ${swipe()}${pageNum(3,5)}`)},
+  ${swipe()}${pageNum(4,6)}`)},
 {n:"The fix", svg:()=>frame(`
   ${eyebrow("THE FIX")}
   <text font-family="${F}" font-size="58" font-weight="800" fill="${C.ink}" letter-spacing="-2">
@@ -87,7 +102,7 @@ const SLIDES=[
   <text font-family="${F}" font-size="38" fill="${C.dim}">
     ${lines(["p95 latency, on that endpoint."],60,860,48)}
   </text>
-  ${swipe()}${pageNum(4,5)}`)},
+  ${swipe()}${pageNum(5,6)}`)},
 {n:"Open question", svg:()=>frame(`
   ${eyebrow("STILL UNRESOLVED")}
   <text font-family="${F}" font-size="54" font-weight="800" fill="${C.ink}" letter-spacing="-2">
@@ -97,7 +112,7 @@ const SLIDES=[
   <text font-family="${F}" font-size="42" font-weight="700" fill="${C.acc}">
     ${lines(["How to size the cache TTL so","staleness never shows up to a","user — without just picking a","number and hoping."],60,630,54)}
   </text>
-  ${pageNum(5,5)}`)}
+  ${pageNum(6,6)}`)}
 ];
 
 const host=document.getElementById("host");
