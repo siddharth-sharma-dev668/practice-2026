@@ -27,7 +27,7 @@ Backend Engineer — Java, Spring Boot, PostgreSQL | Building Pramaan | Building
 
 **Why "Backend Engineer" leads and not Pramaan.** You said leave Pramaan alone, and it stays — but it moves back a few characters. A stranger reading "Pramaan | ..." learns nothing, because your company name means nothing to them yet; a recruiter searching "Backend Engineer Java Spring Boot" needs those literal words, and the front of the string is the only part reliably visible. Pramaan at position ~66 is still on the profile, still in every full view, and costs you nothing in retrieval.
 
-**If Pramaan has users or revenue**, swap `Building Pramaan` for something concrete — `Building Pramaan ([WHAT IT DOES], [N] users)`. Specific beats mysterious every time.
+**Keep "Building Pramaan" exactly that generic — Sid's explicit call (2026-08-31).** Pramaan is a separate entity he does not want detailed publicly. Do not add what it does, who it's for, or any specifics anywhere on LinkedIn or in any post.
 
 **Deleted from your current headline, and why:**
 - `SDET` — it sat at characters 11–14, inside every truncated view that exists. Removing it from the *headline* is not concealment: the Experience section one scroll down still shows the real title.
@@ -48,10 +48,9 @@ Redis caching, Docker.
 That was at Onextel, July to December 2025 — the work I am strongest at and the work I want
 to keep doing.
 
-Right now I am building Pramaan, [ONE SENTENCE: WHAT IT DOES AND WHO IT IS FOR], and working
-as a test engineer on a platform team, where the parts I care about are the ones that are
-actually engineering: building a Java-based automation framework, CI pipelines, containerised
-services, and an evaluation of MCP tooling.
+Right now I am building Pramaan, and working as a test engineer on a platform team, where the
+parts I care about are the ones that are actually engineering: building a Java-based
+automation framework, CI pipelines, containerised services, and an evaluation of MCP tooling.
 
 Alongside that I am going deep on the AI side of backend work — LLM APIs, structured outputs,
 retrieval, and specifically evaluation: golden sets, judges, and regression suites that catch
@@ -86,7 +85,7 @@ This is the change that matters most, and it only became available when you told
 
 - **Title:** `Founder & Backend Engineer` — or `Founding Engineer` if you have co-founders. Use whichever is literally true.
 - **Dates:** from when you actually started. Current.
-- **Description:** 3–4 bullets. Name the real stack. Name one shipped thing, even if small. If it has users, say how many; if it has none yet, say what is built rather than implying traction.
+- **Description:** 2–3 bullets, **kept deliberately generic per your call to not showcase what Pramaan does.** Name the stack in general terms (backend, APIs, AI agents) without naming Meta/WhatsApp or the product specifics. E.g. "Building backend infrastructure for an AI agent product" — true, discoverable on the keywords that matter (backend, AI agents), reveals nothing you don't want public.
 
 Why this matters: it is a **current** position where the title is yours to choose and is honestly *Engineer*, it is the "compulsive builder" signal that both backend and FDE hiring explicitly screen for, and it gives you a legitimate engineering title in the same time period as the test-engineering one. LinkedIn lets you reorder concurrent current positions — do that, with Pramaan on top.
 

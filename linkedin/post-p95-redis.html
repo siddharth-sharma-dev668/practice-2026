@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LinkedIn Post — p95 / Redis</title>
+<style>
+  :root{--bg:#0F141A;--card:#171E26;--ink:#E6EBEF;--muted:#94A3B0;--line:#2B3642;--accent:#F07A3D}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 'Segoe UI',system-ui,sans-serif}
+  .wrap{max-width:1100px;margin:0 auto;padding:26px 20px 70px}
+  h1{font-size:25px;font-weight:800;margin:0 0 4px}
+  p.lead{color:var(--muted);margin:0 0 22px;max-width:70ch}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+  .item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .num{font-family:Consolas,monospace;font-size:11px;color:var(--accent);margin-bottom:6px}
+  .prev{background:#000;border-radius:8px;overflow:hidden}
+  .prev svg{width:100%;height:auto;display:block}
+  .note{background:#212B36;border-left:3px solid var(--accent);padding:12px 14px;border-radius:8px;color:var(--muted);font-size:13.5px;margin-bottom:22px}
+  .cap{font-size:13.5px;color:var(--ink);margin-top:22px;white-space:pre-wrap;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Post — p95 latency / Redis cache-aside</h1>
+  <p class="lead">5 slides, 1080×1350 (4:5, LinkedIn's native document ratio). No employer named. Fill the two bracketed lines in the caption below with your own memory before posting — everything else is ready.</p>
+  <div class="note"><b>To post:</b> Start a post → Add a document → upload the exported PDF. Paste the caption below into the post body.</div>
+  <div class="grid" id="host"></div>
+  <div class="cap" id="captionBox"></div>
+</div>
+
+<script>
+const C={bg:"#0F141A",card:"#171E26",ink:"#E6EBEF",dim:"#94A3B0",line:"#2B3642",acc:"#F07A3D",ok:"#5CBA88",bad:"#E0685C"};
+const F="system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
+const MONO="Consolas,'SF Mono',Menlo,monospace";
+function lines(txt,x,y,lh,attrs=""){ return txt.map((t,i)=>`<tspan x="${x}" y="${y+i*lh}" ${attrs}>${t}</tspan>`).join(""); }
+function frame(inner){ return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350" width="1080" height="1350"><rect width="1080" height="1350" fill="${C.bg}"/>${inner}</svg>`; }
+function pageNum(n,total){ return `<text x="1020" y="1300" text-anchor="end" font-family="${MONO}" font-size="24" fill="${C.dim}">${n}/${total}</text>`; }
+function swipe(){ return `<text x="60" y="1300" font-family="${MONO}" font-size="22" fill="${C.acc}">swipe →</text>`; }
+function eyebrow(txt){ return `<text x="60" y="95" font-family="${MONO}" font-size="26" fill="${C.acc}" letter-spacing="2">${txt}</text>`; }
+
+const SLIDES=[
+{n:"Cover", svg:()=>frame(`
+  ${eyebrow("REAL NUMBERS")}
+  <text font-family="${F}" font-size="72" font-weight="800" fill="${C.ink}" letter-spacing="-2">
+    ${lines(["p95 latency crept","up on a platform","moving 10M+ msgs","a month."],60,260,84)}
+  </text>
+  <rect x="60" y="680" width="960" height="2" fill="${C.line}"/>
+  <text font-family="${F}" font-size="40" fill="${C.dim}">
+    ${lines(["Here's what I actually found —","and what I still don't have a","good answer for."],60,770,52)}
+  </text>
+  ${swipe()}${pageNum(1,5)}`)},
+{n:"What p95 means", svg:()=>frame(`
+  ${eyebrow("QUICK DEFINITION")}
+  <text font-family="${F}" font-size="62" font-weight="800" fill="${C.ink}" letter-spacing="-2">
+    ${lines(["p95 latency:"],60,280,72)}
+  </text>
+  <text font-family="${F}" font-size="42" font-weight="700" fill="${C.acc}">
+    ${lines(["The response time 95% of","requests are faster than."],60,400,54)}
+  </text>
+  <rect x="60" y="560" width="960" height="2" fill="${C.line}"/>
+  <text font-family="${F}" font-size="38" fill="${C.dim}">
+    ${lines(["Not the average — averages hide","the worst realistic case. p95 is","closer to what your slowest real","users actually feel."],60,650,50)}
+  </text>
+  ${swipe()}${pageNum(2,5)}`)},
+{n:"Suspected vs actual", svg:()=>frame(`
+  ${eyebrow("THE INVESTIGATION")}
+  <text font-family="${F}" font-size="46" font-weight="700" fill="${C.dim}">
+    ${lines(["I assumed it was network","overhead between services."],60,260,58)}
+  </text>
+  <text font-family="${F}" font-size="64" font-weight="800" fill="${C.bad}" letter-spacing="-1">
+    ${lines(["It wasn't."],60,460,76)}
+  </text>
+  <rect x="60" y="560" width="960" height="2" fill="${C.line}"/>
+  <text font-family="${F}" font-size="42" font-weight="700" fill="${C.ink}">
+    ${lines(["A hot read endpoint was hitting","the database directly — for data","that barely changed request","to request."],60,660,54)}
+  </text>
+  ${swipe()}${pageNum(3,5)}`)},
+{n:"The fix", svg:()=>frame(`
+  ${eyebrow("THE FIX")}
+  <text font-family="${F}" font-size="58" font-weight="800" fill="${C.ink}" letter-spacing="-2">
+    ${lines(["Redis cache-aside","on that one query."],60,280,68)}
+  </text>
+  <rect x="60" y="460" width="960" height="2" fill="${C.line}"/>
+  <text x="60" y="600" font-family="${MONO}" font-size="26" fill="${C.dim}">RESULT</text>
+  <text x="60" y="740" font-family="${F}" font-size="130" font-weight="800" fill="${C.ok}" letter-spacing="-3">↓ ~20%</text>
+  <text font-family="${F}" font-size="38" fill="${C.dim}">
+    ${lines(["p95 latency, on that endpoint."],60,860,48)}
+  </text>
+  ${swipe()}${pageNum(4,5)}`)},
+{n:"Open question", svg:()=>frame(`
+  ${eyebrow("STILL UNRESOLVED")}
+  <text font-family="${F}" font-size="54" font-weight="800" fill="${C.ink}" letter-spacing="-2">
+    ${lines(["What I still don't","have a clean","answer for:"],60,280,64)}
+  </text>
+  <rect x="60" y="530" width="960" height="2" fill="${C.line}"/>
+  <text font-family="${F}" font-size="42" font-weight="700" fill="${C.acc}">
+    ${lines(["How to size the cache TTL so","staleness never shows up to a","user — without just picking a","number and hoping."],60,630,54)}
+  </text>
+  ${pageNum(5,5)}`)}
+];
+
+const host=document.getElementById("host");
+SLIDES.forEach((s,i)=>{
+  const svg=s.svg();
+  const el=document.createElement("div");
+  el.className="item";
+  el.innerHTML=`<div class="num">SLIDE ${i+1} · ${s.n}</div><div class="prev">${svg}</div>`;
+  host.appendChild(el);
+});
+function svgToPngDataUrl(svgStr,scale=1){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    const blob=new Blob([svgStr],{type:"image/svg+xml;charset=utf-8"});
+    const url=URL.createObjectURL(blob);
+    img.onload=()=>{
+      const cv=document.createElement("canvas");
+      cv.width=1080*scale; cv.height=1350*scale;
+      const ctx=cv.getContext("2d");
+      ctx.fillStyle=C.bg; ctx.fillRect(0,0,cv.width,cv.height);
+      ctx.drawImage(img,0,0,cv.width,cv.height);
+      URL.revokeObjectURL(url);
+      resolve(cv.toDataURL("image/png"));
+    };
+    img.onerror=e=>{ URL.revokeObjectURL(url); reject(e); };
+    img.src=url;
+  });
+}
+window.__getSlidePngs=async function(scale=1){
+  const out=[];
+  for(const s of SLIDES) out.push(await svgToPngDataUrl(s.svg(),scale));
+  return out;
+};
+
+document.getElementById("captionBox").textContent =
+`p95 latency — the response time 95% of requests beat, and the number that actually reflects what real users feel — started creeping up on a platform moving 10M+ messages a month.
+
+I assumed network overhead between services. [IF DIFFERENT FROM YOUR REAL MEMORY, EDIT THIS LINE]
+
+It wasn't — a hot read endpoint was hitting the database directly for data that barely changed request to request. [ADJUST IF YOUR ACTUAL ROOT CAUSE WAS DIFFERENT]
+
+Fixed it with a Redis cache-aside on that query. p95 dropped ~20%.
+
+What I still don't have a clean answer for: how to size the cache TTL so staleness never shows up to a user, without just picking a number and hoping.
+
+#PostgreSQL #Redis #Backend`;
+</script>
+</body>
+</html>
