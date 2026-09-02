@@ -1,0 +1,574 @@
+"""
+Build LinkedIn assets for Week 1: two 7-slide carousels (PNG + PDF),
+two single-image posts, and one animated GIF.
+
+Design rules applied (from linkedin/VISUAL_RESEARCH_AND_DRAFTS.md):
+  - Cover carries typography, never a chart (axis labels die first at thumbnail size).
+  - Every small-text / data slide uses a light background, dark ink (light mode holds
+    up better than light-on-dark as text shrinks). Dark is reserved for large type.
+  - Before/after = 2 bars, value printed on the bar, no axis at all.
+  - X-of-N = filled/unfilled dot grid, not a bar chart.
+  - Page counter on every slide starting at 1/N (goal-gradient effect).
+  - Exactly one deliberate mid-thought pivot per deck, never per-slide.
+  - <= ~50 words per slide, one idea each.
+
+Everything is drawn at 2x and downsampled with LANCZOS, because Pillow does not
+antialias shape primitives.
+"""
+
+import math
+import os
+from PIL import Image, ImageDraw, ImageFont
+
+SS = 2                      # supersample factor
+W, H = 1080, 1350           # LinkedIn native document ratio (4:5)
+GW, GH = 1080, 1080         # square, for the GIF
+
+ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+OUT = os.path.join(ROOT, "assets")
+
+FONTS = {
+    "black": r"C:\Windows\Fonts\seguibl.ttf",
+    "bold":  r"C:\Windows\Fonts\segoeuib.ttf",
+    "semi":  r"C:\Windows\Fonts\seguisb.ttf",
+    "reg":   r"C:\Windows\Fonts\segoeui.ttf",
+    "ital":  r"C:\Windows\Fonts\segoeuii.ttf",
+    "mono":  r"C:\Windows\Fonts\consola.ttf",
+    "monob": r"C:\Windows\Fonts\consolab.ttf",
+}
+_fcache = {}
+
+
+def font(kind, size):
+    key = (kind, size)
+    if key not in _fcache:
+        _fcache[key] = ImageFont.truetype(FONTS[kind], int(size * SS))
+    return _fcache[key]
+
+
+# ---- palettes -------------------------------------------------------------
+# dark surface: covers and pivot slides only, where type is large
+DARK = dict(bg="#0F141A", ink="#FFFFFF", dim="#9FB0BF", acc="#FF9152",
+            ok="#6ED69B", bad="#FF8073", line="#2B3642", card="#1B2530")
+# light surface: every slide with smaller text.
+# contrast on #F7F9FA -> ink ~15:1, dim ~7:1, acc ~5.2:1, ok ~4.9:1, bad ~6:1
+LIGHT = dict(bg="#F7F9FA", ink="#10161C", dim="#52606D", acc="#B8481A",
+             ok="#1B7F4F", bad="#B3261E", line="#CBD4DB", card="#EDF1F4")
+
+
+class Slide:
+    def __init__(self, bg, w=W, h=H):
+        self.w, self.h = w, h
+        self.im = Image.new("RGB", (w * SS, h * SS), bg)
+        self.d = ImageDraw.Draw(self.im)
+
+    # -- primitives (all args in final 1080-space; SS applied internally) --
+    @staticmethod
+    def _norm(s, kind):
+        """Typographic cleanup. A spaced hyphen becomes an em dash in prose and
+        a middot in mono eyebrows/labels; apostrophes curl in prose only, so
+        quotes inside code fragments render exactly as typed."""
+        if kind in ("mono", "monob"):
+            return s.replace(" - ", " · ")
+        return s.replace(" - ", " — ").replace("'", "’")
+
+    def text(self, x, y, s, kind, size, fill, anchor="ls", track=0):
+        s = self._norm(s, kind)
+        f = font(kind, size)
+        if track:
+            cx = x * SS
+            for ch in s:
+                self.d.text((cx, y * SS), ch, font=f, fill=fill, anchor=anchor)
+                cx += self.d.textlength(ch, font=f) + track * SS
+        else:
+            self.d.text((x * SS, y * SS), s, font=f, fill=fill, anchor=anchor)
+
+    def lines(self, x, y, arr, kind, size, fill, lh, track=0):
+        for i, t in enumerate(arr):
+            self.text(x, y + i * lh, t, kind, size, fill, track=track)
+
+    def rect(self, x, y, w, h, fill=None, outline=None, width=2, r=0, dash=None):
+        box = [x * SS, y * SS, (x + w) * SS, (y + h) * SS]
+        if r:
+            self.d.rounded_rectangle(box, radius=r * SS, fill=fill,
+                                     outline=outline if not dash else None,
+                                     width=int(width * SS))
+        else:
+            self.d.rectangle(box, fill=fill,
+                             outline=outline if not dash else None,
+                             width=int(width * SS))
+        if dash and outline:
+            self._dashed_round(x, y, w, h, r, outline, width, dash)
+
+    def _dashed_round(self, x, y, w, h, r, col, width, dash):
+        on, off = dash
+        per = on + off
+        # top and bottom edges only - enough to read as "dashed/absent"
+        for (yy, x0, x1) in ((y, x + r, x + w - r), (y + h, x + r, x + w - r)):
+            cx = x0
+            while cx < x1:
+                self.d.line([cx * SS, yy * SS, min(cx + on, x1) * SS, yy * SS],
+                            fill=col, width=int(width * SS))
+                cx += per
+        for (xx, y0, y1) in ((x, y + r, y + h - r), (x + w, y + r, y + h - r)):
+            cy = y0
+            while cy < y1:
+                self.d.line([xx * SS, cy * SS, xx * SS, min(cy + on, y1) * SS],
+                            fill=col, width=int(width * SS))
+                cy += per
+
+    def circle(self, cx, cy, rad, fill=None, outline=None, width=3, dash=None):
+        box = [(cx - rad) * SS, (cy - rad) * SS, (cx + rad) * SS, (cy + rad) * SS]
+        if dash and outline:
+            steps = 40
+            on, off = dash
+            for i in range(steps):
+                a0 = 2 * math.pi * i / steps
+                if (i % 2) == 0:
+                    self.d.arc(box, math.degrees(a0),
+                               math.degrees(a0 + 2 * math.pi / steps),
+                               fill=outline, width=int(width * SS))
+        else:
+            self.d.ellipse(box, fill=fill, outline=outline,
+                           width=int(width * SS) if outline else 0)
+
+    def line(self, x1, y1, x2, y2, col, width=3):
+        self.d.line([x1 * SS, y1 * SS, x2 * SS, y2 * SS], fill=col,
+                    width=int(width * SS))
+
+    def arrow(self, x1, y1, x2, y2, col, width=5, head=17):
+        ang = math.atan2(y2 - y1, x2 - x1)
+        bx = x2 - math.cos(ang) * head * 0.85
+        by = y2 - math.sin(ang) * head * 0.85
+        self.line(x1, y1, bx, by, col, width)
+        n = ang + math.pi / 2
+        p = [(x2 * SS, y2 * SS),
+             ((x2 - math.cos(ang) * head + math.cos(n) * head * 0.6) * SS,
+              (y2 - math.sin(ang) * head + math.sin(n) * head * 0.6) * SS),
+             ((x2 - math.cos(ang) * head - math.cos(n) * head * 0.6) * SS,
+              (y2 - math.sin(ang) * head - math.sin(n) * head * 0.6) * SS)]
+        self.d.polygon(p, fill=col)
+
+    def check(self, cx, cy, size, col, width=6):
+        """Drawn, not a glyph - no dependency on font coverage."""
+        self.line(cx - size * .45, cy + size * .05, cx - size * .1, cy + size * .4, col, width)
+        self.line(cx - size * .1, cy + size * .4, cx + size * .48, cy - size * .42, col, width)
+
+    def cross(self, cx, cy, size, col, width=8):
+        self.line(cx - size * .4, cy - size * .4, cx + size * .4, cy + size * .4, col, width)
+        self.line(cx + size * .4, cy - size * .4, cx - size * .4, cy + size * .4, col, width)
+
+    def tri_right(self, x, y, size, col):
+        self.d.polygon([(x * SS, (y - size * .5) * SS),
+                        (x * SS, (y + size * .5) * SS),
+                        ((x + size * .8) * SS, y * SS)], fill=col)
+
+    # -- composed furniture --
+    def eyebrow(self, t, P):
+        self.text(72, 104, t, "mono", 25, P["acc"], track=3)
+
+    def counter(self, n, total, P):
+        self.text(1008, 1288, f"{n}/{total}", "mono", 25, P["dim"], anchor="rs")
+
+    def swipe(self, P):
+        self.text(72, 1288, "swipe", "mono", 24, P["acc"])
+        self.tri_right(168, 1280, 20, P["acc"])
+
+    def rule(self, y, P, x=72, w=936, h=2):
+        self.rect(x, y, w, h, fill=P["line"])
+
+    def box(self, x, y, w, h, label, P, fill=None, txt=None, size=32, r=14,
+            outline=None, dash=None, sub=None, subcol=None):
+        self.rect(x, y, w, h, fill=fill or P["card"],
+                  outline=outline or P["line"], width=2, r=r, dash=dash)
+        ty = y + h / 2 + (0 if sub else 11)
+        self.text(x + w / 2, ty, label, "bold", size, txt or P["ink"], anchor="ms")
+        if sub:
+            self.text(x + w / 2, y + h / 2 + 38, sub, "mono", 21,
+                      subcol or P["dim"], anchor="ms")
+
+    def finish(self):
+        return self.im.resize((self.w, self.h), Image.LANCZOS)
+
+
+# =========================== DECK A - 22/25 ===============================
+def deck_a():
+    S, D, L = [], DARK, LIGHT
+
+    # 1 cover - hero number + framing clause, typography only
+    s = Slide(D["bg"]); s.eyebrow("SELF-TEST", D)
+    s.text(66, 500, "22/25", "black", 300, D["ink"], track=-14)
+    s.rect(72, 590, 936, 3, fill=D["line"])
+    s.lines(72, 700, ["The 3 I missed taught me", "more than the 22 I got right."],
+            "bold", 62, D["acc"], 76)
+    s.lines(72, 900, ["A code-comprehension test I ran",
+                      "on myself. Here's what it caught."], "reg", 38, D["dim"], 48)
+    s.swipe(D); s.counter(1, 7, D); S.append(s.finish())
+
+    # 2 why - hedge visible on the slide itself
+    s = Slide(L["bg"]); s.eyebrow("WHY THIS TEST", L)
+    s.lines(72, 290, ["Interviews are reportedly", "grading code reading -",
+                      "not code writing."], "black", 56, L["ink"], 70, track=-1)
+    s.rule(560, L)
+    s.lines(72, 650, ["Reading and debugging an existing", "codebase, with an AI assistant",
+                      "available - instead of writing", "from a blank file."],
+            "reg", 36, L["dim"], 48)
+    s.rect(72, 900, 936, 122, fill=L["card"], outline=L["line"], width=2, r=12)
+    s.lines(102, 958, ["Per a few interview-prep sources I've read.",
+                       "Not a round I've sat myself."], "ital", 29, L["dim"], 40)
+    s.swipe(L); s.counter(2, 7, L); S.append(s.finish())
+
+    # 3 the test
+    s = Slide(L["bg"]); s.eyebrow("THE TEST", L)
+    s.text(72, 300, "25 questions.", "black", 66, L["ink"], track=-2)
+    s.lines(72, 440, ["Read the code.", "Reason about it.", "Predict the output."],
+            "bold", 52, L["acc"], 66)
+    s.rule(700, L)
+    s.lines(72, 790, ["No writing from scratch.", "No LLM open."], "bold", 40, L["ink"], 54)
+    s.lines(72, 950, ["Python semantics, collections,", "concurrency, SQL."],
+            "reg", 34, L["dim"], 44)
+    s.swipe(L); s.counter(3, 7, L); S.append(s.finish())
+
+    # 4 the score - dot grid, no axis question at all
+    s = Slide(L["bg"]); s.eyebrow("THE SCORE", L)
+    s.text(72, 260, "22 right. 3 wrong.", "black", 54, L["ink"], track=-1)
+    for i in range(25):
+        cx, cy = 170 + (i % 5) * 185, 430 + (i // 5) * 152
+        if i < 22:
+            s.circle(cx, cy, 52, fill=L["ok"])
+        else:
+            s.circle(cx, cy, 52, outline=L["bad"], width=7, dash=(13, 11))
+    s.rule(1140, L)
+    s.circle(110, 1218, 22, fill=L["ok"])
+    s.text(150, 1230, "correct", "bold", 31, L["ink"])
+    s.circle(400, 1218, 22, outline=L["bad"], width=5, dash=(9, 7))
+    s.text(440, 1230, "missed", "bold", 31, L["ink"])
+    s.counter(4, 7, L); S.append(s.finish())
+
+    # 5 the 3 misses - short fragments, big mono
+    s = Slide(L["bg"]); s.eyebrow("THE 3 MISSES", L)
+    s.text(72, 235, "All three were Python.", "black", 48, L["ink"], track=-1)
+    frag = [("[x for x in xs if f(x)]", "I misjudged what actually got filtered."),
+            ('{[1, 2]: "value"}',       "Why a mutable type can't be a dict key."),
+            ("sorted(xs, key=f)",       "Whether ties keep their original order.")]
+    for i, (code, note) in enumerate(frag):
+        y = 310 + i * 248
+        s.rect(72, y, 936, 215, fill=L["card"], outline=L["line"], width=2, r=14)
+        s.text(104, y + 76, code, "mono", 41, L["ink"])
+        s.text(104, y + 155, note, "reg", 32, L["dim"])
+    s.text(72, 1105, "I knew all three concepts.", "bold", 36, L["acc"])
+    s.swipe(L); s.counter(5, 7, L); S.append(s.finish())
+
+    # 6 the reframe - the one dark pivot in this deck
+    s = Slide(D["bg"]); s.eyebrow("THE REFRAME", D)
+    s.text(72, 290, "Concept gap", "black", 78, D["ink"], track=-3)
+    s.text(72, 400, "vs.", "bold", 48, D["dim"])
+    s.text(72, 510, "fluency gap.", "black", 78, D["acc"], track=-3)
+    s.rect(72, 620, 936, 3, fill=D["line"])
+    s.lines(72, 730, ["I knew every one of those", "three concepts cold."],
+            "bold", 44, D["ink"], 58)
+    s.lines(72, 910, ["I was just slower and less", "certain reading the actual",
+                      "code under pressure."], "reg", 44, D["dim"], 58)
+    s.swipe(D); s.counter(6, 7, D); S.append(s.finish())
+
+    # 7 close - honest, with a one-line-answerable question
+    s = Slide(L["bg"]); s.eyebrow("THE HONEST PART", L)
+    s.lines(72, 270, ["“I understand hashability”", "and “I read that line right",
+                      "in 4 seconds under pressure”", "are two different skills."],
+            "black", 52, L["ink"], 66, track=-1)
+    s.rule(620, L)
+    s.lines(72, 720, ["Right now I only have real", "evidence for the first one."],
+            "bold", 40, L["acc"], 52)
+    s.rect(72, 880, 936, 200, fill=L["card"], outline=L["acc"], width=3, r=14)
+    s.lines(104, 948, ["Have you tried a comprehension", "test on your own code?",
+                       "What did it catch?"], "bold", 35, L["ink"], 46)
+    s.counter(7, 7, L); S.append(s.finish())
+    return S
+
+
+# ======================= DECK B - cache-aside / p95 =======================
+def deck_b():
+    S, D, L = [], DARK, LIGHT
+
+    # 1 cover
+    s = Slide(D["bg"]); s.eyebrow("A NUMBER I ACTUALLY MEASURED", D)
+    s.text(66, 470, "~20%", "black", 290, D["ink"], track=-16)
+    s.rect(72, 560, 936, 3, fill=D["line"])
+    s.text(72, 670, "faster p95 from one cache.", "bold", 60, D["acc"])
+    s.lines(72, 820, ["The pattern - and the one", "failure mode I still",
+                      "haven't tested."], "reg", 42, D["dim"], 54)
+    s.swipe(D); s.counter(1, 7, D); S.append(s.finish())
+
+    # 2 context + what p95 means (the explainer Sid asked for)
+    s = Slide(L["bg"]); s.eyebrow("CONTEXT", L)
+    s.lines(72, 270, ["A system moving 10M+", "messages a month."],
+            "black", 54, L["ink"], 66, track=-1)
+    s.lines(72, 440, ["Every millisecond on the read", "path multiplies."],
+            "reg", 36, L["dim"], 46)
+    s.rule(580, L)
+    s.text(72, 670, "WHAT p95 MEANS", "mono", 27, L["acc"], track=2)
+    s.lines(72, 750, ["The response time that 95%", "of requests come in under."],
+            "bold", 42, L["ink"], 54)
+    s.lines(72, 900, ["Not the average. Averages hide", "the worst realistic case - p95 is",
+                      "closer to what your slowest", "real users actually feel."],
+            "reg", 34, L["dim"], 44)
+    s.swipe(L); s.counter(2, 7, L); S.append(s.finish())
+
+    # 3 the pattern - flow diagram carries it.
+    # One downward column = the miss path; the single right branch = the hit path.
+    s = Slide(L["bg"]); s.eyebrow("THE PATTERN - CACHE-ASIDE", L)
+    s.box(330, 240, 420, 105, "Request", L)
+    s.arrow(540, 345, 540, 425, L["ink"])
+    s.box(330, 432, 420, 105, "Redis", L, fill="#FFE2D2")
+    # hit: branch right and stop
+    s.arrow(750, 484, 838, 484, L["ok"])
+    s.text(852, 476, "HIT", "monob", 27, L["ok"])
+    s.text(852, 512, "return", "reg", 25, L["dim"])
+    # miss: keep going down
+    s.arrow(540, 537, 540, 617, L["bad"])
+    s.text(566, 588, "MISS", "monob", 27, L["bad"])
+    s.box(330, 624, 420, 105, "Postgres", L)
+    s.arrow(540, 729, 540, 809, L["ok"])
+    s.box(330, 816, 420, 105, "write back to Redis", L, fill="#DFF3E8", size=29)
+    s.rule(990, L)
+    s.lines(72, 1060, ["Hit? Skip the database entirely.", "Miss? Pay once, then cache it."],
+            "bold", 38, L["ink"], 50)
+    s.swipe(L); s.counter(3, 7, L); S.append(s.finish())
+
+    # 4 result - 2 bars, values ON the bars, no axis
+    s = Slide(L["bg"]); s.eyebrow("THE RESULT", L)
+    s.text(72, 265, "p95 on that endpoint", "black", 54, L["ink"], track=-1)
+    s.text(72, 400, "BEFORE", "mono", 28, L["dim"], track=2)
+    s.rect(72, 425, 936, 130, fill=L["bad"], r=12)
+    s.text(110, 510, "baseline", "black", 56, "#FFFFFF")
+    s.text(72, 660, "AFTER - REDIS CACHE-ASIDE", "mono", 28, L["dim"], track=2)
+    s.rect(72, 685, 749, 130, fill=L["ok"], r=12)
+    s.text(110, 770, "~20% lower", "black", 56, "#FFFFFF")
+    s.rule(925, L)
+    s.lines(72, 1010, ["One hot read endpoint was hitting", "Postgres directly - for data that",
+                       "barely changed request to request."], "reg", 36, L["dim"], 46)
+    s.swipe(L); s.counter(4, 7, L); S.append(s.finish())
+
+    # 5 the turn - the single deliberate mid-thought pivot in this deck
+    s = Slide(D["bg"]); s.eyebrow("BUT", D)
+    s.lines(72, 480, ["Cache-aside", "doesn't protect", "you from this."],
+            "black", 84, D["ink"], 102, track=-3)
+    s.text(72, 900, "One expiring key. Same second.", "reg", 46, D["acc"])
+    s.swipe(D); s.counter(5, 7, D); S.append(s.finish())
+
+    # 6 the stampede
+    s = Slide(L["bg"]); s.eyebrow("CACHE STAMPEDE", L)
+    s.box(340, 235, 400, 105, "hot key expires", L, fill="#FFE2D2",
+          txt=L["bad"], size=32)
+    s.arrow(540, 342, 540, 424, L["dim"], 4)
+    s.text(72, 480, "500 REQUESTS, ALL MISS", "mono", 27, L["dim"], track=2)
+    for i in range(9):
+        s.rect(88 + i * 104, 520, 76, 76, fill=L["bad"], r=10)
+        s.arrow(126 + i * 104, 602, 126 + i * 104, 686, L["bad"], 4, 13)
+    s.box(240, 690, 600, 115, "Postgres - all at once", L, size=34)
+    s.rule(890, L)
+    s.text(72, 975, "No fix tested yet.", "bold", 40, L["acc"])
+    s.lines(72, 1060, ["TTL jitter and request coalescing are",
+                       "the two I'd want to measure first."], "reg", 34, L["dim"], 44)
+    s.swipe(L); s.counter(6, 7, L); S.append(s.finish())
+
+    # 7 close
+    s = Slide(L["bg"]); s.eyebrow("WHERE I ACTUALLY AM", L)
+    s.text(72, 275, "The 20% is real.", "black", 52, L["ink"], track=-1)
+    s.lines(72, 400, ["The stampede question", "isn't answered yet."],
+            "black", 52, L["acc"], 66, track=-1)
+    s.rule(540, L)
+    s.lines(72, 630, ["I'd rather post it that way than",
+                      "pretend the second part is solved."], "reg", 36, L["dim"], 46)
+    s.rect(72, 820, 936, 240, fill=L["card"], outline=L["acc"], width=3, r=14)
+    s.lines(104, 890, ["If you've hit cache stampede in", "production - jitter, locking,",
+                       "request coalescing, or something", "else? What actually worked?"],
+            "bold", 35, L["ink"], 46)
+    s.counter(7, 7, L); S.append(s.finish())
+    return S
+
+
+# ============================== SINGLES ==================================
+def singles():
+    out, D, L = {}, DARK, LIGHT
+
+    # MCP stateful -> stateless, one image
+    s = Slide(D["bg"]); s.eyebrow("MCP SPEC - 28 JULY 2026", D)
+    s.text(72, 250, "STATEFUL", "black", 86, D["dim"], track=-3)
+    s.line(66, 222, 636, 222, D["bad"], 9)          # struck through
+    s.text(72, 370, "STATELESS.", "black", 96, D["acc"], track=-4)
+    s.rect(72, 440, 936, 3, fill=D["line"])
+
+    s.text(72, 530, "BEFORE - SESSION IN SERVER MEMORY", "mono", 26, D["dim"], track=2)
+    s.box(72, 560, 230, 96, "Client", D)
+    s.arrow(302, 608, 464, 608, D["dim"])
+    s.text(386, 588, "session", "mono", 21, D["dim"], anchor="ms")
+    s.box(470, 560, 230, 96, "Server A", D)
+    s.box(748, 560, 230, 96, "Server B", D, fill="#2A1614", txt=D["bad"], size=28,
+          outline=D["bad"], dash=(9, 7), sub="no session", subcol=D["bad"])
+
+    s.text(72, 770, "AFTER - CONTEXT TRAVELS WITH THE REQUEST", "mono", 26,
+           D["acc"], track=2)
+    s.box(72, 800, 230, 96, "Client", D)
+    s.arrow(302, 848, 464, 848, D["acc"])
+    s.box(470, 800, 230, 96, "Balancer", D, size=27)
+    s.arrow(702, 830, 786, 784, D["ok"])
+    s.arrow(702, 866, 786, 912, D["ok"])
+    for yy, lbl in ((736, "A"), (878, "B")):
+        s.rect(790, yy, 196, 82, fill="#0F2A1D", outline=D["ok"], width=2, r=12)
+        s.text(862, yy + 52, lbl, "bold", 30, D["ok"], anchor="ms")
+        s.check(922, yy + 41, 34, D["ok"], 5)
+    s.rect(72, 1030, 936, 3, fill=D["line"])
+    s.lines(72, 1120, ["Any instance answers any request.",
+                       "The same trade REST already made."], "bold", 44, D["ink"], 56)
+    out["mcp-architecture"] = s.finish()
+
+    # cache-aside code reference card
+    s = Slide(L["bg"]); s.eyebrow("CACHE-ASIDE, IN 6 LINES", L)
+    s.lines(72, 265, ["The pattern that cut", "our p95 by ~20%."],
+            "black", 58, L["ink"], 72, track=-2)
+    s.rect(72, 400, 936, 470, fill="#101820", outline=L["line"], width=2, r=16)
+    code = ["val = redis.get(key)", "", "if val is None:",
+            "    val = db.query(key)", "    redis.setex(key, ttl, val)", "", "return val"]
+    for i, ln in enumerate(code):
+        s.text(112, 475 + i * 58, ln, "mono", 37, "#E6EBEF")
+    s.text(72, 960, "Simple to describe.", "bold", 38, L["acc"])
+    s.text(72, 1015, "Easy to get wrong in one specific way:", "bold", 38, L["ink"])
+    s.lines(72, 1085, ["what happens when a hot key expires",
+                       "and 500 requests land in one second?"], "reg", 34, L["dim"], 44)
+    out["cache-aside-code"] = s.finish()
+    return out
+
+
+# ============================== GIF ======================================
+def gif_frames():
+    D = DARK
+    F = []
+
+    def frame():
+        return Slide(D["bg"], GW, GH)
+
+    def foot(s, t, col=None):
+        s.text(70, 1010, t, "mono", 25, col or D["dim"], track=1)
+
+    # 1 title
+    s = frame()
+    s.text(70, 300, "MCP just went", "black", 84, D["ink"], track=-2)
+    s.text(70, 400, "stateless.", "black", 84, D["acc"], track=-2)
+    s.rect(70, 450, 940, 3, fill=D["line"])
+    s.lines(70, 530, ["If you've scaled a REST API behind",
+                      "a load balancer, you already know",
+                      "why that matters."], "reg", 38, D["dim"], 48)
+    foot(s, "SPEC UPDATE - 28 JULY 2026", D["acc"]); F.append(s.finish())
+
+    # 2 before
+    s = frame()
+    s.text(70, 150, "Before", "black", 60, D["dim"], track=-1)
+    s.box(70, 500, 250, 110, "Client", D)
+    s.arrow(320, 555, 494, 555, D["dim"])
+    s.text(410, 530, "session", "mono", 22, D["dim"], anchor="ms")
+    s.box(500, 500, 250, 110, "Server A", D)
+    foot(s, "ONE INSTANCE. SESSION LIVES IN ITS MEMORY."); F.append(s.finish())
+
+    # 3 add a second instance
+    s = frame()
+    s.text(70, 150, "Now add a second instance", "black", 54, D["dim"], track=-1)
+    s.box(70, 420, 230, 105, "Client", D)
+    s.arrow(300, 472, 464, 472, D["dim"])
+    s.box(470, 420, 230, 105, "Server A", D, outline=D["ok"], sub="has session",
+          subcol=D["ok"])
+    s.box(470, 610, 230, 105, "Server B", D, fill="#2A1614", txt=D["bad"],
+          outline=D["bad"], dash=(9, 7), sub="no session", subcol=D["bad"])
+    foot(s, "THE SESSION ONLY EXISTS ON A."); F.append(s.finish())
+
+    # 4 request lands on B -> breaks
+    s = frame()
+    s.text(70, 150, "Request lands on B", "black", 58, D["bad"], track=-1)
+    s.box(70, 420, 230, 105, "Client", D)
+    s.arrow(300, 540, 464, 655, D["bad"])
+    s.box(470, 420, 230, 105, "Server A", D, outline=D["ok"], sub="has session",
+          subcol=D["ok"])
+    s.box(470, 610, 230, 105, "Server B", D, fill="#2A1614", txt=D["bad"],
+          outline=D["bad"], dash=(9, 7), sub="no session", subcol=D["bad"])
+    s.cross(810, 662, 90, D["bad"], 10)
+    foot(s, "STICKY SESSIONS, OR IT BREAKS.", D["bad"]); F.append(s.finish())
+
+    # 5 the change
+    s = frame()
+    s.text(70, 150, "The spec change", "black", 54, D["dim"], track=-1)
+    s.text(70, 300, "Stateless", "black", 80, D["acc"], track=-3)
+    s.text(70, 395, "per request.", "black", 80, D["acc"], track=-3)
+    s.rect(70, 460, 940, 3, fill=D["line"])
+    s.lines(70, 540, ["No session handshake.", "Cacheable list results.",
+                      "Header-based routing.", "Multi-round-trip, natively."],
+            "reg", 35, D["dim"], 52)
+    foot(s, "CONTEXT TRAVELS WITH EVERY REQUEST", D["acc"]); F.append(s.finish())
+
+    # 6 after
+    s = frame()
+    s.text(70, 150, "After", "black", 60, D["acc"], track=-1)
+    s.box(70, 470, 215, 105, "Client", D)
+    s.arrow(285, 522, 434, 522, D["acc"])
+    s.box(440, 470, 215, 105, "Balancer", D, size=29)
+    s.arrow(655, 500, 794, 425, D["ok"])
+    s.arrow(655, 545, 794, 620, D["ok"])
+    for yy, lbl in ((365, "Server A"), (575, "Server B")):
+        s.rect(800, yy, 200, 105, fill="#0F2A1D", outline=D["ok"], width=3, r=14)
+        s.text(880, yy + 52, lbl, "bold", 28, D["ok"], anchor="ms")
+        s.check(956, yy + 44, 34, D["ok"], 5)
+    foot(s, "ANY INSTANCE ANSWERS ANY REQUEST.", D["ok"]); F.append(s.finish())
+
+    # 7 close
+    s = frame()
+    s.text(70, 290, "The same trade", "black", 74, D["ink"], track=-2)
+    s.text(70, 385, "REST already made.", "black", 74, D["acc"], track=-2)
+    s.rect(70, 450, 940, 3, fill=D["line"])
+    s.lines(70, 530, ["What I haven't done yet: run two",
+                      "instances behind a balancer and",
+                      "watch it behave."], "reg", 36, D["dim"], 48)
+    foot(s, "FULL POST BELOW", D["acc"]); F.append(s.finish())
+    return F
+
+
+# ============================== main =====================================
+def save_deck(name, imgs):
+    d = os.path.join(OUT, name)
+    os.makedirs(d, exist_ok=True)
+    for i, im in enumerate(imgs, 1):
+        im.save(os.path.join(d, f"{i}.png"), optimize=True)
+    pdf = os.path.join(OUT, f"{name}.pdf")
+    imgs[0].save(pdf, save_all=True, append_images=imgs[1:], resolution=150.0)
+    print(f"  {name}: {len(imgs)} PNG + {os.path.basename(pdf)} "
+          f"({os.path.getsize(pdf)/1024:.0f} KB)")
+
+
+if __name__ == "__main__":
+    os.makedirs(OUT, exist_ok=True)
+    print("Building assets ->", os.path.abspath(OUT))
+
+    save_deck("deck-diagnostic", deck_a())
+    save_deck("deck-cache-aside", deck_b())
+
+    d = os.path.join(OUT, "singles")
+    os.makedirs(d, exist_ok=True)
+    for k, im in singles().items():
+        p = os.path.join(d, f"{k}.png")
+        im.save(p, optimize=True)
+        print(f"  singles/{k}.png ({os.path.getsize(p)/1024:.0f} KB)")
+
+    fr = gif_frames()
+    # hold the title and the payoff frames longer than the build-up
+    durations = [2300, 1500, 1800, 2000, 2400, 2200, 2600]
+    pal = [f.convert("P", palette=Image.ADAPTIVE, colors=64) for f in fr]
+    gp = os.path.join(OUT, "mcp-stateless.gif")
+    pal[0].save(gp, save_all=True, append_images=pal[1:], duration=durations,
+                loop=0, optimize=True)
+    print(f"  mcp-stateless.gif: {len(fr)} frames, "
+          f"{os.path.getsize(gp)/1024:.0f} KB")
+    # also keep the frames as stills, in case a carousel is preferred
+    d = os.path.join(OUT, "mcp-gif-frames")
+    os.makedirs(d, exist_ok=True)
+    for i, f in enumerate(fr, 1):
+        f.save(os.path.join(d, f"{i}.png"), optimize=True)
+    print("  mcp-gif-frames: 7 PNG")
+    print("done")

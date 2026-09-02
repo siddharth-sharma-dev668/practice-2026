@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LinkedIn Asset Builder — Week 1</title>
+<style>
+  body{margin:0;background:#0B0F14;color:#E6EBEF;font:14px/1.5 'Segoe UI',system-ui,sans-serif}
+  .wrap{max-width:1240px;margin:0 auto;padding:24px 18px 80px}
+  h1{font-size:23px;margin:0 0 3px}
+  h2{font-size:17px;margin:34px 0 10px;padding-bottom:6px;border-bottom:1px solid #2B3642}
+  p.lead{color:#94A3B0;margin:0 0 8px;max-width:80ch}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:14px}
+  .item{background:#171E26;border:1px solid #2B3642;border-radius:10px;padding:11px}
+  .num{font-family:Consolas,monospace;font-size:10.5px;color:#F07A3D;margin-bottom:6px}
+  .prev svg{width:100%;height:auto;display:block;border-radius:5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>LinkedIn Asset Builder — Week 1</h1>
+  <p class="lead">Design rules applied: cover = typography not chart; light background for every small-text slide; 2 bars with values printed and no axis; dot grid for X-of-N; page counter on every slide from 1/N; one deliberate mid-thought pivot per deck; &le;50 words/slide.</p>
+  <div id="host"></div>
+</div>
+
+<script>
+/* ---------------- design tokens ---------------- */
+/* dark surface (covers + pivots only, where type is large) */
+const D={bg:"#0F141A",ink:"#FFFFFF",dim:"#9FB0BF",acc:"#FF9152",ok:"#6ED69B",bad:"#FF8073",line:"#2B3642"};
+/* light surface (all small-text/data slides) — ink 15:1, dim 7:1, acc 5.2:1, ok 4.9:1, bad 6:1 */
+const L={bg:"#F7F9FA",ink:"#10161C",dim:"#52606D",acc:"#B8481A",ok:"#1B7F4F",bad:"#B3261E",line:"#CBD4DB",card:"#EDF1F4"};
+const F="system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
+const M="Consolas,'SF Mono',Menlo,monospace";
+const W=1080,H=1350;
+
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function tl(arr,x,y,lh){return arr.map((t,i)=>`<tspan x="${x}" y="${y+i*lh}">${esc(t)}</tspan>`).join("");}
+function svg(inner,bg,w,h){w=w||W;h=h||H;return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}"><rect width="${w}" height="${h}" fill="${bg}"/>${inner}</svg>`;}
+function eyebrow(t,P){return `<text x="72" y="104" font-family="${M}" font-size="25" fill="${P.acc}" letter-spacing="3">${esc(t)}</text>`;}
+function counter(n,total,P){return `<text x="1008" y="1288" text-anchor="end" font-family="${M}" font-size="25" fill="${P.dim}">${n}/${total}</text>`;}
+function swipe(P){return `<text x="72" y="1288" font-family="${M}" font-size="24" fill="${P.acc}">swipe &#8594;</text>`;}
+/* rounded arrow between boxes */
+function arrow(x1,y1,x2,y2,col,wd){
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="${wd||5}" stroke-linecap="round"/>
+    <path d="M${x2} ${y2} l-15 -9 l0 18 z" fill="${col}" transform="rotate(${Math.atan2(y2-y1,x2-x1)*180/Math.PI} ${x2} ${y2})"/>`;
+}
+function box(x,y,w,h,label,P,fill,txtcol,fs){
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="14" fill="${fill||P.card}" stroke="${P.line}" stroke-width="2"/>
+    <text x="${x+w/2}" y="${y+h/2+11}" text-anchor="middle" font-family="${F}" font-size="${fs||32}" font-weight="700" fill="${txtcol||P.ink}">${esc(label)}</text>`;
+}
+
+/* ================= DECK A — diagnostic 22/25 (Draft 3) ================= */
+const DECK_A=[
+/* 1 cover */ ()=>svg(`
+  ${eyebrow("SELF-TEST",D)}
+  <text x="72" y="500" font-family="${F}" font-size="300" font-weight="800" fill="${D.ink}" letter-spacing="-12">22/25</text>
+  <rect x="72" y="590" width="936" height="3" fill="${D.line}"/>
+  <text font-family="${F}" font-size="62" font-weight="700" fill="${D.acc}">
+    ${tl(["The 3 I missed taught me","more than the 22 I got right."],72,700,76)}
+  </text>
+  <text font-family="${F}" font-size="38" fill="${D.dim}">
+    ${tl(["A code-comprehension test I ran","on myself. Here's what it caught."],72,900,48)}
+  </text>
+  ${swipe(D)}${counter(1,7,D)}`,D.bg),
+/* 2 why */ ()=>svg(`
+  ${eyebrow("WHY THIS TEST",L)}
+  <text font-family="${F}" font-size="56" font-weight="800" fill="${L.ink}" letter-spacing="-1">
+    ${tl(["Interviews are reportedly","grading code reading —","not code writing."],72,290,70)}
+  </text>
+  <rect x="72" y="560" width="936" height="2" fill="${L.line}"/>
+  <text font-family="${F}" font-size="36" fill="${L.dim}">
+    ${tl(["Reading and debugging an existing","codebase, with an AI assistant","available — instead of writing","from a blank file."],72,650,48)}
+  </text>
+  <rect x="72" y="900" width="936" height="120" rx="12" fill="${L.card}" stroke="${L.line}" stroke-width="2"/>
+  <text font-family="${F}" font-size="29" font-style="italic" fill="${L.dim}">
+    ${tl(["Per a few interview-prep sources I've read.","Not a round I've sat myself."],100,958,40)}
+  </text>
+  ${swipe(L)}${counter(2,7,L)}`,L.bg),
+/* 3 the test */ ()=>svg(`
+  ${eyebrow("THE TEST",L)}
+  <text font-family="${F}" font-size="66" font-weight="800" fill="${L.ink}" letter-spacing="-2">
+    ${tl(["25 questions."],72,300,80)}
+  </text>
+  <text font-family="${F}" font-size="52" font-weight="700" fill="${L.acc}">
+    ${tl(["Read the code.","Reason about it.","Predict the output."],72,440,66)}
+  </text>
+  <rect x="72" y="700" width="936" height="2" fill="${L.line}"/>
+  <text font-family="${F}" font-size="40" font-weight="700" fill="${L.ink}">
+    ${tl(["No writing from scratch.","No LLM open."],72,790,54)}
+  </text>
+  <text font-family="${F}" font-size="34" fill="${L.dim}">
+    ${tl(["Python semantics, collections,","concurrency, SQL."],72,950,44)}
+  </text>
+  ${swipe(L)}${counter(3,7,L)}`,L.bg),
+/* 4 the score — dot grid */ ()=>{
+  let dots="";
+  for(let i=0;i<25;i++){
+    const r=Math.floor(i/5), c=i%5;
+    const cx=170+c*185, cy=430+r*152;
+    dots += (i<22)
+      ? `<circle cx="${cx}" cy="${cy}" r="52" fill="${L.ok}"/>`
+      : `<circle cx="${cx}" cy="${cy}" r="52" fill="none" stroke="${L.bad}" stroke-width="7" stroke-dasharray="13 11"/>`;
+  }
+  return svg(`
+  ${eyebrow("THE SCORE",L)}
+  <text font-family="${F}" font-size="54" font-weight="800" fill="${L.ink}" letter-spacing="-1">
+    ${tl(["22 right. 3 wrong."],72,260,66)}
+  </text>
+  ${dots}
+  <rect x="72" y="1140" width="936" height="2" fill="${L.line}"/>
+  <circle cx="110" cy="1225" r="22" fill="${L.ok}"/>
+  <text x="150" y="1237" font-family="${F}" font-size="31" font-weight="700" fill="${L.ink}">correct</text>
+  <circle cx="400" cy="1225" r="22" fill="none" stroke="${L.bad}" stroke-width="5" stroke-dasharray="9 7"/>
+  <text x="440" y="1237" font-family="${F}" font-size="31" font-weight="700" fill="${L.ink}">missed</text>
+  ${counter(4,7,L)}`,L.bg);
+},
+/* 5 the 3 misses — code fragments */ ()=>svg(`
+  ${eyebrow("THE 3 MISSES",L)}
+  <text font-family="${F}" font-size="48" font-weight="800" fill="${L.ink}" letter-spacing="-1">
+    ${tl(["All three were Python."],72,235,60)}
+  </text>
+
+  <rect x="72" y="310" width="936" height="215" rx="14" fill="${L.card}" stroke="${L.line}" stroke-width="2"/>
+  <text x="104" y="386" font-family="${M}" font-size="41" fill="${L.ink}">[x for x in xs if f(x)]</text>
+  <text x="104" y="465" font-family="${F}" font-size="32" fill="${L.dim}">I misjudged what actually got filtered.</text>
+
+  <rect x="72" y="558" width="936" height="215" rx="14" fill="${L.card}" stroke="${L.line}" stroke-width="2"/>
+  <text x="104" y="634" font-family="${M}" font-size="41" fill="${L.ink}">{[1, 2]: "value"}</text>
+  <text x="104" y="713" font-family="${F}" font-size="32" fill="${L.dim}">Why a mutable type can't be a dict key.</text>
+
+  <rect x="72" y="806" width="936" height="215" rx="14" fill="${L.card}" stroke="${L.line}" stroke-width="2"/>
+  <text x="104" y="882" font-family="${M}" font-size="41" fill="${L.ink}">sorted(xs, key=f)</text>
+  <text x="104" y="961" font-family="${F}" font-size="32" fill="${L.dim}">Whether ties keep their original order.</text>
+
+  <text x="72" y="1105" font-family="${F}" font-size="36" font-weight="700" fill="${L.acc}">I knew all three concepts.</text>
+  ${swipe(L)}${counter(5,7,L)}`,L.bg),
+/* 6 the reframe */ ()=>svg(`
+  ${eyebrow("THE REFRAME",D)}
+  <text font-family="${F}" font-size="78" font-weight="800" fill="${D.ink}" letter-spacing="-3">
+    ${tl(["Concept gap"],72,290,94)}
+  </text>
+  <text x="72" y="400" font-family="${F}" font-size="48" font-weight="700" fill="${D.dim}">vs.</text>
+  <text font-family="${F}" font-size="78" font-weight="800" fill="${D.acc}" letter-spacing="-3">
+    ${tl(["fluency gap."],72,510,94)}
+  </text>
+  <rect x="72" y="620" width="936" height="3" fill="${D.line}"/>
+  <text font-family="${F}" font-size="44" font-weight="700" fill="${D.ink}">
+    ${tl(["I knew every one of those","three concepts cold."],72,730,58)}
+  </text>
+  <text font-family="${F}" font-size="44" fill="${D.dim}">
+    ${tl(["I was just slower and less","certain reading the actual","code under pressure."],72,910,58)}
+  </text>
+  ${swipe(D)}${counter(6,7,D)}`,D.bg),
+/* 7 close */ ()=>svg(`
+  ${eyebrow("THE HONEST PART",L)}
+  <text font-family="${F}" font-size="52" font-weight="800" fill="${L.ink}" letter-spacing="-1">
+    ${tl(["“I understand hashability”","and “I read that line right","in 4 seconds under pressure”","are two different skills."],72,270,66)}
+  </text>
+  <rect x="72" y="620" width="936" height="2" fill="${L.line}"/>
+  <text font-family="${F}" font-size="40" font-weight="700" fill="${L.acc}">
+    ${tl(["Right now I only have real","evidence for the first one."],72,720,52)}
+  </text>
+  <rect x="72" y="880" width="936" height="200" rx="14" fill="${L.card}" stroke="${L.acc}" stroke-width="3"/>
+  <text font-family="${F}" font-size="35" font-weight="700" fill="${L.ink}">
+    ${tl(["Have you tried a comprehension","test on your own code?","What did it catch?"],104,948,46)}
+  </text>
+  ${counter(7,7,L)}`,L.bg)
+];
+
+/* ================= DECK B — cache-aside / p95 (Draft 1) ================= */
+const DECK_B=[
+/* 1 cover */ ()=>svg(`
+  ${eyebrow("A NUMBER I ACTUALLY MEASURED",D)}
+  <text x="72" y="470" font-family="${F}" font-size="290" font-weight="800" fill="${D.ink}" letter-spacing="-14">~20%</text>
+  <rect x="72" y="560" width="936" height="3" fill="${D.line}"/>
+  <text font-family="${F}" font-size="60" font-weight="700" fill="${D.acc}">
+    ${tl(["faster p95 from one cache."],72,670,74)}
+  </text>
+  <text font-family="${F}" font-size="42" fill="${D.dim}">
+    ${tl(["The pattern — and the one","failure mode I still","haven't tested."],72,820,54)}
+  </text>
+  ${swipe(D)}${counter(1,7,D)}`,D.bg),
+/* 2 context + p95 definition */ ()=>svg(`
+  ${eyebrow("CONTEXT",L)}
+  <text font-family="${F}" font-size="54" font-weight="800" fill="${L.ink}" letter-spacing="-1">
+    ${tl(["A system doing 10M+","requests a month."],72,270,66)}
+  </text>
+  <text font-family="${F}" font-size="36" fill="${L.dim}">
+    ${tl(["Every millisecond on the read","path multiplies."],72,440,46)}
+  </text>
+  <rect x="72" y="580" width="936" height="2" fill="${L.line}"/>
+  <text x="72" y="670" font-family="${M}" font-size="27" fill="${L.acc}" letter-spacing="2">WHAT p95 MEANS</text>
+  <text font-family="${F}" font-size="42" font-weight="700" fill="${L.ink}">
+    ${tl(["The response time that 95%","of requests come in under."],72,750,54)}
+  </text>
+  <text font-family="${F}" font-size="34" fill="${L.dim}">
+    ${tl(["Not the average. Averages hide","the worst realistic case — p95 is","closer to what your slowest","real users actually feel."],72,900,44)}
+  </text>
+  ${swipe(L)}${counter(2,7,L)}`,L.bg),
+/* 3 the pattern — flow diagram */ ()=>svg(`
+  ${eyebrow("THE PATTERN — CACHE-ASIDE",L)}
+  ${box(72,250,330,110,"Request",L,L.card)}
+  ${arrow(402,305,520,305,L.ink)}
+  ${box(520,250,300,110,"Redis",L,"#FFE2D2")}
+
+  <text x="850" y="292" font-family="${M}" font-size="30" fill="${L.ok}">HIT</text>
+  <text x="850" y="336" font-family="${F}" font-size="27" fill="${L.dim}">return</text>
+
+  ${arrow(670,360,670,500,L.bad)}
+  <text x="700" y="440" font-family="${M}" font-size="30" fill="${L.bad}">MISS</text>
+
+  ${box(520,500,300,110,"Postgres",L,L.card)}
+  ${arrow(520,555,402,555,L.ink)}
+  ${box(72,500,330,110,"read",L,L.card,L.dim,29)}
+
+  ${arrow(500,610,500,700,L.ok)}
+  ${box(300,700,520,110,"write result back to Redis",L,"#DFF3E8",L.ink,29)}
+  ${arrow(300,755,180,755,L.ok)}
+  ${box(72,700,110,110,"✓",L,"#DFF3E8",L.ok,44)}
+
+  <rect x="72" y="890" width="936" height="2" fill="${L.line}"/>
+  <text font-family="${F}" font-size="38" font-weight="700" fill="${L.ink}">
+    ${tl(["Hit? Skip the database entirely.","Miss? Pay once, then cache it."],72,975,50)}
+  </text>
+  ${swipe(L)}${counter(3,7,L)}`,L.bg),
+/* 4 result — 2 bars, values on bars, no axis */ ()=>svg(`
+  ${eyebrow("THE RESULT",L)}
+  <text font-family="${F}" font-size="54" font-weight="800" fill="${L.ink}" letter-spacing="-1">
+    ${tl(["p95 on that endpoint"],72,265,66)}
+  </text>
+
+  <text x="72" y="400" font-family="${M}" font-size="28" fill="${L.dim}" letter-spacing="2">BEFORE</text>
+  <rect x="72" y="425" width="936" height="130" rx="12" fill="${L.bad}"/>
+  <text x="110" y="510" font-family="${F}" font-size="56" font-weight="800" fill="#FFFFFF">baseline</text>
+
+  <text x="72" y="660" font-family="${M}" font-size="28" fill="${L.dim}" letter-spacing="2">AFTER — REDIS CACHE-ASIDE</text>
+  <rect x="72" y="685" width="749" height="130" rx="12" fill="${L.ok}"/>
+  <text x="110" y="770" font-family="${F}" font-size="56" font-weight="800" fill="#FFFFFF">~20% lower</text>
+
+  <rect x="72" y="925" width="936" height="2" fill="${L.line}"/>
+  <text font-family="${F}" font-size="36" fill="${L.dim}">
+    ${tl(["One hot read endpoint was hitting","Postgres directly — for data that","barely changed request to request."],72,1010,46)}
+  </text>
+  ${swipe(L)}${counter(4,7,L)}`,L.bg),
+/* 5 the turn — the single mid-thought pivot */ ()=>svg(`
+  ${eyebrow("BUT",D)}
+  <text font-family="${F}" font-size="84" font-weight="800" fill="${D.ink}" letter-spacing="-3">
+    ${tl(["Cache-aside","doesn't protect","you from this."],72,480,102)}
+  </text>
+  <text x="72" y="900" font-family="${F}" font-size="46" fill="${D.acc}">One expiring key. Same second.</text>
+  ${swipe(D)}${counter(5,7,D)}`,D.bg),
+/* 6 the stampede */ ()=>{
+  let reqs="";
+  for(let i=0;i<9;i++){ reqs += `<rect x="${88+i*104}" y="520" width="76" height="76" rx="10" fill="${L.bad}" opacity="${0.45+i*0.06}"/>`; }
+  let arrows="";
+  for(let i=0;i<9;i++){ arrows += arrow(126+i*104,600,126+i*104,690,L.bad,4); }
+  return svg(`
+  ${eyebrow("CACHE STAMPEDE",L)}
+  ${box(340,235,400,105,"hot key expires",L,"#FFE2D2",L.bad,32)}
+  ${arrow(540,340,540,430,L.dim,4)}
+  <text x="72" y="480" font-family="${M}" font-size="27" fill="${L.dim}" letter-spacing="2">500 REQUESTS, ALL MISS</text>
+  ${reqs}
+  ${arrows}
+  ${box(240,690,600,115,"Postgres — all at once",L,L.card,L.ink,34)}
+  <rect x="72" y="890" width="936" height="2" fill="${L.line}"/>
+  <text font-family="${F}" font-size="40" font-weight="700" fill="${L.acc}">
+    ${tl(["No fix tested yet."],72,975,52)}
+  </text>
+  <text font-family="${F}" font-size="34" fill="${L.dim}">
+    ${tl(["TTL jitter and request coalescing are","the two I'd want to measure first."],72,1060,44)}
+  </text>
+  ${swipe(L)}${counter(6,7,L)}`,L.bg);
+},
+/* 7 close */ ()=>svg(`
+  ${eyebrow("WHERE I ACTUALLY AM",L)}
+  <text font-family="${F}" font-size="52" font-weight="800" fill="${L.ink}" letter-spacing="-1">
+    ${tl(["The 20% is real."],72,275,66)}
+  </text>
+  <text font-family="${F}" font-size="52" font-weight="800" fill="${L.acc}" letter-spacing="-1">
+    ${tl(["The stampede question","isn't answered yet."],72,400,66)}
+  </text>
+  <rect x="72" y="540" width="936" height="2" fill="${L.line}"/>
+  <text font-family="${F}" font-size="36" fill="${L.dim}">
+    ${tl(["I'd rather post it that way than","pretend the second part is solved."],72,630,46)}
+  </text>
+  <rect x="72" y="820" width="936" height="240" rx="14" fill="${L.card}" stroke="${L.acc}" stroke-width="3"/>
+  <text font-family="${F}" font-size="35" font-weight="700" fill="${L.ink}">
+    ${tl(["If you've hit cache stampede in","production — jitter, locking,","request coalescing, or something","else? What actually worked?"],104,890,46)}
+  </text>
+  ${counter(7,7,L)}`,L.bg)
+];
+
+/* ================= SINGLES ================= */
+const SINGLES=[
+/* MCP stateful -> stateless architecture, single image post */
+()=>svg(`
+  ${eyebrow("MCP SPEC — 28 JULY 2026",D)}
+  <text x="72" y="250" font-family="${F}" font-size="86" font-weight="800" fill="${D.dim}" letter-spacing="-3" text-decoration="line-through">STATEFUL</text>
+  <line x1="66" y1="222" x2="640" y2="222" stroke="${D.bad}" stroke-width="9" stroke-linecap="round"/>
+  <text x="72" y="370" font-family="${F}" font-size="96" font-weight="800" fill="${D.acc}" letter-spacing="-4">STATELESS.</text>
+
+  <rect x="72" y="440" width="936" height="3" fill="${D.line}"/>
+
+  <text x="72" y="530" font-family="${M}" font-size="26" fill="${D.dim}" letter-spacing="2">BEFORE — SESSION IN SERVER MEMORY</text>
+  <rect x="72" y="560" width="230" height="96" rx="13" fill="#1B2530" stroke="${D.line}" stroke-width="2"/>
+  <text x="187" y="617" text-anchor="middle" font-family="${F}" font-size="30" font-weight="700" fill="${D.ink}">Client</text>
+  ${arrow(302,608,470,608,D.dim)}
+  <text x="386" y="588" text-anchor="middle" font-family="${M}" font-size="21" fill="${D.dim}">session</text>
+  <rect x="470" y="560" width="230" height="96" rx="13" fill="#1B2530" stroke="${D.line}" stroke-width="2"/>
+  <text x="585" y="617" text-anchor="middle" font-family="${F}" font-size="30" font-weight="700" fill="${D.ink}">Server A</text>
+  <rect x="748" y="560" width="230" height="96" rx="13" fill="#2A1614" stroke="${D.bad}" stroke-width="2" stroke-dasharray="9 7"/>
+  <text x="863" y="605" text-anchor="middle" font-family="${F}" font-size="28" font-weight="700" fill="${D.bad}">Server B</text>
+  <text x="863" y="638" text-anchor="middle" font-family="${M}" font-size="20" fill="${D.bad}">no session</text>
+
+  <text x="72" y="770" font-family="${M}" font-size="26" fill="${D.acc}" letter-spacing="2">AFTER — CONTEXT TRAVELS WITH THE REQUEST</text>
+  <rect x="72" y="800" width="230" height="96" rx="13" fill="#1B2530" stroke="${D.line}" stroke-width="2"/>
+  <text x="187" y="857" text-anchor="middle" font-family="${F}" font-size="30" font-weight="700" fill="${D.ink}">Client</text>
+  ${arrow(302,848,470,848,D.acc)}
+  <rect x="470" y="800" width="230" height="96" rx="13" fill="#1B2530" stroke="${D.line}" stroke-width="2"/>
+  <text x="585" y="857" text-anchor="middle" font-family="${F}" font-size="27" font-weight="700" fill="${D.ink}">Balancer</text>
+  ${arrow(700,830,790,782,D.ok)}
+  ${arrow(700,866,790,914,D.ok)}
+  <rect x="790" y="736" width="196" height="82" rx="12" fill="#0F2A1D" stroke="${D.ok}" stroke-width="2"/>
+  <text x="888" y="785" text-anchor="middle" font-family="${F}" font-size="27" font-weight="700" fill="${D.ok}">A ✓</text>
+  <rect x="790" y="878" width="196" height="82" rx="12" fill="#0F2A1D" stroke="${D.ok}" stroke-width="2"/>
+  <text x="888" y="927" text-anchor="middle" font-family="${F}" font-size="27" font-weight="700" fill="${D.ok}">B ✓</text>
+
+  <rect x="72" y="1030" width="936" height="3" fill="${D.line}"/>
+  <text font-family="${F}" font-size="44" font-weight="700" fill="${D.ink}">
+    ${tl(["Any instance answers any request.","The same trade REST already made."],72,1120,56)}
+  </text>`,D.bg),
+
+/* Cache-aside pseudocode reference card */
+()=>svg(`
+  ${eyebrow("CACHE-ASIDE, IN 6 LINES",L)}
+  <text font-family="${F}" font-size="58" font-weight="800" fill="${L.ink}" letter-spacing="-2">
+    ${tl(["The pattern that cut","our p95 by ~20%."],72,265,72)}
+  </text>
+  <rect x="72" y="400" width="936" height="470" rx="16" fill="#101820" stroke="${L.line}" stroke-width="2"/>
+  <text font-family="${M}" font-size="37" fill="#E6EBEF">
+    ${tl(["val = redis.get(key)","","if val is None:","    val = db.query(key)","    redis.setex(key, ttl, val)","","return val"],112,475,58)}
+  </text>
+  <text x="72" y="960" font-family="${F}" font-size="38" font-weight="700" fill="${L.acc}">Simple to describe.</text>
+  <text x="72" y="1015" font-family="${F}" font-size="38" font-weight="700" fill="${L.ink}">Easy to get wrong in one specific way:</text>
+  <text font-family="${F}" font-size="34" fill="${L.dim}">
+    ${tl(["what happens when a hot key expires","and 500 requests land in one second?"],72,1085,44)}
+  </text>`,L.bg)
+];
+
+/* ================= GIF FRAMES — MCP stateful -> stateless (1080x1080) ================= */
+const GW=1080, GH=1080;
+function gframe(inner){return svg(inner,D.bg,GW,GH);}
+function gtitle(t,y,size,col){return `<text x="70" y="${y}" font-family="${F}" font-size="${size}" font-weight="800" fill="${col||D.ink}" letter-spacing="-2">${esc(t)}</text>`;}
+function gnode(x,y,w,h,label,sub,stroke,fill,lblcol){
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="14" fill="${fill||"#1B2530"}" stroke="${stroke||D.line}" stroke-width="3"/>
+  <text x="${x+w/2}" y="${sub?y+h/2:y+h/2+11}" text-anchor="middle" font-family="${F}" font-size="31" font-weight="700" fill="${lblcol||D.ink}">${esc(label)}</text>
+  ${sub?`<text x="${x+w/2}" y="${y+h/2+38}" text-anchor="middle" font-family="${M}" font-size="21" fill="${stroke||D.dim}">${esc(sub)}</text>`:""}`;
+}
+function gfoot(t,col){return `<text x="70" y="1010" font-family="${M}" font-size="25" fill="${col||D.dim}" letter-spacing="1">${esc(t)}</text>`;}
+
+const GIF_FRAMES=[
+/* f1 title */ ()=>gframe(`
+  ${gtitle("MCP just went",300,84)}
+  ${gtitle("stateless.",400,84,D.acc)}
+  <rect x="70" y="450" width="940" height="3" fill="${D.line}"/>
+  <text font-family="${F}" font-size="38" fill="${D.dim}">${tl(["If you've scaled a REST API behind","a load balancer, you already know","why that matters."],70,530,48)}</text>
+  ${gfoot("SPEC UPDATE — 28 JULY 2026",D.acc)}`),
+/* f2 old model */ ()=>gframe(`
+  ${gtitle("Before",150,60,D.dim)}
+  ${gnode(70,380,250,110,"Client")}
+  ${arrow(320,435,500,435,D.dim)}
+  <text x="410" y="410" text-anchor="middle" font-family="${M}" font-size="22" fill="${D.dim}">session</text>
+  ${gnode(500,380,250,110,"Server A")}
+  ${gfoot("ONE INSTANCE. SESSION LIVES IN ITS MEMORY.")}`),
+/* f3 scale up, B has no session */ ()=>gframe(`
+  ${gtitle("Now add a second instance",150,54,D.dim)}
+  ${gnode(70,330,230,105,"Client")}
+  ${arrow(300,382,470,382,D.dim)}
+  ${gnode(470,330,230,105,"Server A","has session",D.ok)}
+  ${gnode(470,520,230,105,"Server B","no session",D.bad,"#2A1614",D.bad)}
+  ${gfoot("THE SESSION ONLY EXISTS ON A.")}`),
+/* f4 request lands on B and fails */ ()=>gframe(`
+  ${gtitle("Request lands on B",150,58,D.bad)}
+  ${gnode(70,330,230,105,"Client")}
+  ${arrow(300,455,470,560,D.bad)}
+  ${gnode(470,330,230,105,"Server A","has session",D.ok)}
+  ${gnode(470,520,230,105,"Server B","no session",D.bad,"#2A1614",D.bad)}
+  <text x="790" y="590" font-family="${F}" font-size="92" font-weight="800" fill="${D.bad}">✗</text>
+  ${gfoot("STICKY SESSIONS, OR IT BREAKS.",D.bad)}`),
+/* f5 the change */ ()=>gframe(`
+  ${gtitle("The spec change",150,54,D.dim)}
+  ${gtitle("Stateless",300,80,D.acc)}
+  ${gtitle("per request.",395,80,D.acc)}
+  <rect x="70" y="460" width="940" height="3" fill="${D.line}"/>
+  <text font-family="${F}" font-size="35" fill="${D.dim}">${tl(["No session handshake.","Cacheable list results.","Header-based routing.","Multi-round-trip, natively."],70,540,52)}</text>
+  ${gfoot("CONTEXT TRAVELS WITH EVERY REQUEST",D.acc)}`),
+/* f6 after — both answer */ ()=>gframe(`
+  ${gtitle("After",150,60,D.acc)}
+  ${gnode(70,410,215,105,"Client")}
+  ${arrow(285,462,440,462,D.acc)}
+  ${gnode(440,410,215,105,"Balancer")}
+  ${arrow(655,440,800,360,D.ok)}
+  ${arrow(655,485,800,565,D.ok)}
+  ${gnode(800,305,200,105,"Server A","✓",D.ok,"#0F2A1D",D.ok)}
+  ${gnode(800,515,200,105,"Server B","✓",D.ok,"#0F2A1D",D.ok)}
+  ${gfoot("ANY INSTANCE ANSWERS ANY REQUEST.",D.ok)}`),
+/* f7 close */ ()=>gframe(`
+  ${gtitle("The same trade",290,74)}
+  ${gtitle("REST already made.",385,74,D.acc)}
+  <rect x="70" y="450" width="940" height="3" fill="${D.line}"/>
+  <text font-family="${F}" font-size="36" fill="${D.dim}">${tl(["What I haven't done yet: run two","instances behind a balancer and","watch it behave."],70,530,48)}</text>
+  ${gfoot("FULL POST — SWIPE UP",D.acc)}`)
+];
+
+/* ---------------- render previews ---------------- */
+const ALL={deckA:DECK_A,deckB:DECK_B,singles:SINGLES,gif:GIF_FRAMES};
+const TITLES={deckA:"Deck A — 22/25 diagnostic (carousel, 7 slides)",deckB:"Deck B — cache-aside / p95 (carousel, 7 slides)",singles:"Singles — MCP architecture + cache-aside code card",gif:"GIF frames — MCP stateful → stateless (1080×1080)"};
+const host=document.getElementById("host");
+Object.keys(ALL).forEach(k=>{
+  const h=document.createElement("h2"); h.textContent=TITLES[k]; host.appendChild(h);
+  const g=document.createElement("div"); g.className="grid";
+  ALL[k].forEach((fn,i)=>{
+    const el=document.createElement("div"); el.className="item";
+    el.innerHTML=`<div class="num">${k.toUpperCase()} ${i+1}</div><div class="prev">${fn()}</div>`;
+    g.appendChild(el);
+  });
+  host.appendChild(g);
+});
+
+/* ---------------- export ---------------- */
+function toPng(svgStr,w,h){
+  return new Promise((res,rej)=>{
+    const img=new Image();
+    const blob=new Blob([svgStr],{type:"image/svg+xml;charset=utf-8"});
+    const url=URL.createObjectURL(blob);
+    img.onload=()=>{
+      const cv=document.createElement("canvas"); cv.width=w; cv.height=h;
+      const ctx=cv.getContext("2d"); ctx.fillStyle="#FFFFFF"; ctx.fillRect(0,0,w,h);
+      ctx.drawImage(img,0,0,w,h); URL.revokeObjectURL(url); res(cv.toDataURL("image/png"));
+    };
+    img.onerror=e=>{URL.revokeObjectURL(url);rej(e);};
+    img.src=url;
+  });
+}
+window.__export=async function(key){
+  const w = key==="gif"?GW:W, h = key==="gif"?GH:H;
+  const out=[];
+  for(const fn of ALL[key]) out.push(await toPng(fn(),w,h));
+  return out;
+};
+window.__ready=true;
+</script>
+</body>
+</html>
