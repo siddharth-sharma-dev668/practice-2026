@@ -11,6 +11,29 @@ No employer named anywhere. No Pramaan specifics anywhere.
 | +2 days | 2 — Cache-aside / p95 | Document carousel, 7 slides | `assets/deck-cache-aside.pdf` |
 | +4 days | 3 — MCP goes stateless | Animated GIF **or** single image | `assets/mcp-stateless.gif` |
 
+**Theme rotation — no palette runs more than 3-4 posts.** Posts 1-3 use `signal`
+(slate + orange). Post 4 onward switches to `blueprint` (navy + teal), then `press`
+(cream + amber) around post 7, then back. Build a rotation with:
+
+```bash
+python "linkedin/builders/build_assets.py" --theme blueprint
+```
+
+Non-default themes land in `assets/theme-<name>/` so nothing overwrites. To see all three
+side by side before choosing: `--preview sheet.png`.
+
+What deliberately does **not** rotate: the typographic cover, the page counter from 1/N,
+the dot grid for X-of-N, the axis-free before/after bars, and the honest-gap closing slide.
+Those are the structural signature that makes a post recognisably yours. Only the palette
+moves. Consistency in structure plus variety in surface is what separates "recognisable"
+from "templated" — and repeated identical templates are exactly what reads as AI-generated
+filler now that LinkedIn ships an AI-slop report button.
+
+**Topic rotation, same rule.** Week 1 already alternates: interview-prep (post 1),
+backend/infra (post 2), AI-MCP (post 3). Keep cycling across backend/infra, AI-MCP/eval,
+data, and interview-prep — four straight caching posts would pigeonhole you as narrowly as
+the test-engineer label does, which is the opposite of the point.
+
 Spare assets for filler days or reuse: `assets/singles/cache-aside-code.png`,
 `assets/singles/mcp-architecture.png`, `assets/mcp-gif-frames/*.png`.
 
@@ -142,7 +165,10 @@ From the research in `VISUAL_RESEARCH_AND_DRAFTS.md` — the load-bearing ones:
   the cover and the actual chart waits for the slide after someone taps in.
 - **Light background for every small-text slide.** Light-on-dark degrades faster as text
   shrinks; dark is reserved for slides where the type is huge (covers, the one pivot slide).
-- **Before/after = 2 bars, value printed on the bar, no axis.** Nothing to parse.
+- **Before/after = 2 bars, value printed on the bar, no axis.** Nothing to parse. The
+  pair is a neutral baseline against the theme accent rather than red-versus-green, so it
+  still reads for the ~8% of men with red-green colour deficiency; hue *and* lightness both
+  carry the difference.
 - **X-of-N = filled/unfilled dot grid** (the 22/25 slide), which removes the axis question
   entirely.
 - **Page counter on every slide from 1/7** — goal-gradient effect (Kivetz, Urminsky & Zheng

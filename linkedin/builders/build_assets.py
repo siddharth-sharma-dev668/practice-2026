@@ -47,13 +47,52 @@ def font(kind, size):
 
 
 # ---- palettes -------------------------------------------------------------
-# dark surface: covers and pivot slides only, where type is large
-DARK = dict(bg="#0F141A", ink="#FFFFFF", dim="#9FB0BF", acc="#FF9152",
-            ok="#6ED69B", bad="#FF8073", line="#2B3642", card="#1B2530")
-# light surface: every slide with smaller text.
-# contrast on #F7F9FA -> ink ~15:1, dim ~7:1, acc ~5.2:1, ok ~4.9:1, bad ~6:1
-LIGHT = dict(bg="#F7F9FA", ink="#10161C", dim="#52606D", acc="#B8481A",
-             ok="#1B7F4F", bad="#B3261E", line="#CBD4DB", card="#EDF1F4")
+# Three interchangeable themes. Rotate every 3-4 posts so the feed does not
+# look templated, but keep the structural signature (typographic covers, page
+# counters, dot grids, the honest-gap closer) constant so posts stay his.
+#
+# In every theme: "dark" is used only for covers and the one pivot slide, where
+# type is large. "light" carries every small-text slide. Accents on light are
+# picked to clear WCAG AA (4.5:1) for normal text as a floor, not a target.
+THEMES = {
+    # slate + orange
+    "signal": (
+        dict(bg="#0F141A", ink="#FFFFFF", dim="#9FB0BF", acc="#FF9152",
+             ok="#6ED69B", bad="#FF8073", line="#2B3642", card="#1B2530",
+             fillbad="#2A1614", fillok="#0F2A1D"),
+        dict(bg="#F7F9FA", ink="#10161C", dim="#52606D", acc="#B8481A",
+             ok="#1B7F4F", bad="#B3261E", line="#CBD4DB", card="#EDF1F4",
+             fillacc="#FFE2D2", fillok="#DFF3E8", codebg="#101820",
+             barbase="#7A8794", barlift="#B8481A"),
+    ),
+    # deep navy + sky
+    "blueprint": (
+        dict(bg="#0A1622", ink="#FFFFFF", dim="#93AFC6", acc="#4FC3F7",
+             ok="#6EE7B7", bad="#FF9A8B", line="#1F3A52", card="#142838",
+             fillbad="#2B1518", fillok="#0C2A22"),
+        dict(bg="#EDF4FA", ink="#0B1620", dim="#47606F", acc="#0D6E88",
+             ok="#14714F", bad="#A8261E", line="#B6CCDE", card="#DCE9F3",
+             fillacc="#C9E4F2", fillok="#D3EDE1", codebg="#0B1A26",
+             barbase="#6E8296", barlift="#0D6E88"),
+    ),
+    # warm paper + amber
+    "press": (
+        dict(bg="#14110C", ink="#FFFFFF", dim="#B8AA96", acc="#F0B849",
+             ok="#8DD6A0", bad="#FF9384", line="#352E22", card="#201B13",
+             fillbad="#2C1512", fillok="#12261A"),
+        dict(bg="#F9F1E2", ink="#14110C", dim="#5C5240", acc="#8A5406",
+             ok="#1B6B45", bad="#A6291D", line="#D9C9AC", card="#F0E4CE",
+             fillacc="#F7DCAE", fillok="#DCEBD6", codebg="#17130D",
+             barbase="#8A8172", barlift="#8A5406"),
+    ),
+}
+DARK, LIGHT = THEMES["signal"]
+
+
+def use_theme(name):
+    """Rebind the module palettes. Builders read DARK/LIGHT at call time."""
+    global DARK, LIGHT
+    DARK, LIGHT = THEMES[name]
 
 
 class Slide:
@@ -319,7 +358,7 @@ def deck_b():
     s = Slide(L["bg"]); s.eyebrow("THE PATTERN - CACHE-ASIDE", L)
     s.box(330, 240, 420, 105, "Request", L)
     s.arrow(540, 345, 540, 425, L["ink"])
-    s.box(330, 432, 420, 105, "Redis", L, fill="#FFE2D2")
+    s.box(330, 432, 420, 105, "Redis", L, fill=L["fillacc"])
     # hit: branch right and stop
     s.arrow(750, 484, 838, 484, L["ok"])
     s.text(852, 476, "HIT", "monob", 27, L["ok"])
@@ -329,7 +368,7 @@ def deck_b():
     s.text(566, 588, "MISS", "monob", 27, L["bad"])
     s.box(330, 624, 420, 105, "Postgres", L)
     s.arrow(540, 729, 540, 809, L["ok"])
-    s.box(330, 816, 420, 105, "write back to Redis", L, fill="#DFF3E8", size=29)
+    s.box(330, 816, 420, 105, "write back to Redis", L, fill=L["fillok"], size=29)
     s.rule(990, L)
     s.lines(72, 1060, ["Hit? Skip the database entirely.", "Miss? Pay once, then cache it."],
             "bold", 38, L["ink"], 50)
@@ -339,10 +378,10 @@ def deck_b():
     s = Slide(L["bg"]); s.eyebrow("THE RESULT", L)
     s.text(72, 265, "p95 on that endpoint", "black", 54, L["ink"], track=-1)
     s.text(72, 400, "BEFORE", "mono", 28, L["dim"], track=2)
-    s.rect(72, 425, 936, 130, fill=L["bad"], r=12)
+    s.rect(72, 425, 936, 130, fill=L["barbase"], r=12)
     s.text(110, 510, "baseline", "black", 56, "#FFFFFF")
     s.text(72, 660, "AFTER - REDIS CACHE-ASIDE", "mono", 28, L["dim"], track=2)
-    s.rect(72, 685, 749, 130, fill=L["ok"], r=12)
+    s.rect(72, 685, 749, 130, fill=L["barlift"], r=12)
     s.text(110, 770, "~20% lower", "black", 56, "#FFFFFF")
     s.rule(925, L)
     s.lines(72, 1010, ["One hot read endpoint was hitting", "Postgres directly - for data that",
@@ -358,7 +397,7 @@ def deck_b():
 
     # 6 the stampede
     s = Slide(L["bg"]); s.eyebrow("CACHE STAMPEDE", L)
-    s.box(340, 235, 400, 105, "hot key expires", L, fill="#FFE2D2",
+    s.box(340, 235, 400, 105, "hot key expires", L, fill=L["fillacc"],
           txt=L["bad"], size=32)
     s.arrow(540, 342, 540, 424, L["dim"], 4)
     s.text(72, 480, "500 REQUESTS, ALL MISS", "mono", 27, L["dim"], track=2)
@@ -404,8 +443,9 @@ def singles():
     s.arrow(302, 608, 464, 608, D["dim"])
     s.text(386, 588, "session", "mono", 21, D["dim"], anchor="ms")
     s.box(470, 560, 230, 96, "Server A", D)
-    s.box(748, 560, 230, 96, "Server B", D, fill="#2A1614", txt=D["bad"], size=28,
-          outline=D["bad"], dash=(9, 7), sub="no session", subcol=D["bad"])
+    s.box(748, 560, 230, 96, "Server B", D, fill=D["fillbad"], txt=D["bad"],
+          size=28, outline=D["bad"], dash=(9, 7), sub="no session",
+          subcol=D["bad"])
 
     s.text(72, 770, "AFTER - CONTEXT TRAVELS WITH THE REQUEST", "mono", 26,
            D["acc"], track=2)
@@ -415,7 +455,7 @@ def singles():
     s.arrow(702, 830, 786, 784, D["ok"])
     s.arrow(702, 866, 786, 912, D["ok"])
     for yy, lbl in ((736, "A"), (878, "B")):
-        s.rect(790, yy, 196, 82, fill="#0F2A1D", outline=D["ok"], width=2, r=12)
+        s.rect(790, yy, 196, 82, fill=D["fillok"], outline=D["ok"], width=2, r=12)
         s.text(862, yy + 52, lbl, "bold", 30, D["ok"], anchor="ms")
         s.check(922, yy + 41, 34, D["ok"], 5)
     s.rect(72, 1030, 936, 3, fill=D["line"])
@@ -427,7 +467,7 @@ def singles():
     s = Slide(L["bg"]); s.eyebrow("CACHE-ASIDE, IN 6 LINES", L)
     s.lines(72, 265, ["The pattern that cut", "our p95 by ~20%."],
             "black", 58, L["ink"], 72, track=-2)
-    s.rect(72, 400, 936, 470, fill="#101820", outline=L["line"], width=2, r=16)
+    s.rect(72, 400, 936, 470, fill=L["codebg"], outline=L["line"], width=2, r=16)
     code = ["val = redis.get(key)", "", "if val is None:",
             "    val = db.query(key)", "    redis.setex(key, ttl, val)", "", "return val"]
     for i, ln in enumerate(code):
@@ -477,7 +517,7 @@ def gif_frames():
     s.arrow(300, 472, 464, 472, D["dim"])
     s.box(470, 420, 230, 105, "Server A", D, outline=D["ok"], sub="has session",
           subcol=D["ok"])
-    s.box(470, 610, 230, 105, "Server B", D, fill="#2A1614", txt=D["bad"],
+    s.box(470, 610, 230, 105, "Server B", D, fill=D["fillbad"], txt=D["bad"],
           outline=D["bad"], dash=(9, 7), sub="no session", subcol=D["bad"])
     foot(s, "THE SESSION ONLY EXISTS ON A."); F.append(s.finish())
 
@@ -488,7 +528,7 @@ def gif_frames():
     s.arrow(300, 540, 464, 655, D["bad"])
     s.box(470, 420, 230, 105, "Server A", D, outline=D["ok"], sub="has session",
           subcol=D["ok"])
-    s.box(470, 610, 230, 105, "Server B", D, fill="#2A1614", txt=D["bad"],
+    s.box(470, 610, 230, 105, "Server B", D, fill=D["fillbad"], txt=D["bad"],
           outline=D["bad"], dash=(9, 7), sub="no session", subcol=D["bad"])
     s.cross(810, 662, 90, D["bad"], 10)
     foot(s, "STICKY SESSIONS, OR IT BREAKS.", D["bad"]); F.append(s.finish())
@@ -513,7 +553,7 @@ def gif_frames():
     s.arrow(655, 500, 794, 425, D["ok"])
     s.arrow(655, 545, 794, 620, D["ok"])
     for yy, lbl in ((365, "Server A"), (575, "Server B")):
-        s.rect(800, yy, 200, 105, fill="#0F2A1D", outline=D["ok"], width=3, r=14)
+        s.rect(800, yy, 200, 105, fill=D["fillok"], outline=D["ok"], width=3, r=14)
         s.text(880, yy + 52, lbl, "bold", 28, D["ok"], anchor="ms")
         s.check(956, yy + 44, 34, D["ok"], 5)
     foot(s, "ANY INSTANCE ANSWERS ANY REQUEST.", D["ok"]); F.append(s.finish())
@@ -531,44 +571,93 @@ def gif_frames():
 
 
 # ============================== main =====================================
-def save_deck(name, imgs):
-    d = os.path.join(OUT, name)
+def save_deck(name, imgs, out):
+    d = os.path.join(out, name)
     os.makedirs(d, exist_ok=True)
     for i, im in enumerate(imgs, 1):
         im.save(os.path.join(d, f"{i}.png"), optimize=True)
-    pdf = os.path.join(OUT, f"{name}.pdf")
+    pdf = os.path.join(out, name + ".pdf")
     imgs[0].save(pdf, save_all=True, append_images=imgs[1:], resolution=150.0)
     print(f"  {name}: {len(imgs)} PNG + {os.path.basename(pdf)} "
           f"({os.path.getsize(pdf)/1024:.0f} KB)")
 
 
-if __name__ == "__main__":
-    os.makedirs(OUT, exist_ok=True)
-    print("Building assets ->", os.path.abspath(OUT))
+def build_all(theme, out):
+    os.makedirs(out, exist_ok=True)
+    print("Building assets (theme: %s) -> %s" % (theme, os.path.abspath(out)))
 
-    save_deck("deck-diagnostic", deck_a())
-    save_deck("deck-cache-aside", deck_b())
+    save_deck("deck-diagnostic", deck_a(), out)
+    save_deck("deck-cache-aside", deck_b(), out)
 
-    d = os.path.join(OUT, "singles")
+    d = os.path.join(out, "singles")
     os.makedirs(d, exist_ok=True)
     for k, im in singles().items():
-        p = os.path.join(d, f"{k}.png")
-        im.save(p, optimize=True)
-        print(f"  singles/{k}.png ({os.path.getsize(p)/1024:.0f} KB)")
+        f = os.path.join(d, k + ".png")
+        im.save(f, optimize=True)
+        print("  singles/%s.png (%.0f KB)" % (k, os.path.getsize(f) / 1024))
 
     fr = gif_frames()
     # hold the title and the payoff frames longer than the build-up
     durations = [2300, 1500, 1800, 2000, 2400, 2200, 2600]
     pal = [f.convert("P", palette=Image.ADAPTIVE, colors=64) for f in fr]
-    gp = os.path.join(OUT, "mcp-stateless.gif")
+    gp = os.path.join(out, "mcp-stateless.gif")
     pal[0].save(gp, save_all=True, append_images=pal[1:], duration=durations,
                 loop=0, optimize=True)
-    print(f"  mcp-stateless.gif: {len(fr)} frames, "
-          f"{os.path.getsize(gp)/1024:.0f} KB")
+    print("  mcp-stateless.gif: %d frames, %.0f KB"
+          % (len(fr), os.path.getsize(gp) / 1024))
     # also keep the frames as stills, in case a carousel is preferred
-    d = os.path.join(OUT, "mcp-gif-frames")
+    d = os.path.join(out, "mcp-gif-frames")
     os.makedirs(d, exist_ok=True)
     for i, f in enumerate(fr, 1):
-        f.save(os.path.join(d, f"{i}.png"), optimize=True)
-    print("  mcp-gif-frames: 7 PNG")
-    print("done")
+        f.save(os.path.join(d, "%d.png" % i), optimize=True)
+    print("  mcp-gif-frames: %d PNG" % len(fr))
+
+
+def preview(path, picks=(0, 2, 3)):
+    """One sheet: the same three slides rendered in every theme, one row each.
+    Cheapest way to judge a rotation before committing a post to it."""
+    rows, names = [], list(THEMES)
+    for name in names:
+        use_theme(name)
+        deck = deck_b()
+        rows.append([deck[i] for i in picks])
+    use_theme("signal")
+
+    cw = 330
+    ch = int(cw * H / W)
+    lab = 46
+    pad = 12
+    cols = len(picks)
+    sheet = Image.new("RGB", (cols * cw + pad * (cols + 1),
+                              len(rows) * (ch + lab) + pad * (len(rows) + 1)),
+                      "#39434D")
+    dr = ImageDraw.Draw(sheet)
+    for r, (name, row) in enumerate(zip(names, rows)):
+        y = pad + r * (ch + lab + pad)
+        dr.text((pad + 4, y + 12), name.upper(), font=font("monob", 15),
+                fill="#FFFFFF")
+        for c, im in enumerate(row):
+            sheet.paste(im.resize((cw, ch), Image.LANCZOS),
+                        (pad + c * (cw + pad), y + lab))
+    sheet.save(path)
+    print("preview ->", path, sheet.size)
+
+
+if __name__ == "__main__":
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--theme", default="signal", choices=list(THEMES),
+                    help="palette to build with (rotate every 3-4 posts)")
+    ap.add_argument("--preview", metavar="PNG",
+                    help="write a theme-comparison sheet and exit")
+    a = ap.parse_args()
+
+    if a.preview:
+        preview(a.preview)
+    else:
+        use_theme(a.theme)
+        # the default theme keeps the stable asset paths; others get a subfolder
+        out = (os.path.join(ROOT, "assets") if a.theme == "signal"
+               else os.path.join(ROOT, "assets", "theme-" + a.theme))
+        build_all(a.theme, out)
+        print("done")
