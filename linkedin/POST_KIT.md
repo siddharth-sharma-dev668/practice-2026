@@ -15,9 +15,18 @@ noted so the MCP-stateless post below reads as the substantive follow-up, not a 
 | When | Post | Variety | Upload |
 |---|---|---|---|
 | 2026-09-02 (done) | p95 / cache-aside | Document carousel | `linkedin/post-p95-redis.html` output |
-| **2026-09-04 (next)** | Code-comprehension self-test | Document carousel, 7 slides | `assets/deck-diagnostic.pdf` |
+| **2026-09-04 (next)** | Reading beats writing (interview shift) | Document carousel, 6 slides | `assets/deck-interview-shift.pdf` |
 | 2026-09-06 | MCP goes stateless | Animated GIF **or** single image | `assets/mcp-stateless.gif` |
 | held / retired | Cache-aside deck (topic collision with 09-02 post) | — | `assets/deck-cache-aside.pdf` |
+
+**Rewritten 2026-09-03:** the original version of the 09-04 post scored and displayed personal
+quiz results ("22/25," three Python questions missed, shown as code fragments). Sid's call:
+that reads as "doesn't know Python," not as confident engineering content — the opposite of
+the positioning goal. Compared directly against Hritika Kucheriya's actual posts (see below),
+hers never put her own knowledge on trial; she states a confident thesis about something real
+and current, backs it with specifics, and ends on a question. Rebuilt the deck on that model —
+the underlying insight (reading code is a different skill from writing it) survives, but the
+personal test score is gone entirely.
 
 **Theme rotation — no palette runs more than 3-4 posts.** Posts 1-3 use `signal`
 (slate + orange). Post 4 onward switches to `blueprint` (navy + teal), then `press`
@@ -53,45 +62,45 @@ short document title when prompted — that title shows above the first slide.
 
 ---
 
-## Post 1 — Code-comprehension self-test (post today)
+## Post 1 — Reading beats writing (post 2026-09-04)
 
-**Asset:** `assets/deck-diagnostic.pdf` · document title suggestion: `The 3 I missed`
+**Asset:** `assets/deck-interview-shift.pdf` · document title suggestion: `Reading beats writing now`
 
-**Why this one leads:** it's entirely your own measured result, so there is nothing in it
-anyone can challenge you on, and it ends on an honest gap rather than a win.
+**Why this framing:** it states an opinion with confidence, backs it with reasoning anyone
+can follow, and ends on a question — never puts your own competence on trial. No score, no
+"here's what I got wrong," no code fragment that could be misread at a glance.
 
 ```
-A few large tech companies have reportedly rebuilt technical interviews around AI-assisted coding this year.
+A few large tech companies have reportedly rebuilt technical interviews this year — grading candidates on reading and debugging an existing codebase with an AI assistant available, instead of writing algorithms from a blank file.
 
-The shape people describe: a round graded on reading and debugging an existing codebase with an AI assistant available, instead of writing from a blank file — per a few interview-prep sources I've read, not something I've sat myself.
+The reasoning holds up the more I think about it.
 
-What stuck with me: the skill being graded isn't "can you write the algorithm." It's whether you can read code fast, validate what a tool gives you, and catch what's subtly wrong.
+When an assistant can write a working function in seconds, the bottleneck isn't "can you write it." It's "can you tell whether what it wrote is actually correct."
 
-So I ran a 25-question self-test built around exactly that — reading and reasoning about code, not writing it from scratch.
+Those are different skills. Writing from scratch rewards recall — syntax, algorithms, a solution shape held in your head. Reading rewards something else: holding someone else's logic in your head fast enough to catch what's subtly wrong before it ships.
 
-Score: 22/25.
+That's closer to what backend engineers actually do most days anyway — a PR review, a diff, a service someone else wrote six months ago. Writing-from-scratch was always a slightly artificial proxy for that.
 
-The 3 I missed weren't concept gaps. They were fluency gaps:
-— a list comprehension where I misjudged what got filtered
-— why a mutable type can't be a dict key
-— whether sorted() with a key function keeps the original order on ties
+If this shift is real, the prep changes too. Fewer blank-file algorithm drills. More: take an unfamiliar file, find the bug, explain why it's wrong.
 
-I knew all three concepts. I was slower and less certain reading the actual code than I expected.
+I'd take that interview over the whiteboard version any day — not because it's easier, but because it's closer to the actual job.
 
-If code-reading is genuinely becoming the graded skill, "I understand hashability" and "I read that line correctly in 4 seconds under pressure" are two different skills.
+Have you sat a comprehension-style round? What did it feel like against the classic algorithm interview?
 
-Right now I only have real evidence for the first one.
-
-Have you tried a comprehension-style self-test on your own code recently? What did it catch that you didn't expect?
-
-#TechnicalInterviews #SoftwareEngineering #Python #CodingInterviews #CareerGrowth #BackendEngineering #AIAssistedCoding
+#TechnicalInterviews #SoftwareEngineering #BackendEngineering #AIAssistedCoding #CareerGrowth #HiringTrends #CodingInterviews
 ```
 
 **Changed from the research draft:** the original named Google specifically. The research
 itself flagged the per-company claims as sourced to interview-prep vendors who sell
 interview practice — likely candidate anecdotes rather than confirmed process. Naming a
-company you can't defend if challenged is the one avoidable risk in an otherwise
-bulletproof post, so it now says "a few large tech companies" and keeps the hedge.
+company you can't defend if challenged is an avoidable risk, so it says "a few large tech
+companies" and keeps the hedge on-slide as well as in the caption.
+
+**The Hritika comparison, concretely** (her real posts, read live 2026-09-03):
+- Zerobus/Kafka post: opens "It's that it makes me question whether Kafka needs to be in the architecture at all" — a thesis, not a confession — cites exact throughput numbers, ends "Would you remove Kafka if Delta were genuinely the only downstream consumer?"
+- Flink migration post: the personal material is "we learned this the hard way in production," team authority earned through an incident — never "I got a question wrong."
+- WASM benchmark post: "I read the actual benchmark paper before writing this post" — she's the one interrogating the source, not the one being tested.
+None of her posts show her own knowledge gaps. That pattern is what this deck now follows.
 
 ---
 
@@ -177,8 +186,10 @@ From the research in `VISUAL_RESEARCH_AND_DRAFTS.md` — the load-bearing ones:
   pair is a neutral baseline against the theme accent rather than red-versus-green, so it
   still reads for the ~8% of men with red-green colour deficiency; hue *and* lightness both
   carry the difference.
-- **X-of-N = filled/unfilled dot grid** (the 22/25 slide), which removes the axis question
-  entirely.
+- **X-of-N = filled/unfilled dot grid**, which removes the axis question entirely — a tool
+  for the toolbox, not currently used in any active post since the one deck that used it
+  (a personal test score) was retired for putting Sid's own competence on display. Fine to
+  reuse for a legitimate non-personal X-of-N stat later.
 - **Page counter on every slide from 1/7** — goal-gradient effect (Kivetz, Urminsky & Zheng
   2006); perceived proximity to a finish line increases persistence.
 - **Exactly one mid-thought pivot per deck** (Deck B slide 5), never per slide — the

@@ -230,98 +230,84 @@ class Slide:
         return self.im.resize((self.w, self.h), Image.LANCZOS)
 
 
-# =========================== DECK A - 22/25 ===============================
+# ==================== DECK A - the interview shift ========================
 def deck_a():
     S, D, L = [], DARK, LIGHT
 
-    # 1 cover - hero number + framing clause, typography only
-    s = Slide(D["bg"]); s.eyebrow("SELF-TEST", D)
-    s.text(66, 500, "22/25", "black", 300, D["ink"], track=-14)
-    s.rect(72, 590, 936, 3, fill=D["line"])
-    s.lines(72, 700, ["The 3 I missed taught me", "more than the 22 I got right."],
-            "bold", 62, D["acc"], 76)
-    s.lines(72, 900, ["A code-comprehension test I ran",
-                      "on myself. Here's what it caught."], "reg", 38, D["dim"], 48)
-    s.swipe(D); s.counter(1, 7, D); S.append(s.finish())
+    # 1 cover - thesis stated with confidence, typography only, no personal score
+    s = Slide(D["bg"]); s.eyebrow("HIRING TRENDS", D)
+    s.lines(66, 440, ["Reading beats", "writing now."],
+            "black", 108, D["ink"], 128, track=-4)
+    s.rect(72, 700, 936, 3, fill=D["line"])
+    s.lines(72, 800, ["The technical interview is quietly", "changing. Here's why it should."],
+            "bold", 44, D["acc"], 56)
+    s.swipe(D); s.counter(1, 6, D); S.append(s.finish())
 
-    # 2 why - hedge visible on the slide itself
-    s = Slide(L["bg"]); s.eyebrow("WHY THIS TEST", L)
-    s.lines(72, 290, ["Interviews are reportedly", "grading code reading -",
-                      "not code writing."], "black", 56, L["ink"], 70, track=-1)
-    s.rule(560, L)
-    s.lines(72, 650, ["Reading and debugging an existing", "codebase, with an AI assistant",
+    # 2 the shift - hedge visible on the slide itself
+    s = Slide(L["bg"]); s.eyebrow("THE SHIFT", L)
+    s.lines(72, 290, ["A few large companies are", "reportedly grading code",
+                      "reading, not code writing."], "black", 54, L["ink"], 66, track=-1)
+    s.rule(540, L)
+    s.lines(72, 630, ["Reading and debugging an existing", "codebase, with an AI assistant",
                       "available - instead of writing", "from a blank file."],
             "reg", 36, L["dim"], 48)
     s.rect(72, 900, 936, 122, fill=L["card"], outline=L["line"], width=2, r=12)
     s.lines(102, 958, ["Per a few interview-prep sources I've read.",
                        "Not a round I've sat myself."], "ital", 29, L["dim"], 40)
-    s.swipe(L); s.counter(2, 7, L); S.append(s.finish())
+    s.swipe(L); s.counter(2, 6, L); S.append(s.finish())
 
-    # 3 the test
-    s = Slide(L["bg"]); s.eyebrow("THE TEST", L)
-    s.text(72, 300, "25 questions.", "black", 66, L["ink"], track=-2)
-    s.lines(72, 440, ["Read the code.", "Reason about it.", "Predict the output."],
-            "bold", 52, L["acc"], 66)
-    s.rule(700, L)
-    s.lines(72, 790, ["No writing from scratch.", "No LLM open."], "bold", 40, L["ink"], 54)
-    s.lines(72, 950, ["Python semantics, collections,", "concurrency, SQL."],
-            "reg", 34, L["dim"], 44)
-    s.swipe(L); s.counter(3, 7, L); S.append(s.finish())
+    # 3 why it holds up - two skills contrasted, no personal score anywhere
+    s = Slide(L["bg"]); s.eyebrow("WHY IT HOLDS UP", L)
+    s.text(72, 260, "Two different skills.", "black", 54, L["ink"], track=-1)
+    s.rect(72, 340, 936, 300, fill=L["card"], outline=L["line"], width=2, r=14)
+    s.text(104, 415, "WRITING FROM SCRATCH", "mono", 25, L["dim"], track=1)
+    s.text(104, 470, "Rewards recall.", "bold", 38, L["ink"])
+    s.text(104, 520, "Syntax, algorithms, a solution", "reg", 30, L["dim"])
+    s.text(104, 558, "shape held in your head.", "reg", 30, L["dim"])
+    s.rect(72, 660, 936, 300, fill=L["fillacc"], outline=L["acc"], width=2, r=14)
+    s.text(104, 735, "READING + VERIFYING", "mono", 25, L["acc"], track=1)
+    s.text(104, 790, "Rewards judgment.", "bold", 38, L["ink"])
+    s.text(104, 840, "Holding someone else's logic fast", "reg", 30, L["ink"])
+    s.text(104, 878, "enough to catch what's wrong.", "reg", 30, L["ink"])
+    s.swipe(L); s.counter(3, 6, L); S.append(s.finish())
 
-    # 4 the score - dot grid, no axis question at all
-    s = Slide(L["bg"]); s.eyebrow("THE SCORE", L)
-    s.text(72, 260, "22 right. 3 wrong.", "black", 54, L["ink"], track=-1)
-    for i in range(25):
-        cx, cy = 170 + (i % 5) * 185, 430 + (i // 5) * 152
-        if i < 22:
-            s.circle(cx, cy, 52, fill=L["ok"])
-        else:
-            s.circle(cx, cy, 52, outline=L["bad"], width=7, dash=(13, 11))
-    s.rule(1140, L)
-    s.circle(110, 1218, 22, fill=L["ok"])
-    s.text(150, 1230, "correct", "bold", 31, L["ink"])
-    s.circle(400, 1218, 22, outline=L["bad"], width=5, dash=(9, 7))
-    s.text(440, 1230, "missed", "bold", 31, L["ink"])
-    s.counter(4, 7, L); S.append(s.finish())
+    # 4 the real reason - AI closes the writing gap, not the judgment gap
+    s = Slide(D["bg"]); s.eyebrow("THE REAL REASON", D)
+    s.lines(72, 300, ["An assistant can write", "a working function in", "seconds now."],
+            "bold", 56, D["ink"], 70)
+    s.rect(72, 610, 936, 3, fill=D["line"])
+    s.lines(72, 720, ["It still can't tell you", "whether what it wrote", "is actually correct."],
+            "black", 56, D["acc"], 70, track=-1)
+    s.swipe(D); s.counter(4, 6, D); S.append(s.finish())
 
-    # 5 the 3 misses - short fragments, big mono
-    s = Slide(L["bg"]); s.eyebrow("THE 3 MISSES", L)
-    s.text(72, 235, "All three were Python.", "black", 48, L["ink"], track=-1)
-    frag = [("[x for x in xs if f(x)]", "I misjudged what actually got filtered."),
-            ('{[1, 2]: "value"}',       "Why a mutable type can't be a dict key."),
-            ("sorted(xs, key=f)",       "Whether ties keep their original order.")]
-    for i, (code, note) in enumerate(frag):
-        y = 310 + i * 248
-        s.rect(72, y, 936, 215, fill=L["card"], outline=L["line"], width=2, r=14)
-        s.text(104, y + 76, code, "mono", 41, L["ink"])
-        s.text(104, y + 155, note, "reg", 32, L["dim"])
-    s.text(72, 1105, "I knew all three concepts.", "bold", 36, L["acc"])
-    s.swipe(L); s.counter(5, 7, L); S.append(s.finish())
+    # 5 what changes in prep - contrast, not confession
+    s = Slide(L["bg"]); s.eyebrow("WHAT CHANGES IN PREP", L)
+    s.text(72, 245, "Closer to the actual job.", "black", 48, L["ink"], track=-1)
+    s.text(72, 340, "PR review. A diff. A service", "reg", 32, L["dim"])
+    s.text(72, 378, "someone else wrote 6 months ago.", "reg", 32, L["dim"])
+    s.rule(450, L)
+    old = [("Fewer", "blank-file algorithm drills.")]
+    new = [("More", "“find the bug in this file.”")]
+    s.text(72, 560, "FEWER", "monob", 30, L["dim"])
+    s.text(280, 560, "blank-file algorithm drills.", "reg", 34, L["ink"])
+    s.text(72, 630, "MORE", "monob", 30, L["acc"])
+    s.text(250, 630, "“find the bug in this file.”", "bold", 34, L["ink"])
+    s.rect(72, 760, 936, 260, fill=L["card"], outline=L["line"], width=2, r=14)
+    s.lines(104, 835, ["Writing-from-scratch was always", "a slightly artificial proxy for",
+                       "what backend engineers actually do."], "reg", 32, L["dim"], 46)
+    s.swipe(L); s.counter(5, 6, L); S.append(s.finish())
 
-    # 6 the reframe - the one dark pivot in this deck
-    s = Slide(D["bg"]); s.eyebrow("THE REFRAME", D)
-    s.text(72, 290, "Concept gap", "black", 78, D["ink"], track=-3)
-    s.text(72, 400, "vs.", "bold", 48, D["dim"])
-    s.text(72, 510, "fluency gap.", "black", 78, D["acc"], track=-3)
-    s.rect(72, 620, 936, 3, fill=D["line"])
-    s.lines(72, 730, ["I knew every one of those", "three concepts cold."],
-            "bold", 44, D["ink"], 58)
-    s.lines(72, 910, ["I was just slower and less", "certain reading the actual",
-                      "code under pressure."], "reg", 44, D["dim"], 58)
-    s.swipe(D); s.counter(6, 7, D); S.append(s.finish())
-
-    # 7 close - honest, with a one-line-answerable question
-    s = Slide(L["bg"]); s.eyebrow("THE HONEST PART", L)
-    s.lines(72, 270, ["“I understand hashability”", "and “I read that line right",
-                      "in 4 seconds under pressure”", "are two different skills."],
-            "black", 52, L["ink"], 66, track=-1)
-    s.rule(620, L)
-    s.lines(72, 720, ["Right now I only have real", "evidence for the first one."],
+    # 6 close - the question, no personal score anywhere
+    s = Slide(L["bg"]); s.eyebrow("YOUR TURN", L)
+    s.lines(72, 300, ["I'd take this interview", "over the whiteboard",
+                      "version any day."], "black", 54, L["ink"], 68, track=-1)
+    s.lines(72, 540, ["Not because it's easier.", "Because it's closer to", "the real job."],
             "bold", 40, L["acc"], 52)
-    s.rect(72, 880, 936, 200, fill=L["card"], outline=L["acc"], width=3, r=14)
-    s.lines(104, 948, ["Have you tried a comprehension", "test on your own code?",
-                       "What did it catch?"], "bold", 35, L["ink"], 46)
-    s.counter(7, 7, L); S.append(s.finish())
+    s.rect(72, 780, 936, 240, fill=L["card"], outline=L["acc"], width=3, r=14)
+    s.lines(104, 850, ["Have you sat a comprehension-", "style round? What did it feel",
+                       "like against the classic algorithm", "interview?"],
+            "bold", 33, L["ink"], 44)
+    s.counter(6, 6, L); S.append(s.finish())
     return S
 
 
@@ -480,6 +466,26 @@ def singles():
     return out
 
 
+# ============================== BANNER ====================================
+# LinkedIn cover photo, 1584x396 (4:1). The profile photo overlaps roughly the
+# bottom-left ~430px as a circle, so keep that corner clear and put the
+# tagline where it reads clean regardless of theme - top area, right-weighted,
+# matching the "dark ground, one confident line, small flourish" shape that
+# reads as designed rather than default.
+BW, BH = 1584, 396
+
+
+def banner(tagline, sub=None):
+    D = DARK
+    s = Slide(D["bg"], BW, BH)
+    s.text(BW - 60, 90, tagline, "black", 52, D["ink"], anchor="rs")
+    tw = s.d.textlength(tagline, font=font("black", 52)) / SS
+    s.line(BW - 60 - tw, 135, BW - 60, 135, D["acc"], 4)
+    if sub:
+        s.text(BW - 60, 180, sub, "reg", 24, D["dim"], anchor="rs")
+    return s.finish()
+
+
 # ============================== GIF ======================================
 def gif_frames():
     D = DARK
@@ -586,7 +592,7 @@ def build_all(theme, out):
     os.makedirs(out, exist_ok=True)
     print("Building assets (theme: %s) -> %s" % (theme, os.path.abspath(out)))
 
-    save_deck("deck-diagnostic", deck_a(), out)
+    save_deck("deck-interview-shift", deck_a(), out)
     save_deck("deck-cache-aside", deck_b(), out)
 
     d = os.path.join(out, "singles")
