@@ -5,11 +5,19 @@ No employer named anywhere. No Pramaan specifics anywhere.
 
 **Schedule — one post every 2 days:**
 
+Superseded 2026-09-03: the p95/cache-aside carousel from the earlier session
+(`linkedin/post-p95-redis.html`) went live on **2026-09-02**, covering the same
+ground as Deck B below. Posting Deck B now would repeat that topic back-to-back,
+so it's held out of the active queue (content preserved for a future post instead).
+A "MCP in One Piece" post is also already live, low engagement (4 impressions) —
+noted so the MCP-stateless post below reads as the substantive follow-up, not a repeat.
+
 | When | Post | Variety | Upload |
 |---|---|---|---|
-| Today | 1 — Code-comprehension self-test | Document carousel, 7 slides | `assets/deck-diagnostic.pdf` |
-| +2 days | 2 — Cache-aside / p95 | Document carousel, 7 slides | `assets/deck-cache-aside.pdf` |
-| +4 days | 3 — MCP goes stateless | Animated GIF **or** single image | `assets/mcp-stateless.gif` |
+| 2026-09-02 (done) | p95 / cache-aside | Document carousel | `linkedin/post-p95-redis.html` output |
+| **2026-09-04 (next)** | Code-comprehension self-test | Document carousel, 7 slides | `assets/deck-diagnostic.pdf` |
+| 2026-09-06 | MCP goes stateless | Animated GIF **or** single image | `assets/mcp-stateless.gif` |
+| held / retired | Cache-aside deck (topic collision with 09-02 post) | — | `assets/deck-cache-aside.pdf` |
 
 **Theme rotation — no palette runs more than 3-4 posts.** Posts 1-3 use `signal`
 (slate + orange). Post 4 onward switches to `blueprint` (navy + teal), then `press`
