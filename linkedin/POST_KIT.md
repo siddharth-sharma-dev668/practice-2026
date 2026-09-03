@@ -16,8 +16,14 @@ noted so the MCP-stateless post below reads as the substantive follow-up, not a 
 |---|---|---|---|
 | 2026-09-02 (done) | p95 / cache-aside | Document carousel | `linkedin/post-p95-redis.html` output |
 | **2026-09-04 (next)** | Reading beats writing (interview shift) | Document carousel, 6 slides | `assets/deck-interview-shift.pdf` |
-| 2026-09-06 | MCP goes stateless | Animated GIF **or** single image | `assets/mcp-stateless.gif` |
+| **2026-09-06** | MCP's default token cost | Document carousel, 6 slides | `assets/deck-mcp-token-cost.pdf` |
 | held / retired | Cache-aside deck (topic collision with 09-02 post) | — | `assets/deck-cache-aside.pdf` |
+| held / spare | MCP goes stateless (weaker sourcing than the token-cost post) | GIF or single image | `assets/mcp-stateless.gif` |
+
+**Added 2026-09-05:** research turned up a stronger MCP story than the stateless-spec post —
+two independent sources (Anthropic's own engineering blog, and a third-party benchmark firm)
+landed on the same finding: MCP's default tool-loading pattern burns 10-30x more tokens than
+it needs to. That's now the 09-06 post; the stateless-spec GIF is held as a spare, not deleted.
 
 **Rewritten 2026-09-03:** the original version of the 09-04 post scored and displayed personal
 quiz results ("22/25," three Python questions missed, shown as code fragments). Sid's call:
@@ -101,6 +107,49 @@ companies" and keeps the hedge on-slide as well as in the caption.
 - Flink migration post: the personal material is "we learned this the hard way in production," team authority earned through an incident — never "I got a question wrong."
 - WASM benchmark post: "I read the actual benchmark paper before writing this post" — she's the one interrogating the source, not the one being tested.
 None of her posts show her own knowledge gaps. That pattern is what this deck now follows.
+
+---
+
+## Post 1.5 — MCP's default token cost (post 2026-09-06)
+
+**Asset:** `assets/deck-mcp-token-cost.pdf` · document title suggestion: `MCP is burning your tokens`
+
+**Why this is the strongest post in the kit:** two independent sources — Anthropic's own
+engineering blog, and a third-party benchmark firm with no reason to agree with them —
+landed on the same finding within weeks of each other. That's about as solid as evidence
+gets. It's pure agent-tooling engineering, needs no years of specialized authority, and it's
+a contrarian-with-receipts take against the "MCP for everything" hype, which is exactly the
+shape that travels.
+
+```
+MCP's default setup can cost 10-30x more tokens than it needs to — and two independent sources landed on the same number this year.
+
+Anthropic's own engineering team found it first: loading every tool schema upfront, then routing every intermediate result back through the model, is the expensive way to use MCP. One real example dropped from 150,000 tokens to 2,000 — a 98.7% cut — by having the agent write code against MCP servers exposed as a filesystem instead, loading only what it actually needed.
+
+A third party benchmarked it independently. Same 5 real GitHub tasks, same agent, same model, comparing MCP against a bare CLI tool.
+
+MCP: 32,000-82,000 tokens per task.
+CLI: 1,300-9,400 tokens per task.
+
+Projected out to 10,000 operations a month, that's roughly $3.20 versus $55.20.
+
+Reliability took a hit too — MCP hit 72% success against TCP timeouts, versus 100% for the CLI version, on the exact same tasks.
+
+The protocol itself isn't the problem. Loading everything eagerly, by default, on every call, is.
+
+I've spent time this year evaluating MCP-based tooling at work. If you're running it in production — are you loading full tool schemas on every call, or lazy-loading? What did the eager version actually cost you?
+
+#MCP #ModelContextProtocol #AIAgents #BackendEngineering #AgentTooling #SoftwareEngineering #LLM
+```
+
+**Sources, so you can defend this if challenged:** Anthropic's own engineering blog on code
+execution with MCP (the 150k→2k example); an independent benchmark from Scalekit (Aug 2026)
+testing 5 real GitHub tasks, MCP vs. bare CLI, token counts and the 72%/100% reliability
+split. Both are primary sources, not vendor hype about a product they're selling.
+
+**A bug I caught before sending this to you:** the reliability slide's dot grid initially had
+success and failure colors reversed — the 7 successful calls were drawn red, the 3 failures
+green, which visually said the opposite of the caption. Fixed before this ever reached you.
 
 ---
 

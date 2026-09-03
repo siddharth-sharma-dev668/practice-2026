@@ -413,6 +413,89 @@ def deck_b():
     return S
 
 
+# =================== DECK C - MCP's default token cost ====================
+def deck_c():
+    S, D, L = [], DARK, LIGHT
+
+    # 1 cover - thesis, typography only
+    s = Slide(D["bg"]); s.eyebrow("AGENT TOOLING", D)
+    s.lines(66, 400, ["MCP's default costs", "10-30x more than", "it needs to."],
+            "black", 92, D["ink"], 108, track=-3)
+    s.rect(72, 830, 936, 3, fill=D["line"])
+    s.lines(72, 920, ["Two independent sources landed on", "the same number this year."],
+            "reg", 38, D["dim"], 48)
+    s.swipe(D); s.counter(1, 6, D); S.append(s.finish())
+
+    # 2 Anthropic's own finding
+    s = Slide(L["bg"]); s.eyebrow("THE FIRST SOURCE", L)
+    s.lines(72, 260, ["Anthropic's own engineering", "team found this."],
+            "black", 50, L["ink"], 62, track=-1)
+    s.rule(460, L)
+    s.text(72, 560, "150,000 → 2,000 tokens.", "black", 62, L["acc"], track=-2)
+    s.text(72, 630, "98.7% cut, one real example.", "bold", 34, L["ink"])
+    s.lines(72, 760, ["The fix: have the agent write code", "against MCP servers exposed as a",
+                      "filesystem, instead of loading every", "tool schema and result through itself."],
+            "reg", 34, L["dim"], 46)
+    s.swipe(L); s.counter(2, 6, L); S.append(s.finish())
+
+    # 3 independent benchmark corroborates - tokens, 2 bars no axis
+    s = Slide(L["bg"]); s.eyebrow("THE SECOND SOURCE", L)
+    s.lines(72, 245, ["A third party benchmarked it", "independently. Same result."],
+            "black", 44, L["ink"], 54, track=-1)
+    s.text(72, 400, "CLI, PER TASK", "mono", 27, L["dim"], track=2)
+    s.rect(72, 425, 320, 100, fill=L["barbase"], r=12)
+    s.text(96, 490, "1.3k-9.4k", "bold", 38, "#FFFFFF")
+    s.text(72, 600, "MCP, PER TASK", "mono", 27, L["dim"], track=2)
+    s.rect(72, 625, 936, 100, fill=L["barlift"], r=12)
+    s.text(96, 690, "32k-82k tokens", "bold", 38, "#FFFFFF")
+    s.rule(790, L)
+    s.text(72, 870, "~$3.20/mo → ~$55.20/mo", "black", 42, L["ink"], track=-1)
+    s.text(72, 925, "projected cost, 10k ops/month.", "reg", 30, L["dim"])
+    s.swipe(L); s.counter(3, 6, L); S.append(s.finish())
+
+    # 4 same benchmark - reliability, dot grid on real data
+    s = Slide(L["bg"]); s.eyebrow("THE SAME BENCHMARK", L)
+    s.text(72, 255, "Reliability took a hit too.", "black", 48, L["ink"], track=-1)
+    for i in range(10):
+        cx = 132 + i * 91
+        if i < 7:
+            s.circle(cx, 420, 38, fill=L["ok"])
+        else:
+            s.circle(cx, 420, 38, outline=L["bad"], width=6, dash=(10, 8))
+    s.text(72, 520, "MCP: 72% success - TCP timeouts.", "bold", 32, L["bad"])
+    for i in range(10):
+        cx = 132 + i * 91
+        s.circle(cx, 660, 38, fill=L["ok"])
+    s.text(72, 760, "CLI: 100% success.", "bold", 32, L["ok"])
+    s.rule(870, L)
+    s.lines(72, 950, ["Same 5 real GitHub tasks,", "same agent, same model."],
+            "reg", 32, L["dim"], 42)
+    s.swipe(L); s.counter(4, 6, L); S.append(s.finish())
+
+    # 5 why - the mechanism, dark pivot
+    s = Slide(D["bg"]); s.eyebrow("WHY THIS HAPPENS", D)
+    s.lines(72, 300, ["Every call injects the full", "tool schema list - whether", "the task needs it or not."],
+            "bold", 48, D["ink"], 60)
+    s.rect(72, 590, 936, 3, fill=D["line"])
+    s.lines(72, 700, ["Every intermediate result", "routes back through the", "model instead of being",
+                      "handled directly."], "black", 48, D["acc"], 60, track=-1)
+    s.swipe(D); s.counter(5, 6, D); S.append(s.finish())
+
+    # 6 close - his take + question, no overclaimed authority
+    s = Slide(L["bg"]); s.eyebrow("MY TAKE", L)
+    s.lines(72, 280, ["I've spent time this year", "evaluating MCP-based tooling", "at work."],
+            "black", 48, L["ink"], 60, track=-1)
+    s.rule(500, L)
+    s.lines(72, 590, ["The protocol isn't the problem.", "Eager-loading everything by",
+                      "default is."], "bold", 40, L["acc"], 52)
+    s.rect(72, 780, 936, 240, fill=L["card"], outline=L["acc"], width=3, r=14)
+    s.lines(104, 850, ["If you're running MCP in prod -", "loading full schemas every call,",
+                       "or lazy-loading? What did the", "eager version cost you?"],
+            "bold", 33, L["ink"], 44)
+    s.counter(6, 6, L); S.append(s.finish())
+    return S
+
+
 # ============================== SINGLES ==================================
 def singles():
     out, D, L = {}, DARK, LIGHT
@@ -594,6 +677,7 @@ def build_all(theme, out):
 
     save_deck("deck-interview-shift", deck_a(), out)
     save_deck("deck-cache-aside", deck_b(), out)
+    save_deck("deck-mcp-token-cost", deck_c(), out)
 
     d = os.path.join(out, "singles")
     os.makedirs(d, exist_ok=True)
