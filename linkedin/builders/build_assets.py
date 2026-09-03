@@ -18,7 +18,7 @@ antialias shape primitives.
 
 import math
 import os
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageColor
 
 SS = 2                      # supersample factor
 W, H = 1080, 1350           # LinkedIn native document ratio (4:5)
@@ -98,7 +98,17 @@ def use_theme(name):
 class Slide:
     def __init__(self, bg, w=W, h=H):
         self.w, self.h = w, h
-        self.im = Image.new("RGB", (w * SS, h * SS), bg)
+        if isinstance(bg, (tuple, list)):
+            # vertical gradient between two colors, built row-by-row at 1x
+            # then scaled up - cheap, and a gradient doesn't need supersampling
+            c1, c2 = [ImageColor.getrgb(c) for c in bg]
+            small = Image.new("RGB", (1, h))
+            for y in range(h):
+                t = y / max(h - 1, 1)
+                small.putpixel((0, y), tuple(int(c1[i] + (c2[i] - c1[i]) * t) for i in range(3)))
+            self.im = small.resize((w * SS, h * SS), Image.BILINEAR)
+        else:
+            self.im = Image.new("RGB", (w * SS, h * SS), bg)
         self.d = ImageDraw.Draw(self.im)
 
     # -- primitives (all args in final 1080-space; SS applied internally) --
@@ -122,9 +132,9 @@ class Slide:
         else:
             self.d.text((x * SS, y * SS), s, font=f, fill=fill, anchor=anchor)
 
-    def lines(self, x, y, arr, kind, size, fill, lh, track=0):
+    def lines(self, x, y, arr, kind, size, fill, lh, track=0, anchor="ls"):
         for i, t in enumerate(arr):
-            self.text(x, y + i * lh, t, kind, size, fill, track=track)
+            self.text(x, y + i * lh, t, kind, size, fill, anchor=anchor, track=track)
 
     def rect(self, x, y, w, h, fill=None, outline=None, width=2, r=0, dash=None):
         box = [x * SS, y * SS, (x + w) * SS, (y + h) * SS]
@@ -225,6 +235,80 @@ class Slide:
         if sub:
             self.text(x + w / 2, y + h / 2 + 38, sub, "mono", 21,
                       subcol or P["dim"], anchor="ms")
+
+    # -- glow / icon-badge system (infographic-style single images) --
+    def glow(self, cx, cy, w, h, color, blur=16, alpha=150, r=26):
+        """A soft blurred rounded-rect behind a badge. Paste order matters:
+        call this BEFORE drawing the crisp badge on top of it."""
+        pad = blur * 3
+        lw, lh = int((w + pad * 2) * SS), int((h + pad * 2) * SS)
+        layer = Image.new("RGBA", (lw, lh), (0, 0, 0, 0))
+        ld = ImageDraw.Draw(layer)
+        rgb = ImageColor.getrgb(color)
+        ld.rounded_rectangle([pad * SS, pad * SS, lw - pad * SS, lh - pad * SS],
+                             radius=int(r * SS), fill=rgb + (alpha,))
+        layer = layer.filter(ImageFilter.GaussianBlur(blur * SS / 2))
+        px = int((cx - w / 2 - pad) * SS)
+        py = int((cy - h / 2 - pad) * SS)
+        self.im.paste(layer, (px, py), layer)
+
+    def badge(self, cx, cy, size, icon_fn, label, col, P, glow_col=None):
+        """Glowing rounded-square icon badge with a caption below - the unit
+        Hritika's infographics repeat for producers/capabilities/consumers."""
+        self.glow(cx, cy - 6, size * 0.85, size * 0.85, glow_col or col, blur=14, alpha=110)
+        self.rect(cx - size / 2, cy - size / 2 - 6, size, size, fill=P["card"],
+                  outline=col, width=2, r=16)
+        icon_fn(cx, cy - 6, size * 0.42, col)
+        if label:
+            self.lines(cx, cy + size / 2 + 30, label if isinstance(label, list) else [label],
+                       "bold", 22, P["ink"], 27, anchor="ms")
+
+    def quote_box(self, x, y, w, h, lines_, P, accent=None):
+        accent = accent or P["acc"]
+        self.rect(x, y, w, h, fill=P["card"], outline=P["line"], width=2, r=16)
+        self.text(x + 30, y + 56, "“", "black", 60, accent)
+        self.lines(x + 70, y + 58, lines_, "bold", 27, P["ink"], 37)
+
+    # -- icon glyphs, drawn (no font glyph coverage dependency) --
+    def icon_bolt(self, cx, cy, s, col):
+        pts = [(cx + s*.12, cy - s*.85), (cx - s*.55, cy + s*.1), (cx - s*.05, cy + s*.1),
+               (cx - s*.22, cy + s*.85), (cx + s*.55, cy - s*.15), (cx + s*.05, cy - s*.15)]
+        self.d.polygon([(px * SS, py * SS) for px, py in pts], fill=col)
+
+    def icon_clock(self, cx, cy, s, col):
+        self.circle(cx, cy, s, outline=col, width=int(s * .16))
+        self.line(cx, cy, cx, cy - s * .55, col, int(s * .14))
+        self.line(cx, cy, cx + s * .4, cy + s * .12, col, int(s * .14))
+
+    def icon_chart(self, cx, cy, s, col):
+        bw = s * .42
+        for i, hh in enumerate([.6, 1.0, .78]):
+            bx = cx - s * .8 + i * bw * 1.15
+            self.rect(bx, cy + s * .8 - s * 1.6 * hh, bw * .8, s * 1.6 * hh, fill=col, r=4)
+
+    def icon_lock(self, cx, cy, s, col):
+        self.d.arc([(cx - s*.4) * SS, (cy - s*.9) * SS, (cx + s*.4) * SS, (cy + s*.1) * SS],
+                   180, 360, fill=col, width=int(s * .16 * SS))
+        self.rect(cx - s * .5, cy - s * .05, s, s * .85, fill=col, r=8)
+
+    def icon_db(self, cx, cy, s, col):
+        for dy in (-s * .5, 0, s * .5):
+            self.d.ellipse([(cx - s*.55)*SS, (cy+dy-s*.18)*SS, (cx+s*.55)*SS, (cy+dy+s*.18)*SS],
+                           outline=col, width=int(s * .1 * SS))
+        self.line(cx - s * .55, cy - s * .5, cx - s * .55, cy + s * .5, col, int(s * .1))
+        self.line(cx + s * .55, cy - s * .5, cx + s * .55, cy + s * .5, col, int(s * .1))
+
+    def icon_code(self, cx, cy, s, col):
+        self.d.polygon([((cx-s*.15)*SS,(cy-s*.7)*SS),((cx-s*.75)*SS,cy*SS),((cx-s*.15)*SS,(cy+s*.7)*SS)],
+                       outline=col, width=int(s*.14*SS))
+        self.d.line([((cx+s*.15)*SS,(cy-s*.7)*SS),((cx+s*.75)*SS,cy*SS),((cx+s*.15)*SS,(cy+s*.7)*SS)],
+                    fill=col, width=int(s*.14*SS), joint="curve")
+
+    def icon_warn(self, cx, cy, s, col):
+        self.d.polygon([(cx*SS,(cy-s*.85)*SS), ((cx-s*.85)*SS,(cy+s*.65)*SS), ((cx+s*.85)*SS,(cy+s*.65)*SS)],
+                       outline=col, width=int(s*.14*SS))
+        self.line(cx, cy - s * .25, cx, cy + s * .18, col, int(s * .14))
+        self.circle(cx, cy + s * .48, s * .06, fill=col)
 
     def finish(self):
         return self.im.resize((self.w, self.h), Image.LANCZOS)
@@ -496,6 +580,78 @@ def deck_c():
     return S
 
 
+# ================= INFOGRAPHIC - MCP token cost, single image =============
+# Matches the reference bar we're building to: one dense poster (gradient
+# ground, glowing icon badges, side stat columns, a pull-quote) instead of
+# a swipeable multi-slide deck.
+IW, IH = 1080, 1850
+
+
+def infographic_mcp():
+    D = DARK
+    s = Slide(("#0A0E14", "#161F2A"), IW, IH)
+
+    s.text(60, 100, "AGENT TOOLING - COST", "mono", 26, D["acc"], track=3)
+    s.lines(60, 200, ["MCP's default costs", "10-30x more than it needs to."],
+            "black", 62, D["ink"], 74, track=-2)
+    s.text(60, 350, "Two independent sources found the exact same thing.", "reg", 30, D["dim"])
+
+    # -- row: why it happens, 3 icon badges --
+    s.text(60, 430, "WHY IT HAPPENS", "mono", 24, D["dim"], track=2)
+    causes = [(s.icon_code, ["Full schema,", "every call"]),
+              (s.icon_bolt, ["Every result", "round-trips back"]),
+              (s.icon_clock, ["Nothing is", "lazy-loaded"])]
+    for i, (fn, lbl) in enumerate(causes):
+        cx = 190 + i * 350
+        s.badge(cx, 540, 130, fn, lbl, D["acc"], D)
+
+    # -- two-column comparison: eager (default) vs lazy (fix) --
+    colY = 730
+    colH = 430
+    # left: eager / default - red-tinted
+    s.rect(60, colY, 450, colH, fill="#241318", outline=D["bad"], width=2, r=20)
+    s.text(60 + 30, colY + 60, "EAGER - DEFAULT", "monob", 25, D["bad"], track=1)
+    s.text(60 + 30, colY + 140, "150,000 tokens", "bold", 36, D["ink"])
+    s.text(60 + 30, colY + 195, "one real example", "reg", 24, D["dim"])
+    s.rule(colY + 230, D, x=60 + 30, w=390, h=1)
+    s.text(60 + 30, colY + 280, "32k-82k / task", "bold", 32, D["ink"])
+    s.text(60 + 30, colY + 330, "72% success - TCP timeouts", "reg", 24, D["bad"])
+    s.text(60 + 30, colY + 390, "~$55.20/mo, 10k ops", "bold", 28, D["ink"])
+
+    # right: lazy / fix - green-tinted
+    rx = 570
+    s.rect(rx, colY, 450, colH, fill="#0F241C", outline=D["ok"], width=2, r=20)
+    s.text(rx + 30, colY + 60, "LAZY - THE FIX", "monob", 25, D["ok"], track=1)
+    s.text(rx + 30, colY + 140, "2,000 tokens", "bold", 36, D["ink"])
+    s.text(rx + 30, colY + 195, "98.7% cut, same task", "reg", 24, D["dim"])
+    s.rule(colY + 230, D, x=rx + 30, w=390, h=1)
+    s.text(rx + 30, colY + 280, "1.3k-9.4k / task", "bold", 32, D["ink"])
+    s.text(rx + 30, colY + 330, "100% success", "reg", 24, D["ok"])
+    s.text(rx + 30, colY + 390, "~$3.20/mo, 10k ops", "bold", 28, D["ink"])
+
+    # arrow between columns
+    s.arrow(510, colY + colH / 2 - 10, 565, colY + colH / 2 - 10, D["dim"], 5, 16)
+
+    # -- quote, full width so long lines never clip the canvas edge --
+    qy = colY + colH + 60
+    s.quote_box(60, qy, 960, 190,
+                ["The protocol isn't the problem.", "Loading everything eagerly,",
+                 "by default, is."], D)
+
+    # -- sources row --
+    sy = qy + 190 + 70
+    s.text(60, sy, "SOURCES", "mono", 24, D["dim"], track=2)
+    srcs = [(s.icon_db, ["Anthropic's own", "engineering blog"]),
+            (s.icon_chart, ["Scalekit benchmark,", "5 real GitHub tasks"])]
+    for i, (fn, lbl) in enumerate(srcs):
+        cx = 190 + i * 350
+        s.badge(cx, sy + 130, 120, fn, lbl, D["ink"], D, glow_col=D["acc"])
+
+    s.text(60, sy + 280, "Evaluated MCP-based tooling at work this year.",
+           "ital", 24, D["dim"])
+    return s.finish()
+
+
 # ============================== SINGLES ==================================
 def singles():
     out, D, L = {}, DARK, LIGHT
@@ -546,6 +702,7 @@ def singles():
     s.lines(72, 1085, ["what happens when a hot key expires",
                        "and 500 requests land in one second?"], "reg", 34, L["dim"], 44)
     out["cache-aside-code"] = s.finish()
+    out["mcp-token-cost-infographic"] = infographic_mcp()
     return out
 
 
