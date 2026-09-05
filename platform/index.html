@@ -176,6 +176,12 @@
   .codeblock { background: var(--surface2); border: 1px solid var(--line); border-radius: 8px;
     padding: 12px 14px; font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 12.5px;
     line-height: 1.6; overflow-x: auto; white-space: pre; margin: 0 0 4px; }
+  .reveal { margin: 4px 0 14px; }
+  .reveal summary { cursor: pointer; font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 11px;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 4px 0; }
+  .reveal summary:hover { color: var(--accent); }
+  .reveal[open] summary { color: var(--accent); }
+  .reveal .codeblock { margin-top: 8px; }
 
   .runner-head { display: flex; align-items: center; gap: 14px; margin: 20px 0 6px; flex-wrap: wrap; }
   .back { color: var(--muted); font-weight: 600; font-size: 13.5px; padding: 6px 10px 6px 0; }
@@ -414,10 +420,93 @@ deque.addFirst(x);  // O(1)  — ArrayDeque; new ArrayList().add(0, x) is O(n)` 
       terminal: [
         { label: "Terminal — PowerShell (Python)", cwd: "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core",
           cmd: `cd "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core"; python gotchas.py`,
-          note: "Blocks 1, 5 and 8 of gotchas.py are this exact lesson, measured live instead of taken on faith." },
+          note: "Blocks 1, 5 and 8 of gotchas.py are this exact lesson, measured live instead of taken on faith.",
+          timingNote: "Captured from one real run. Every line except the two timing lines (blocks 5 and 8) will match yours exactly — timings vary run to run and machine to machine. What matters there is the shape (set/deque dramatically faster), not the exact milliseconds.",
+          output: `=== 1. Comprehension with a filter (your diagnostic Q2) ===
+[1, 9, 25]
+why: x % 2 is truthy only for odd x -> 1,3,5 survive -> squares 1,9,25
+
+=== 2. Hashability - what can be a dict key? (your diagnostic Q3) ===
+TypeError: unhashable type: 'list'
+{(1, 2): 'value'}
+why: dict keys must be hashable. Lists are mutable -> unhashable.
+     Tuples are hashable IF every element inside them is too.
+
+=== 3. sorted(key=len) + stability (your diagnostic Q6) ===
+['fig', 'pear', 'plum', 'kiwi', 'date']
+why: sorted() always returns a NEW list. Timsort is stable, so
+     'plum' and 'kiwi' (both len 4) keep their original relative order.
+
+=== 4. Multi-key sort - extend #3 ===
+[('ana', 27), ('sid', 27), ('bo', 19)]
+why: tuple keys sort left-to-right - here: age descending, then name ascending.
+
+=== 5. Big-O of \`in\`: list scan vs set hash - measured, not memorized ===
+list: 0.09953s   set: 0.00003s   ratio: 3110x
+why: list.__contains__ is O(n) - it scans. set.__contains__ hashes straight
+     to the bucket, O(1) average. You just measured it instead of reading it.
+
+=== 6. Counter - tally + top-k in one line ===
+[('i', 4), ('s', 4)]
+why: most_common(k) returns [(elem, count), ...] sorted by count, highest first.
+
+=== 7. defaultdict - skip the 'if key not in dict' boilerplate ===
+{'a': ['ant', 'ape'], 'b': ['bee', 'bat']}
+why: defaultdict(list) auto-creates [] on first touch of a new key - no KeyError guard needed.
+
+=== 8. deque - O(1) at both ends vs list's O(n) at the front ===
+deque([0, 1, 2, 3])
+list.pop(0): 0.09501s   deque.popleft(): 0.00010s
+why: list.pop(0) shifts every remaining element left -> O(n). deque is a
+     doubly-linked structure under the hood -> O(1) at either end.
+
+=== Self-check ===
+Score yourself 0-8: how many did you predict correctly BEFORE running?
+6+ correct -> you knew this, the diagnostic misses were rust, not gaps.
+<6 -> that's fine, it's exactly why this drill exists. Re-run any block you missed.` },
         { label: "Terminal — PowerShell (Java)", cwd: "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core",
           cmd: `cd "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core"; java Gotchas.java`,
-          note: "JDK 11+ runs a single .java file directly — no separate javac step. Blocks 1, 2, 4 and 6 of Gotchas.java target your Collections 3/4 diagnostic gap specifically." }
+          note: "JDK 11+ runs a single .java file directly — no separate javac step. Blocks 1, 2, 4 and 6 of Gotchas.java target your Collections 3/4 diagnostic gap specifically.",
+          timingNote: "Captured from one real run. Every line except the timing lines (blocks 1, 2 and 6) will match yours exactly — timings vary run to run. What matters is the shape (a 100x+ gap), not the exact milliseconds.",
+          output: `=== 1. ArrayList.get(i) vs LinkedList.get(i) - measured, not memorized ===
+ArrayList: 0.14ms   LinkedList: 60.15ms   ratio: 424x
+why: ArrayList indexes a backing array directly, O(1) regardless of which
+     index. LinkedList.get() walks node-by-node from whichever end is closer -
+     get(0) or get(size-1) is nearly free, but a MIDDLE index (used here, so
+     this isn't accidentally flattered) is genuinely O(n). get(i) in a loop is
+     the wrong reason to reach for LinkedList either way.
+
+=== 2. HashSet.contains O(1) avg vs List.contains O(n) ===
+List.contains: 55.68ms   HashSet.contains: 0.35ms   ratio: 161x
+why: List.contains scans; HashSet hashes straight to the bucket. Same shape as
+     the Python list-vs-set check in gotchas.py block 5, different syntax.
+
+=== 3. ConcurrentModificationException - not actually about threads ===
+ConcurrentModificationException: java.util.ConcurrentModificationException
+why: removing from a List mid for-each invalidates the iterator's modCount
+     check. One thread triggers this despite the name - use iterator.remove()
+     or removeIf() instead.
+
+=== 4. hashCode contract - mutate a field it depends on, and the set forgets you ===
+contains before mutation: true
+contains after mutation:  false
+why: HashSet located the bucket using the OLD hashCode. After mutating x, p
+     now hashes to a different bucket than the one it's actually stored in -
+     it's stranded. Never mutate a field hashCode()/equals() depend on.
+
+=== 5. Comparator chaining - multi-key, stable sort ===
+[Person[name=ana, age=27], Person[name=sid, age=27], Person[name=bo, age=19]]
+why: chaining reads left-to-right, same idea as Python's tuple-key sort - age
+     descending, then name ascending. Java's sort is stable too (TimSort).
+
+=== 6. ArrayDeque O(1) at both ends vs ArrayList.remove(0) O(n) ===
+ArrayList.remove(0): 9.62ms   ArrayDeque.removeFirst(): 0.41ms
+why: ArrayList.remove(0) shifts every remaining element left, O(n). ArrayDeque
+     is a resizable array used as a ring buffer - O(1) at either end.
+
+=== Self-check ===
+Score yourself 0-6: your diagnostic scored Collections 3/4 - blocks 1, 2, 4
+and 6 above are exactly that gap, measured instead of recalled.` }
       ] },
 
     { id: "llm-basics", tag: "Thu · AI/ML", title: "LLM basics: tokens, context, temperature",
@@ -487,7 +576,38 @@ def softmax(logits, temperature):
     return [e / sum(exps) for e in exps]`,
       terminal: { cwd: "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core",
         cmd: `cd "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core"; python llm_basics.py`,
-        note: "No API key needed — the softmax and sampling are hand-rolled stdlib, same math a real model uses at the output layer." } },
+        note: "No API key needed — the softmax and sampling are hand-rolled stdlib, same math a real model uses at the output layer.",
+        output: `=== 1. Tokens are not words, and not characters ===
+chars: 52   words: 7   approx tokens (word+punct split): 12
+why: real BPE tokenizers split on sub-word pieces ("Claude's" -> "Claude" + "'s"),
+     so token count sits between word count and char count. Rule of thumb:
+     ~4 chars/token in English. This is why cost/latency scale with TOKENS,
+     not words - a German or Hindi sentence of the same word count can cost more.
+
+=== 2. Context window is a hard cutoff, not a soft suggestion ===
+kept (model still sees these): ['turn-7: some message text here', 'turn-8: some message text here', 'turn-9: some message text here', 'turn-10: some message text here']
+dropped (model has NO memory of these): ['turn-1: some message text here', 'turn-2: some message text here', 'turn-3: some message text here', 'turn-4: some message text here', 'turn-5: some message text here', 'turn-6: some message text here']
+why: once a conversation exceeds the window, the oldest turns fall off the
+     front - the model doesn't 'summarize' or 'remember the gist' unless your
+     application code does that. This is exactly the RAG-vs-fine-tune framing:
+     the window is knowledge you paid to include, not knowledge the model owns.
+
+=== 3. Temperature - same logits, different sampling behavior ===
+temp=0.1: probs=[0.982, 0.018, 0.0, 0.0, 0.0]
+           200 samples -> {'the': '97%', 'a': '3%', 'definitely': '0%', 'possibly': '0%', 'banana': '0%'}
+temp=1.5: probs=[0.491, 0.376, 0.066, 0.058, 0.009]
+           200 samples -> {'the': '47%', 'a': '36%', 'definitely': '8%', 'possibly': '8%', 'banana': '2%'}
+why: LOW temperature sharpens the distribution toward the top logit -> 'the' wins
+     almost every time (near-deterministic, but 'near' - not exactly 0% chance of
+     anything else, which is WHY temp=0 still isn't perfectly deterministic in
+     production - see interview-prep/AI_SYSTEM_DESIGN.md section 3).
+     HIGH temperature flattens it -> the model actually gambles on 'banana'
+     sometimes. Same model, same prompt, same logits - different product behavior.
+
+=== Self-check ===
+Could you have predicted the dropped turns in #2 without running it?
+Could you have predicted which temperature makes 'banana' possible in #3?
+If not, that's the actual gap the diagnostic can't see - not tokenizer trivia.` } },
 
     { id: "sql-exec-order", tag: "Sat · SQL", title: "SQL: why SELECT runs 5th",
       sub: "Reasoning from execution order instead of memorizing typed order",
@@ -542,7 +662,68 @@ GROUP BY dept
 HAVING AVG(salary) > 70000;  -- runs after grouping, per GROUP`,
       terminal: { cwd: "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core",
         cmd: `cd "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core"; python sql_playground.py`,
-        note: "sqlite3 is Python stdlib — real database, real rows, zero installs. Same reasoning moves to Postgres in Week 3-4." } }
+        note: "sqlite3 is Python stdlib — real database, real rows, zero installs. Same reasoning moves to Postgres in Week 3-4.",
+        output: `=== 1. INNER JOIN - only rows that match on both sides ===
+SELECT e.name, d.name AS dept
+    FROM employees e
+    INNER JOIN departments d ON e.department_id = d.id;
+['name', 'dept']
+('Ana', 'Engineering')
+('Bo', 'Engineering')
+('Chen', 'Sales')
+why: Deja has department_id = NULL, matches no department row, and simply vanishes from the result. INNER JOIN keeps only pairs that matched.
+
+=== 2. LEFT JOIN - every row from the left table, matched or not ===
+SELECT e.name, d.name AS dept
+    FROM employees e
+    LEFT JOIN departments d ON e.department_id = d.id;
+['name', 'dept']
+('Ana', 'Engineering')
+('Bo', 'Engineering')
+('Chen', 'Sales')
+('Deja', None)
+why: Deja is back, with dept = NULL. This is your diagnostic question, live: LEFT JOIN keeps every left-side row and fills unmatched right columns with NULL.
+
+=== 3. GROUP BY + aggregation - one row per group ===
+SELECT d.name AS dept, COUNT(*) AS headcount, AVG(e.salary) AS avg_salary
+    FROM employees e
+    JOIN departments d ON e.department_id = d.id
+    GROUP BY d.name;
+['dept', 'headcount', 'avg_salary']
+('Engineering', 2, 80000.0)
+('Sales', 1, 60000.0)
+why: Legal has zero employees and disappears entirely (it's an INNER JOIN feeding the GROUP BY) - Legal never gets a 0-headcount row. Aggregation only sees rows that survived the join above it.
+
+=== 4. HAVING vs WHERE - filter rows, or filter groups? ===
+SELECT d.name AS dept, AVG(e.salary) AS avg_salary
+    FROM employees e
+    JOIN departments d ON e.department_id = d.id
+    WHERE e.salary > 65000
+    GROUP BY d.name
+    HAVING AVG(e.salary) > 70000;
+['dept', 'avg_salary']
+('Engineering', 80000.0)
+why: WHERE runs first and removes Chen (60000) as an individual ROW, before any grouping happens. HAVING runs after grouping and would remove a whole DEPARTMENT if its post-filter average were too low.
+
+=== 5. The classic gotcha - can you filter on a SELECT alias in WHERE? ===
+SELECT name, salary * 1.1 AS raised FROM employees WHERE raised > 90000;
+[('Ana', 99000.00000000001), ('Deja', 93500.00000000001)]
+why: this WORKED - and if you predicted an error, you predicted correctly for
+     the SQL STANDARD, just not for SQLite specifically. The rule you learned
+     is real: WHERE executes BEFORE SELECT (FROM -> WHERE -> GROUP BY -> HAVING
+     -> SELECT -> ORDER BY is the true execution order, not the order you type
+     clauses in), so 'raised' shouldn't exist yet when WHERE runs. PostgreSQL,
+     MySQL and SQL Server all reject this exact query with a missing-column
+     error. SQLite is unusually permissive and resolves it anyway. The lesson
+     is bigger than the syntax: your LOCAL dev database (SQLite, zero setup)
+     can silently accept something your DEPLOYED database (Postgres, from Week 3)
+     will reject. Re-run this exact query once Pulse has real Postgres and see
+     for yourself - don't take this file's word for it either.
+
+=== Self-check ===
+Before running: did you expect Legal to vanish in query #3, or show headcount 0?
+Before running: did you expect query #5 to work, or to error?
+Getting either wrong is exactly why 'execution order' beats 'clause order.'` } }
   ]
 };
 
@@ -920,6 +1101,10 @@ function renderLesson(w, id) {
       <div class="code-lbl"><span class="tag-lbl" style="color:var(--muted)">${esc(t.label || "Terminal — PowerShell")}</span><button class="mini" data-copy="${esc(t.cmd)}">copy</button></div>
       <pre class="codeblock">${esc(t.cmd)}</pre>
       ${t.note ? `<p class="hint">${esc(t.note)}</p>` : ""}
+      ${t.output ? `<details class="reveal"><summary>Reveal expected output</summary>
+        ${t.timingNote ? `<p class="hint" style="margin-top:8px">${esc(t.timingNote)}</p>` : ""}
+        <pre class="codeblock">${esc(t.output)}</pre>
+      </details>` : ""}
     `).join("")}
   `;
   $("[data-backweek]", host).addEventListener("click", () => renderWeek(w));
