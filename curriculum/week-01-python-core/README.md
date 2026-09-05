@@ -10,12 +10,11 @@ You write Python daily at work — this week converts "working Python" into **in
 4. Manipulate strings without O(n²) traps (`join` vs `+=`, slicing, `str` methods)
 5. Explain: mutability, `is` vs `==`, shallow vs deep copy, why `[[0]*3]*2` is a bug
 
-## Study (max ~2.5h total — then build)
+## Monday drill (~45 min) — predict, run, compare
 
-- Python docs: [Data Structures tutorial](https://docs.python.org/3/tutorial/datastructures.html) (skim what you know, read comprehensions carefully)
-- Python docs: [Sorting HOW TO](https://docs.python.org/3/howto/sorting.html) (short, excellent)
-- [Time complexity of Python builtins](https://wiki.python.org/moin/TimeComplexity) — memorize list/dict/set rows
-- `collections` docs: `Counter`, `defaultdict`, `deque` — read the examples
+Run [gotchas.py](gotchas.py) — but read each numbered block and write down your predicted output *before* running it. Then run the whole file (`python gotchas.py`) and check your predictions against the real output and the one-line "why" printed after each. 8 blocks, covering exactly your diagnostic misses (comprehension+filter, hashability, sorted+stability) plus multi-key sort and big-O of `in`/`pop(0)` — measured with `timeit`, not memorized off a table.
+
+No doc reading required first. If a block surprises you even after seeing the "why," *then* the [Data Structures tutorial](https://docs.python.org/3/tutorial/datastructures.html) or [Sorting HOW TO](https://docs.python.org/3/howto/sorting.html) are there as backup — reference, not homework.
 
 ## Deliverable 1 — Exercises (the core work)
 

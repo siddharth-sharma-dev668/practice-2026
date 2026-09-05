@@ -92,6 +92,7 @@ Missing a day is fine — miss the *same* day two weeks running and tell me, tha
 
 **Rules:**
 - **70% building, 30% reading.** No tutorial hell. Everything lands in a capstone, a resume bullet, or an interview story — or we cut it.
+- **No "study the docs" steps.** A links-to-official-docs step *is* tutorial hell, just reading instead of watching — Sid called this out directly on W1 (2026-09-05). Every concept-learning step must be a runnable predict-then-verify drill (write your guess, run it, compare to the printed "why") — see `curriculum/week-01-python-core/gotchas.py` as the template. External docs are backup-if-still-confused, never the first move. This applies to every week's Mon/Thu/Sat concept slot going forward, not just Week 1.
 - **DSA is non-negotiable**, but honestly sized: **2 problems/week** (~50 by Feb), pattern coverage over volume.
 - **Test-out rule:** already know a week's material? Prove it (≥85%) and skip it. Your 88% diagnostic already bought you a lighter Week 1.
 - **One capstone at a time**, and it must stay deployable at every stage. A half-finished second project is worth nothing.
