@@ -31,7 +31,9 @@ You are **not a beginner** — this plan treats you as a working engineer with ~
 
 **Calibration — diagnostic taken Aug 25, 2026: 22/25 (88%).** Python 3/6 · SQL 4/4 · DSA 4/4 · Web 4/4 · Stats 3/3 · ML/AI 4/4.
 
-The Python misses were Q2 (comprehension with a filter), Q3 (hashability) and Q6 (`sorted(key=…)` + stability) — while the *harder* semantic questions (mutable default args, reference aliasing, `is` vs `==`) were all correct. **That is a fluency gap, not a mental-model gap**: normal for a Java-shaped engineer writing pytest daily. Drill idiom and stdlib behaviour, not theory. Caveat on the four perfect sections: 3–4 shallow questions each can't separate "solid" from "strong," and they tested fundamentals only (`LEFT JOIN`, not window functions; big-O recall, not DSA under a timer) — so those stay in the plan at full weight. **Java/Spring was never tested in that diagnostic — a real hole, since it's the headline resume experience and it's cold. A 20-question Java & Spring diagnostic is now on the platform and its result sizes the Java thread.**
+The Python misses were Q2 (comprehension with a filter), Q3 (hashability) and Q6 (`sorted(key=…)` + stability) — while the *harder* semantic questions (mutable default args, reference aliasing, `is` vs `==`) were all correct. **That is a fluency gap, not a mental-model gap**: normal for a Java-shaped engineer writing pytest daily. Drill idiom and stdlib behaviour, not theory. Caveat on the four perfect sections: 3–4 shallow questions each can't separate "solid" from "strong," and they tested fundamentals only (`LEFT JOIN`, not window functions; big-O recall, not DSA under a timer) — so those stay in the plan at full weight.
+
+**Java & Spring diagnostic taken Sep 5, 2026: 17/20 (85%).** Java Core 3/5 · Collections 3/4 · Concurrency & JVM 4/4 · Spring 4/4 · JPA/Hibernate 3/3. This is good news that narrows, not confirms, the original worry — "cold since Dec 2025" implied broad rust, but Concurrency/JVM, Spring and JPA/Hibernate all came back perfect: the framework-level knowledge from daily Onextel work held up completely. The real softness is specifically base-language mechanics and collections internals, which is **exactly** W2's Saturday topic (collections internals, generics, Streams) — already correctly targeted. **No restructuring of the Java thread** (still alternating Saturdays + Java DSA from W7 + Spring Boot service W16 + LLD mock W21); this diagnostic confirms the sizing rather than changing it.
 
 **Depth priority (where the hours go when they're scarce):** Backend + AI Engineer first — that's where the existing experience and the MCP differentiator already live. ML, Data and FDE ride along inside the same capstones rather than getting their own months. This is a *weighting*, not a sequence: see §2.
 
@@ -119,7 +121,7 @@ If capacity rises, say `more hours` and I'll re-cut this — more DSA first, the
 | 3 | FastAPI: routing, Pydantic v2, dependency injection | Calling the Claude API from Python | SQL: subqueries + CTEs | Event-ingest endpoint + Postgres | Sliding window |
 | 4 | SQLAlchemy 2.0 + Alembic migrations | Embeddings & vector intuition | Java: concurrency, JVM memory & GC | Events persisted, schema designed | Stack |
 | 5 | async, background tasks, error design | Tool calling / function calling | SQL: window functions I | Async ingest + worker stub | Binary search |
-| 6 | pytest patterns, fixtures, coverage (**your SDET edge**) | Eval basics: golden sets, why temp=0 isn't deterministic | Java: Spring IoC/DI, `@Transactional` | Test suite + GitHub Actions CI | Linked lists |
+| 6 | pytest patterns, fixtures, coverage (**your SDET edge**) | Eval basics: golden sets, why temp=0 isn't deterministic; Task→Trial→Transcript→Grader→Outcome vocabulary, pass@k vs pass^k | Java: Spring IoC/DI, `@Transactional` | Test suite + GitHub Actions CI | Linked lists |
 
 **Checkpoint W6:** Pulse ingests events, persists them, is tested, CI is green. You can write a window function cold.
 
@@ -133,7 +135,7 @@ If capacity rises, say `more hours` and I'll re-cut this — more DSA first, the
 | 9 | Transactions, isolation, indexing, EXPLAIN | First ML model: logistic regression, train/test, metrics | SQL: EXPLAIN + index design | Anomaly-detection baseline | Heaps |
 | 10 | Redis caching; queue + retry/backoff + DLQ | scikit-learn pipelines, cross-validation | SQL: cohort, funnel, retention | Worker with retries + analytics queries | Intervals |
 | 11 | Multi-stage Docker, deploy, structured logging | **NL-query feature**: LLM + tools over Pulse data | Java: Spring Boot, Security, actuator | NL-query endpoint + deployed | Greedy |
-| 12 | Load testing, observability | **Eval harness** for NL-query (LLM-as-judge) — built like an SDET | Dashboard (Power BI/Excel) on Pulse data | **PULSE SHIPS** — design doc, 3-min demo, eval report | Backtracking |
+| 12 | Load testing, observability — trace every stage (latency p50/p95/p99, cost/token, quality/eval scores, RAG signals, version tags) | **Eval harness** for NL-query (LLM-as-judge) — built like an SDET; capability vs regression evals; evals wired into CI/CD | Dashboard (Power BI/Excel) on Pulse data | **PULSE SHIPS** — design doc, 3-min demo, eval report | Backtracking |
 
 **🏁 Milestone W12 (Nov 15): Pulse deployed. Resume v1. Applications + referral outreach begin — do not wait for "ready."**
 
@@ -145,9 +147,9 @@ If capacity rises, say `more hours` and I'll re-cut this — more DSA first, the
 | 13 | System design I: LB, caching, queues, capacity estimation | **Build your own MCP server** | Metrics design | Spec + MCP skeleton | Graphs I |
 | 14 | System design II: sharding, consistency | Agent loop from scratch, streaming | Java: LLD — Parking Lot / Rate Limiter | MCP server working | Graphs II |
 | 15 | API versioning, idempotency, webhooks at scale | RAG with citations over a real corpus | Stats: CIs, hypothesis tests, A/B | Cited RAG answers | 1-D DP |
-| 16 | Write one service in **Spring Boot** (prove the Java) | Reranking + chunking strategies compared | Java: Spring depth + Q-bank | Retrieval quality tuned | 2-D DP |
+| 16 | Write one service in **Spring Boot** (prove the Java) | Reranking + chunking strategies compared; RAG vs fine-tuning decision framework, LoRA/PEFT (concept-level — why it cuts training cost) | Java: Spring depth + Q-bank | Retrieval quality tuned | 2-D DP |
 | 17 | Monitoring, drift, MLflow serving | **MLOps**: track, serve and monitor the Pulse model | A/B analysis writeup | Eval suite running in CI | Timed mixed |
-| 18 | Cost & latency: caching, routing, streaming | Guardrails: PII, prompt injection | Java: JVM tuning + concurrency drills | Guardrails + cost report | Timed mixed |
+| 18 | Cost & latency: layered caching (exact/semantic/embedding/retrieval/API — invalidation is the hard part, not "can we cache it"), routing, streaming | Guardrails: input layer (prompt-injection/PII detection, auth) vs output layer (schema/safety/policy checks) — the model proposes, deterministic app logic enforces (e.g. a hard cap on an LLM-approved refund) | Java: JVM tuning + concurrency drills | Guardrails + cost report | Timed mixed |
 
 **🏁 Milestone W18 (Dec 27): DocMind functional with evals in CI. Resume v2. Both capstones public.**
 
@@ -176,6 +178,7 @@ If capacity rises, say `more hours` and I'll re-cut this — more DSA first, the
 - **Interview stories:** 1 STAR story/week into `interview-prep/stories.md` → 20+ by Feb.
 - **LinkedIn:** Mon DECODE / Thu UPGRADE LOG from `linkedin/studio.html` — the Sunday review doubles as post material.
 - **Spaced review:** every weekly quiz carries 3 questions from earlier weeks.
+- **AI system design reference:** [interview-prep/AI_SYSTEM_DESIGN.md](interview-prep/AI_SYSTEM_DESIGN.md) — the production-GenAI concept bank (RAG, fine-tuning, evals, observability, caching, feedback loops, guardrails) that W6–W18's AI/ML column draws its terminology from. Pull from it when generating those weeks' content and the "AI system design" interview round.
 
 ## 5. Capstone portfolio (what recruiters will see)
 

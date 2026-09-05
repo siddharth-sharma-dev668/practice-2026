@@ -7,7 +7,7 @@
   "plan_structure": "BRAIDED, not sequential phases — Sid's call on 2026-08-25 and it was the right one. Every week touches backend + AI/ML + data-or-Java + DSA (see MASTER_PLAN.md section 2 for the daily rhythm). Reason: the old 7-phase plan finished Backend in October for a February interview, which is exactly how his Java went cold. 4 stages now: S1 Foundations W1-6, S2 Build W7-12, S3 Deepen W13-18, S4 Prove W19-24. Two COMBINED capstones instead of four separate ones — each spans all five target roles.",
   "github_username": "siddharth-sharma-dev668",
   "github_repo": "https://github.com/siddharth-sharma-dev668/practice-2026",
-  "current_week": 0,
+  "current_week": 1,
   "calibration": {
     "diagnostic_scores": {
       "taken": "2026-08-25",
@@ -26,10 +26,19 @@
       "interpretation": "This is a FLUENCY gap, not a mental-model gap. He understands mutability, aliasing and identity — the things that take longest to learn — but is cold on Pythonic idiom and stdlib behaviour, exactly as expected for a Java-background engineer writing pytest daily. Week 1's syllabus (comprehensions, sorting, collections, big-O of builtins) maps almost one-to-one onto 2/3/6, so it needs no redesign — but drill idiom and stdlib behaviour, not semantics theory."
     },
     "java_diagnostic": {
-      "status": "assigned 2026-08-25",
+      "status": "taken 2026-09-05",
       "why": "The first diagnostic contained no Java and no Spring at all — Sid flagged it. His Java is his headline resume experience but cold since Dec 2025, and the W5-8 revision thread + W8 mock are sized from this score.",
       "quiz_id": "diag-java",
-      "covers": "Java Core (5), Collections (4), Concurrency & JVM (4), Spring (4), JPA/Hibernate (3)"
+      "total": "17/20",
+      "pct": 85,
+      "sections": {
+        "Java Core": "3/5",
+        "Collections": "3/4",
+        "Concurrency & JVM": "4/4",
+        "Spring": "4/4",
+        "JPA/Hibernate": "3/3"
+      },
+      "interpretation": "85% is strong and changes the risk picture: the 'cold since Dec 2025' worry was too broad. Concurrency/JVM, Spring and JPA/Hibernate are all perfect — the framework-level knowledge he actually used daily at Onextel held up completely. The real softness is narrower: Java Core (60%) and Collections (75%), i.e. base-language mechanics and collections internals specifically. That is exactly W2's Saturday topic ('Java: collections internals, generics, Streams') — already correctly targeted, no redesign needed. No change to the Java thread's weight or schedule; this just confirms the plan was aimed right."
     },
     "warmup_result": {
       "status": "written_but_never_run",
@@ -47,14 +56,17 @@
     "notes": "88% overall is strong for ~1 YOE. Python 3/6 is the ONE real weakness found — and it is both his daily language as an SDET and the exact focus of W1-2, so the plan is aimed correctly; do NOT let him test out of W1-2. Caveat on the 100% sections: 3-4 questions each cannot distinguish 'solid' from 'strong', and they tested fundamentals only (LEFT JOIN, not window functions; big-O, not real DSA under time). W3-4 SQL (window functions, EXPLAIN, indexes) and the timed DSA sets remain unproven and stay in the plan at full weight."
   },
   "weeks": {
-    "0": { "status": "in_progress", "assigned": "2026-08-21", "due": "2026-08-23",
-      "done": ["diagnostic (22/25)", "GitHub account + username", "git remote configured"],
-      "outstanding": ["Java/Spring diagnostic", "coding warm-up (warmup.py)", "hours/week commitment", "push commits to GitHub"] },
-    "1": { "status": "assigned", "assigned": "2026-08-21", "due": "2026-08-30" }
+    "0": { "status": "done", "assigned": "2026-08-21", "due": "2026-08-23", "completed": "2026-09-05",
+      "done": ["diagnostic (22/25)", "Java & Spring diagnostic (17/20)", "GitHub account + username", "git remote configured"],
+      "outstanding": ["coding warm-up bug fix by Sid himself (bugs were pointed out, not corrected for him)", "push commits to GitHub — unconfirmed"],
+      "note": "Started 12 days late against the original Aug 24 calendar date — real pace, not a calendar the plan should pretend held. Dates on weeks 1+ are labels, not deadlines; the loop (start week N -> work the braid -> grade week N) is what actually paces this, not the printed date range." },
+    "1": { "status": "in_progress", "assigned": "2026-08-21", "started": "2026-09-05", "due": "2026-08-30" }
   },
   "quiz_scores": {
     "diag": { "score": 22, "total": 25, "pct": 88, "date": "2026-08-25",
-      "sections": { "Python": "3/6", "SQL": "4/4", "DSA": "4/4", "Web": "4/4", "Stats": "3/3", "ML/AI": "4/4" } }
+      "sections": { "Python": "3/6", "SQL": "4/4", "DSA": "4/4", "Web": "4/4", "Stats": "3/3", "ML/AI": "4/4" } },
+    "diag-java": { "score": 17, "total": 20, "pct": 85, "date": "2026-09-05",
+      "sections": { "Java Core": "3/5", "Collections": "3/4", "Concurrency & JVM": "4/4", "Spring": "4/4", "JPA/Hibernate": "3/3" } }
   },
   "dsa": { "solved_total": 0, "log": [] },
   "capstones": {
