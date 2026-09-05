@@ -296,7 +296,7 @@ const PHASES = [
 
 const WEEKS = {
   0:  { t: "Setup & Diagnostic", d: "Aug 21–23", f: "Tooling, accounts, 25-question diagnostic, coding warm-up", s: "Send Claude: section scores, hours/week, GitHub username, warm-up result" },
-  1:  { t: "Python Fluency + SQL Joins", d: "Aug 24–30", f: "Mon: collections, comprehensions, sorting, big-O of builtins — aimed straight at your Q2/Q3/Q6 diagnostic misses · Thu: LLM basics (tokens, context, temperature) · Sat SQL: joins + aggregation", s: "12/12 on check.py · 2 DSA (arrays & hashing) · Pulse spec written · STAR story #1 · Sunday quiz" },
+  1:  { t: "Python Fluency + SQL Joins", d: "Aug 24–30", f: "Mon: collections, comprehensions, sorting, big-O of builtins — aimed straight at your Q2/Q3/Q6 diagnostic misses, same lesson in Java too (targets your Collections 3/4 gap) · Thu: LLM basics (tokens, context, temperature) · Sat SQL: joins + aggregation", s: "12/12 on check.py · 2 DSA (arrays & hashing) · Pulse spec written · STAR story #1 · Sunday quiz" },
   2:  { t: "Decorators + Java Collections", d: "Aug 31 – Sep 6", f: "Mon: closures, decorators, generators, typing · Thu: prompting + structured JSON outputs · Sat Java: collections internals, generics, Streams", s: "Pulse repo skeleton — FastAPI up, Docker builds · 2 DSA (two pointers) · STAR #2" },
   3:  { t: "FastAPI + CTEs", d: "Sep 7–13", f: "Mon: FastAPI routing, Pydantic v2, dependency injection · Thu: calling the Claude API from Python · Sat SQL: subqueries + CTEs", s: "Pulse: event-ingest endpoint + Postgres · 2 DSA (sliding window) · STAR #3" },
   4:  { t: "Persistence + JVM", d: "Sep 14–20", f: "Mon: SQLAlchemy 2.0 + Alembic migrations · Thu: embeddings & vector intuition · Sat Java: concurrency, JVM memory & GC", s: "Pulse: events persisted, schema designed · 2 DSA (stack) · STAR #4" },
@@ -335,6 +335,8 @@ const CONTENT = {
   1: { steps: [
     { t: "Mon (~45 min) — predict, run, compare (not reading)", cmd: "python gotchas.py",
       d: "Folder: curriculum\\week-01-python-core\\. Open gotchas.py — 8 short blocks covering your exact diagnostic misses (comprehension+filter, hashability, sorted+stability) plus multi-key sort and big-O of `in`/pop(0), measured live with timeit instead of memorized off a table. Read each block and write down your predicted output BEFORE running the file — then run it once and check every prediction against the real output and the one-line \"why\" printed after each. Docs are backup if a block still confuses you after the why, not the starting point." },
+    { t: "Mon bonus (~15 min) — same lesson, in Java", cmd: "java Gotchas.java",
+      d: "Folder: curriculum\\week-01-python-core\\. Same predict-then-run protocol, but Gotchas.java targets your OTHER diagnostic's one soft spot: Collections (3/4) — ArrayList-vs-LinkedList cost, HashSet/HashMap hashing, ConcurrentModificationException, and the hashCode-mutation gotcha. JDK 11+ runs it directly (java Gotchas.java, no javac step). Open the \"Choosing a data structure\" lesson above for the bilingual diagram + Python/Java code reference side by side." },
     { t: "Tue + Fri (~45 min each) — exercises.py: 8 of 12 functions is a pass", cmd: "python check.py",
       d: "Folder: curriculum\\week-01-python-core\\. Edit exercises.py, then run the checker from that folder as often as you like. Two 45-min sittings realistically gets 8 functions — that's a pass, not a shortfall; 12/12 is the stretch. Docs allowed; AI assistance not — interviews are live and proctored now." },
     { t: "Wed (~45 min) — 2 DSA problems (arrays & hashing)", d: "Two, not six — that's the honest number at 45 min/day, so treat both as non-negotiable. Do the first two; the rest are stretch if a week ever runs light. Save each solution as a file in a dsa/ folder so I can review your approach, not just the green tick.",
@@ -355,10 +357,10 @@ const CONTENT = {
    is where you actually verify it. Populate LESSONS[w] as new weeks are generated. */
 const LESSONS = {
   1: [
-    { id: "ds-decision", tag: "Mon · Python", title: "Choosing a data structure",
-      sub: "The decision you make under time pressure, not a definitions quiz",
-      figcaption: "One access-pattern question branches to four containers, each tagged with the operation cost that actually matters.",
-      svg: `<svg viewBox="0 0 640 286" role="img" aria-label="Decision tree: the access pattern you need branches to list, set, dict, or deque, each labeled with its relevant big-O" style="width:100%;height:auto">
+    { id: "ds-decision", tag: "Mon · Python + Java", title: "Choosing a data structure",
+      sub: "The decision you make under time pressure, not a definitions quiz — in both languages you actually use",
+      figcaption: "One access-pattern question branches to four containers, each tagged with its Python name, Java equivalent, and the operation cost that actually matters.",
+      svg: `<svg viewBox="0 0 640 300" role="img" aria-label="Decision tree: the access pattern you need branches to four containers, each labeled with its Python name, Java equivalent, and relevant big-O" style="width:100%;height:auto">
         <defs><marker id="ds-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
         <rect x="220" y="14" width="200" height="50" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
         <text x="320" y="34" text-anchor="middle" font-size="12" font-weight="700" fill="var(--accent)">What does your access</text>
@@ -367,40 +369,56 @@ const LESSONS = {
         <line x1="320" y1="64" x2="240" y2="188" stroke="currentColor" stroke-width="1.3" opacity="0.6" marker-end="url(#ds-arrow)"/>
         <line x1="320" y1="64" x2="400" y2="188" stroke="currentColor" stroke-width="1.3" opacity="0.6" marker-end="url(#ds-arrow)"/>
         <line x1="320" y1="64" x2="560" y2="188" stroke="currentColor" stroke-width="1.3" opacity="0.6" marker-end="url(#ds-arrow)"/>
-        <rect x="10" y="190" width="140" height="86" rx="8" fill="var(--surface2)" stroke="currentColor" stroke-width="1.1"/>
-        <text x="80" y="212" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">List</text>
-        <text x="80" y="231" text-anchor="middle" font-size="10.3" fill="currentColor">ordered, index by position</text>
-        <text x="80" y="248" text-anchor="middle" font-size="10" fill="currentColor">index O(1) · insert-front O(n)</text>
-        <text x="80" y="264" text-anchor="middle" font-size="10" fill="currentColor">search O(n)</text>
-        <rect x="170" y="190" width="140" height="86" rx="8" fill="var(--surface2)" stroke="currentColor" stroke-width="1.1"/>
-        <text x="240" y="212" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">Set</text>
-        <text x="240" y="231" text-anchor="middle" font-size="10.3" fill="currentColor">"is X in here?", no dupes</text>
-        <text x="240" y="248" text-anchor="middle" font-size="10" fill="currentColor">contains O(1) avg</text>
-        <text x="240" y="264" text-anchor="middle" font-size="10" fill="currentColor">no order, no index</text>
-        <rect x="330" y="190" width="140" height="86" rx="8" fill="var(--surface2)" stroke="currentColor" stroke-width="1.1"/>
-        <text x="400" y="212" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">Dict</text>
-        <text x="400" y="231" text-anchor="middle" font-size="10.3" fill="currentColor">key → value lookup</text>
-        <text x="400" y="248" text-anchor="middle" font-size="10" fill="currentColor">get/set O(1) avg</text>
-        <text x="400" y="264" text-anchor="middle" font-size="10" fill="currentColor">insertion-ordered (3.7+)</text>
-        <rect x="490" y="190" width="140" height="86" rx="8" fill="var(--surface2)" stroke="currentColor" stroke-width="1.1"/>
-        <text x="560" y="212" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">Deque</text>
-        <text x="560" y="231" text-anchor="middle" font-size="10.3" fill="currentColor">push/pop BOTH ends a lot</text>
-        <text x="560" y="248" text-anchor="middle" font-size="10" fill="currentColor">O(1) both ends</text>
-        <text x="560" y="264" text-anchor="middle" font-size="10" fill="currentColor">list.pop(0) is O(n) instead</text>
+        <rect x="10" y="190" width="140" height="100" rx="8" fill="var(--surface2)" stroke="currentColor" stroke-width="1.1"/>
+        <text x="80" y="211" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">List</text>
+        <text x="80" y="227" text-anchor="middle" font-size="10" fill="currentColor">ordered, index by position</text>
+        <text x="80" y="243" text-anchor="middle" font-size="9.5" fill="currentColor">Python list · Java ArrayList</text>
+        <text x="80" y="259" text-anchor="middle" font-size="9.5" fill="currentColor">index O(1) · insert-front O(n)</text>
+        <text x="80" y="275" text-anchor="middle" font-size="9.5" fill="currentColor">search O(n)</text>
+        <rect x="170" y="190" width="140" height="100" rx="8" fill="var(--surface2)" stroke="currentColor" stroke-width="1.1"/>
+        <text x="240" y="211" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">Set</text>
+        <text x="240" y="227" text-anchor="middle" font-size="10" fill="currentColor">"is X in here?", no dupes</text>
+        <text x="240" y="243" text-anchor="middle" font-size="9.5" fill="currentColor">Python set · Java HashSet</text>
+        <text x="240" y="259" text-anchor="middle" font-size="9.5" fill="currentColor">contains O(1) avg</text>
+        <text x="240" y="275" text-anchor="middle" font-size="9.5" fill="currentColor">no order, no index</text>
+        <rect x="330" y="190" width="140" height="100" rx="8" fill="var(--surface2)" stroke="currentColor" stroke-width="1.1"/>
+        <text x="400" y="211" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">Map</text>
+        <text x="400" y="227" text-anchor="middle" font-size="10" fill="currentColor">key → value lookup</text>
+        <text x="400" y="243" text-anchor="middle" font-size="9.5" fill="currentColor">Python dict · Java HashMap</text>
+        <text x="400" y="259" text-anchor="middle" font-size="9.5" fill="currentColor">get/set O(1) avg</text>
+        <text x="400" y="275" text-anchor="middle" font-size="9.5" fill="currentColor">Python: insertion-ordered</text>
+        <rect x="490" y="190" width="140" height="100" rx="8" fill="var(--surface2)" stroke="currentColor" stroke-width="1.1"/>
+        <text x="560" y="211" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">Deque</text>
+        <text x="560" y="227" text-anchor="middle" font-size="10" fill="currentColor">push/pop BOTH ends a lot</text>
+        <text x="560" y="243" text-anchor="middle" font-size="9.5" fill="currentColor">Python deque · Java ArrayDeque</text>
+        <text x="560" y="259" text-anchor="middle" font-size="9.5" fill="currentColor">O(1) both ends</text>
+        <text x="560" y="275" text-anchor="middle" font-size="9.5" fill="currentColor">index-0 insert is O(n) instead</text>
       </svg>`,
       explain: [
-        "Junior framing: \"what's the difference between a list and a set?\" Senior framing: \"given this access pattern, what does the wrong choice cost at 10M rows?\" Same four containers, different question — and the second one is what actually gets asked once you're past the definitions round.",
-        "Your diagnostic didn't test this directly, but Q3 (hashability) and the whole DSA section assume you reach for the right container without stopping to think — that's the real skill gotchas.py blocks 1-2 and 5-8 drill.",
-        "Interview tell: if you're explaining why you used a list where a set would do, that's a code-review flag, not a style preference. An O(n) membership check inside a loop is a silent O(n²) bug — the kind that passes review and fails at scale."
+        "Junior framing: \"what's the difference between a list and a set?\" Senior framing: \"given this access pattern, what does the wrong choice cost at 10M rows?\" Same four containers, different question — and the second one is what actually gets asked once you're past the definitions round, in either language.",
+        "Your Java & Spring diagnostic (17/20) had exactly one soft spot in this territory: Collections, 3/4 — HashMap bucket/treeify behavior and ArrayList-vs-LinkedList cost specifically, not Concurrency, Spring, or JPA, which all came back perfect. That's not \"Java is rusty,\" it's this one shelf, and Gotchas.java below drills exactly that shelf, the same way gotchas.py drills your Python diagnostic misses.",
+        "Interview tell, in both languages: if you're explaining why you used a list/ArrayList where a set/HashSet would do, that's a code-review flag, not a style preference. An O(n) membership check inside a loop is a silent O(n²) bug — the kind that passes review and fails at scale."
       ],
-      code: `# The check you run before reaching for any of these — not memorized, derived:
+      code: [
+        { label: "Code reference — Python", text: `# The check you run before reaching for any of these — not memorized, derived:
 x in some_list    # O(n)  — scans every element
 x in some_set     # O(1)  avg — hashes straight to the bucket
 some_dict[key]    # O(1)  avg — same hashing, plus a stored value
-dq.appendleft(x)  # O(1)  — deque; list.insert(0, x) is O(n), shifts everything`,
-      terminal: { cwd: "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core",
-        cmd: `cd "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core"; python gotchas.py`,
-        note: "Blocks 1, 5 and 8 of gotchas.py are this exact lesson, measured live instead of taken on faith." } },
+dq.appendleft(x)  # O(1)  — deque; list.insert(0, x) is O(n), shifts everything` },
+        { label: "Code reference — Java", text: `// Same four checks, same costs, same reasoning — different syntax:
+list.contains(x);   // O(n)  — ArrayList/LinkedList both scan
+set.contains(x);    // O(1)  avg — HashSet, same hashing idea
+map.get(key);       // O(1)  avg — HashMap
+deque.addFirst(x);  // O(1)  — ArrayDeque; new ArrayList().add(0, x) is O(n)` }
+      ],
+      terminal: [
+        { label: "Terminal — PowerShell (Python)", cwd: "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core",
+          cmd: `cd "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core"; python gotchas.py`,
+          note: "Blocks 1, 5 and 8 of gotchas.py are this exact lesson, measured live instead of taken on faith." },
+        { label: "Terminal — PowerShell (Java)", cwd: "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core",
+          cmd: `cd "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core"; java Gotchas.java`,
+          note: "JDK 11+ runs a single .java file directly — no separate javac step. Blocks 1, 2, 4 and 6 of Gotchas.java target your Collections 3/4 diagnostic gap specifically." }
+      ] },
 
     { id: "llm-basics", tag: "Thu · AI/ML", title: "LLM basics: tokens, context, temperature",
       sub: "The mental model every later AI/ML week assumes you already have",
@@ -894,11 +912,15 @@ function renderLesson(w, id) {
       <figcaption>${esc(lesson.figcaption)}</figcaption>
     </figure>
     ${lesson.explain.map(p => `<p class="lesson-p">${esc(p)}</p>`).join("")}
-    <div class="code-lbl"><span class="tag-lbl" style="color:var(--muted)">Code reference</span><button class="mini" data-copy="${esc(lesson.code)}">copy</button></div>
-    <pre class="codeblock">${esc(lesson.code)}</pre>
-    <div class="code-lbl"><span class="tag-lbl" style="color:var(--muted)">Terminal — PowerShell</span><button class="mini" data-copy="${esc(lesson.terminal.cmd)}">copy</button></div>
-    <pre class="codeblock">${esc(lesson.terminal.cmd)}</pre>
-    ${lesson.terminal.note ? `<p class="hint">${esc(lesson.terminal.note)}</p>` : ""}
+    ${(Array.isArray(lesson.code) ? lesson.code : [{ label: "Code reference", text: lesson.code }]).map(c => `
+      <div class="code-lbl"><span class="tag-lbl" style="color:var(--muted)">${esc(c.label || "Code reference")}</span><button class="mini" data-copy="${esc(c.text)}">copy</button></div>
+      <pre class="codeblock">${esc(c.text)}</pre>
+    `).join("")}
+    ${(Array.isArray(lesson.terminal) ? lesson.terminal : [lesson.terminal]).map(t => `
+      <div class="code-lbl"><span class="tag-lbl" style="color:var(--muted)">${esc(t.label || "Terminal — PowerShell")}</span><button class="mini" data-copy="${esc(t.cmd)}">copy</button></div>
+      <pre class="codeblock">${esc(t.cmd)}</pre>
+      ${t.note ? `<p class="hint">${esc(t.note)}</p>` : ""}
+    `).join("")}
   `;
   $("[data-backweek]", host).addEventListener("click", () => renderWeek(w));
   host.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click", () => {

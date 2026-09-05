@@ -20,6 +20,10 @@ Run [gotchas.py](gotchas.py) — but read each numbered block and write down you
 
 No doc reading required first. If a block surprises you even after seeing the "why," *then* the [Data Structures tutorial](https://docs.python.org/3/tutorial/datastructures.html) or [Sorting HOW TO](https://docs.python.org/3/howto/sorting.html) are there as backup — reference, not homework.
 
+## Monday bonus (~15 min) — the same lesson in Java
+
+Your DSA foundation is Java-first (college), your daily driver now is Python (JCI) — both need reinforcing, not just one. Run [Gotchas.java](Gotchas.java) the same way: `java Gotchas.java` (JDK 11+ runs a single file directly, no `javac` step). It targets your *other* diagnostic's one soft spot — Collections, 3/4 — with the ArrayList-vs-LinkedList cost, HashSet/HashMap hashing, `ConcurrentModificationException`, and the hashCode-mutation gotcha, all measured live. The platform's "Choosing a data structure" lesson has the bilingual diagram and a Python/Java code reference side by side.
+
 ## Thursday drill (~45 min) — LLM basics
 
 Same protocol, run [llm_basics.py](llm_basics.py): tokens vs words vs characters, why a context window is a hard cutoff, and temperature reshaping the same logits into different sampled outputs. Zero dependencies, zero API key — the mental model under the Claude API call you'll make in Week 3.
