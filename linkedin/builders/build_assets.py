@@ -936,6 +936,120 @@ def gif_frames():
     return F
 
 
+# ==================== GIF 2 - prompt caching, verified ====================
+# Sequel to the MCP token-cost post. Built with the gradient/glow toolkit
+# throughout (the MCP-stateless GIF above predates it and stays flat).
+def gif_frames_promptcache():
+    D = DARK
+    F = []
+
+    def frame():
+        return Slide(("#0A0E14", "#161F2A"), GW, GH)
+
+    def foot(s, t, col=None):
+        s.text(70, 1010, t, "mono", 24, col or D["dim"], track=1)
+
+    def stack(s, x, y, w, rowh, rows, dim_from=None):
+        """rows: list of (label, color). dim_from grays out rows at/after
+        that index, to show a cache hit skipping the already-processed part."""
+        for i, (label, col) in enumerate(rows):
+            active = dim_from is None or i < dim_from
+            fill = D["card"] if active else "#12181F"
+            txt = D["ink"] if active else "#3D4753"
+            s.rect(x, y + i * rowh, w, rowh - 10, fill=fill, outline=col if active else "#232B35",
+                  width=2, r=10)
+            s.text(x + 24, y + i * rowh + rowh / 2 - 5, label, "bold", 26, txt, anchor="ls")
+
+    # 1 title
+    s = frame()
+    s.eyebrow("AI ENGINEERING - CONCEPT", D)
+    s.lines(70, 340, ["Prompt caching,", "in 8 frames."], "black", 84, D["ink"], 98, track=-3)
+    s.rect(70, 560, 940, 3, fill=D["line"])
+    s.lines(70, 640, ["The mechanism MCP's own spec", "just leaned on to fix the token-",
+                      "cost problem I posted last week."], "reg", 34, D["dim"], 46)
+    foot(s, "VERIFIED AGAINST ANTHROPIC'S DOCS", D["acc"]); F.append(s.finish())
+
+    # 2 every call ships the full context
+    s = frame()
+    s.text(70, 140, "Every call ships this, in full.", "black", 46, D["ink"], track=-1)
+    rows = [("System prompt", D["line"]), ("Tools", D["line"]), ("History", D["line"]),
+            ("New message", D["acc"])]
+    stack(s, 70, 230, 560, 130, rows)
+    s.arrow(650, 420, 780, 420, D["dim"], 5, 16)
+    s.badge(900, 420, 140, s.icon_bolt, ["Model"], D["ink"], D)
+    foot(s, "SYSTEM + TOOLS + HISTORY + MESSAGE"); F.append(s.finish())
+
+    # 3 most of it is identical call to call
+    s = frame()
+    s.text(70, 140, "Call after call, most of", "black", 44, D["ink"], track=-1)
+    s.text(70, 195, "that stack never changes.", "black", 44, D["ink"], track=-1)
+    s.rect(60, 270, 580, 340, outline=D["ok"], width=3, r=16)
+    rows = [("System prompt", D["line"]), ("Tools", D["line"]), ("History", D["line"])]
+    stack(s, 90, 300, 520, 100, rows)
+    s.text(90, 630, "IDENTICAL, EVERY CALL", "monob", 24, D["ok"], track=1)
+    s.rect(60, 690, 580, 90, fill=D["fillbad"], outline=D["bad"], width=2, r=14)
+    s.text(90, 745, "New message - the only part that changes", "bold", 24, D["ink"])
+    foot(s, "ONE SMALL TAIL IS ACTUALLY NEW"); F.append(s.finish())
+
+    # 4 without caching - full reprocess every time
+    s = frame()
+    s.text(70, 140, "Without caching:", "black", 50, D["bad"], track=-1)
+    for i, cx in enumerate((280, 640)):
+        s.rect(cx - 130, 260, 260, 380, fill=D["fillbad"], outline=D["bad"], width=2, r=16)
+        s.text(cx, 300, f"CALL {i+1}", "monob", 24, D["bad"], anchor="ms")
+        s.icon_clock(cx, 440, 60, D["bad"])
+        s.lines(cx, 560, ["full cost,", "full latency"], "bold", 24, D["ink"], 32, anchor="ms")
+    s.text(70, 720, "Reprocessed from scratch, every call.", "reg", 32, D["dim"])
+    foot(s, "THE EXPENSIVE DEFAULT", D["bad"]); F.append(s.finish())
+
+    # 5 with caching - call 1 writes
+    s = frame()
+    s.text(70, 140, "With caching - call 1", "black", 46, D["ink"], track=-1)
+    rows = [("System prompt", D["line"]), ("Tools", D["line"]), ("History", D["line"])]
+    stack(s, 70, 230, 560, 100, rows)
+    s.rect(70, 530, 560, 3, fill=D["acc"])
+    s.text(650, 545, "breakpoint", "mono", 22, D["acc"], anchor="lm")
+    s.badge(850, 300, 160, s.icon_lock, ["CACHE", "WRITE"], D["acc"], D)
+    s.text(70, 620, "Hashes the prefix, stores its state.", "reg", 32, D["dim"])
+    s.text(70, 680, "Costs slightly MORE than normal - once.", "bold", 30, D["acc"])
+    foot(s, "1.25x-2x, ONE TIME"); F.append(s.finish())
+
+    # 6 call 2 - cache hit
+    s = frame()
+    s.text(70, 140, "Call 2, same prefix,", "black", 46, D["ink"], track=-1)
+    s.text(70, 195, "inside the TTL window", "black", 46, D["ink"], track=-1)
+    rows = [("System prompt", D["line"]), ("Tools", D["line"]), ("History", D["line"])]
+    stack(s, 70, 260, 560, 90, rows, dim_from=0)
+    s.badge(850, 340, 160, s.icon_bolt, ["CACHE", "HIT"], D["ok"], D)
+    s.rect(70, 560, 560, 90, fill=D["fillok"], outline=D["ok"], width=2, r=14)
+    s.text(100, 615, "Only the new tail gets processed", "bold", 24, D["ink"])
+    foot(s, "HASH MATCH -> REUSE, DON'T REPROCESS", D["ok"]); F.append(s.finish())
+
+    # 7 payoff - 2 bars, no axis
+    s = frame()
+    s.text(70, 140, "The payoff", "black", 54, D["ink"], track=-1)
+    s.text(70, 320, "NORMAL PRICE", "mono", 26, D["dim"], track=2)
+    s.rect(70, 350, 940, 110, fill=D["line"], r=12)
+    s.text(100, 425, "100%", "bold", 44, "#12181F")
+    s.text(70, 520, "CACHED PREFIX", "mono", 26, D["ok"], track=2)
+    s.rect(70, 550, 110, 110, fill=D["ok"], r=12)
+    s.text(70, 705, "~10% of the price. Faster, too.", "bold", 34, D["ink"])
+    foot(s, "SAME OUTPUT, EVERY TIME", D["ok"]); F.append(s.finish())
+
+    # 8 the catch + tie-back
+    s = frame()
+    s.icon_warn(120, 175, 55, D["acc"])
+    s.text(210, 195, "Edit anything upstream, or let the", "bold", 32, D["ink"])
+    s.text(210, 235, "TTL lapse - back to full price.", "bold", 32, D["acc"])
+    s.rect(70, 300, 940, 3, fill=D["line"])
+    s.lines(70, 400, ["MCP's July 2026 spec update leans on", "this exact mechanism - tool-list",
+                      "responses now carry ttlMs/cacheScope,", "so clients cache catalogs instead of",
+                      "refetching them every call."], "reg", 34, D["dim"], 46)
+    s.text(70, 900, "Same fix, different layer.", "black", 42, D["acc"], track=-1)
+    foot(s, "FULL POST BELOW", D["acc"]); F.append(s.finish())
+    return F
+
+
 # ============================== main =====================================
 def save_deck(name, imgs, out):
     d = os.path.join(out, name)
@@ -946,6 +1060,19 @@ def save_deck(name, imgs, out):
     imgs[0].save(pdf, save_all=True, append_images=imgs[1:], resolution=150.0)
     print(f"  {name}: {len(imgs)} PNG + {os.path.basename(pdf)} "
           f"({os.path.getsize(pdf)/1024:.0f} KB)")
+
+
+def save_gif(name, frames, durations, out, frames_dirname):
+    pal = [f.convert("P", palette=Image.ADAPTIVE, colors=64) for f in frames]
+    gp = os.path.join(out, name + ".gif")
+    pal[0].save(gp, save_all=True, append_images=pal[1:], duration=durations,
+                loop=0, optimize=True)
+    print("  %s.gif: %d frames, %.0f KB" % (name, len(frames), os.path.getsize(gp) / 1024))
+    d = os.path.join(out, frames_dirname)
+    os.makedirs(d, exist_ok=True)
+    for i, f in enumerate(frames, 1):
+        f.save(os.path.join(d, "%d.png" % i), optimize=True)
+    print("  %s: %d PNG" % (frames_dirname, len(frames)))
 
 
 def build_all(theme, out):
@@ -964,21 +1091,12 @@ def build_all(theme, out):
         im.save(f, optimize=True)
         print("  singles/%s.png (%.0f KB)" % (k, os.path.getsize(f) / 1024))
 
-    fr = gif_frames()
-    # hold the title and the payoff frames longer than the build-up
-    durations = [2300, 1500, 1800, 2000, 2400, 2200, 2600]
-    pal = [f.convert("P", palette=Image.ADAPTIVE, colors=64) for f in fr]
-    gp = os.path.join(out, "mcp-stateless.gif")
-    pal[0].save(gp, save_all=True, append_images=pal[1:], duration=durations,
-                loop=0, optimize=True)
-    print("  mcp-stateless.gif: %d frames, %.0f KB"
-          % (len(fr), os.path.getsize(gp) / 1024))
-    # also keep the frames as stills, in case a carousel is preferred
-    d = os.path.join(out, "mcp-gif-frames")
-    os.makedirs(d, exist_ok=True)
-    for i, f in enumerate(fr, 1):
-        f.save(os.path.join(d, "%d.png" % i), optimize=True)
-    print("  mcp-gif-frames: %d PNG" % len(fr))
+    # hold title/payoff frames longer than the build-up, for both GIFs
+    save_gif("mcp-stateless", gif_frames(), [2300, 1500, 1800, 2000, 2400, 2200, 2600],
+             out, "mcp-gif-frames")
+    save_gif("prompt-caching", gif_frames_promptcache(),
+             [2600, 1700, 1900, 1900, 2000, 2000, 2200, 2800],
+             out, "prompt-caching-frames")
 
 
 def preview(path, picks=(0, 2, 3)):
