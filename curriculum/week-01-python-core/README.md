@@ -16,7 +16,7 @@ Each of this week's three concept days (Mon Python, Thu AI/ML, Sat SQL) has a fu
 
 ## Monday drill (~45 min) — predict, run, compare
 
-Run [gotchas.py](gotchas.py) — but read each numbered block and write down your predicted output *before* running it. Then run the whole file (`python gotchas.py`) and check your predictions against the real output and the one-line "why" printed after each. 8 blocks, covering exactly your diagnostic misses (comprehension+filter, hashability, sorted+stability) plus multi-key sort and big-O of `in`/`pop(0)` — measured with `timeit`, not memorized off a table.
+Run `python gotchas.py`. The script itself stops and asks — it shows you a block of code, asks a plain-English question, then waits at a prompt. Type anything (a guess, "no idea," whatever) and press Enter; the real answer prints immediately after, with a "why." You don't write your guess anywhere else — typing it into the terminal IS the exercise. 8 blocks, covering exactly your diagnostic misses (comprehension+filter, hashability, sorted+stability) plus multi-key sort and big-O of `in`/`pop(0)` — measured with `timeit`, not memorized off a table.
 
 No doc reading required first. If a block surprises you even after seeing the "why," *then* the [Data Structures tutorial](https://docs.python.org/3/tutorial/datastructures.html) or [Sorting HOW TO](https://docs.python.org/3/howto/sorting.html) are there as backup — reference, not homework.
 
@@ -34,7 +34,7 @@ Run [sql_playground.py](sql_playground.py): a real in-process database (`sqlite3
 
 ## Deliverable 1 — Exercises (the core work)
 
-Implement all 12 functions in [exercises.py](exercises.py). Check yourself anytime:
+Implement all 12 functions in [exercises.py](exercises.py). Before you open the file, open the platform (Roadmap → Week 1 → **Write it yourself**) — it has all 12, in a suggested Tuesday/Friday order: the problem in plain words, a design question to answer *before* you write any code (what approach, what data structure, why), one hint if you're stuck, and exactly which function to edit. No solutions on that page, on purpose — that's what `check.py` and `grade week 1` are for. Check yourself anytime:
 
 ```bash
 python check.py

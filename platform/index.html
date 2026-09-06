@@ -202,6 +202,29 @@
   .compare-lbl { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 10.5px; letter-spacing: .06em;
     text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 5px; }
 
+  /* ---- write-it-yourself exercise guide: design question, hint, no solution ---- */
+  .exgroup-lbl { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 11px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 18px 0 8px; }
+  .exercise-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px; }
+  .exercise { background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 0 15px; box-shadow: var(--shadow); }
+  .exercise > summary { cursor: pointer; padding: 12px 0; font-weight: 600; list-style: none;
+    display: flex; align-items: baseline; gap: 10px; font-family: 'IBM Plex Mono', Consolas, monospace;
+    font-size: 13.5px; }
+  .exercise > summary::-webkit-details-marker { display: none; }
+  .exercise > summary .exnum { color: var(--muted); font-size: 12px; min-width: 20px; }
+  .exercise[open] > summary { color: var(--accent); }
+  .exercise-body { padding: 0 0 14px 30px; }
+  .exercise-body p { margin: 6px 0; font-size: 13.5px; color: var(--ink); line-height: 1.5; }
+  .exercise-body .lbl { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 10px; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--muted); font-weight: 600; margin-top: 10px; }
+  .hint-reveal { margin-top: 8px; }
+  .hint-reveal summary { cursor: pointer; color: var(--muted); font-size: 12.5px; font-weight: 600; }
+  .hint-reveal summary:hover { color: var(--accent); }
+  .hint-reveal p { margin-top: 6px !important; }
+  .exercise-where { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 11.5px; background: var(--surface2);
+    padding: 5px 10px; border-radius: 6px; display: inline-block; margin-top: 8px; color: var(--muted); }
+
   .runner-head { display: flex; align-items: center; gap: 14px; margin: 20px 0 6px; flex-wrap: wrap; }
   .back { color: var(--muted); font-weight: 600; font-size: 13.5px; padding: 6px 10px 6px 0; }
   .back:hover { color: var(--ink); }
@@ -363,7 +386,7 @@ const CONTENT = {
     { t: "Mon bonus (~15 min) — same lesson, in Java", cmd: "java Gotchas.java",
       d: "Folder: curriculum\\week-01-python-core\\. Same predict-then-run protocol, but Gotchas.java targets your OTHER diagnostic's one soft spot: Collections (3/4) — ArrayList-vs-LinkedList cost, HashSet/HashMap hashing, ConcurrentModificationException, and the hashCode-mutation gotcha. JDK 11+ runs it directly (java Gotchas.java, no javac step). Open the \"Choosing a data structure\" lesson above for the bilingual diagram + Python/Java code reference side by side." },
     { t: "Tue + Fri (~45 min each) — exercises.py: 8 of 12 functions is a pass", cmd: "python check.py",
-      d: "Folder: curriculum\\week-01-python-core\\. Edit exercises.py, then run the checker from that folder as often as you like. Two 45-min sittings realistically gets 8 functions — that's a pass, not a shortfall; 12/12 is the stretch. Docs allowed; AI assistance not — interviews are live and proctored now." },
+      d: "Folder: curriculum\\week-01-python-core\\. Use the \"Write it yourself\" guide above — it has all 12: the problem in plain words, a design question to answer before you code, one hint if you're stuck, and exactly which function to edit. No solutions there on purpose. Edit exercises.py, then run the checker as often as you like. Two 45-min sittings realistically gets 8 functions — that's a pass, not a shortfall; 12/12 is the stretch. Docs allowed; AI assistance not — interviews are live and proctored now." },
     { t: "Wed (~45 min) — 2 DSA problems (arrays & hashing)", d: "Two, not six — that's the honest number at 45 min/day, so treat both as non-negotiable. Do the first two; the rest are stretch if a week ever runs light. Save each solution as a file in a dsa/ folder so I can review your approach, not just the green tick.",
       links: [["1 Two Sum (do this)", "https://leetcode.com/problems/two-sum/"], ["242 Valid Anagram (do this)", "https://leetcode.com/problems/valid-anagram/"], ["217 Contains Duplicate (stretch)", "https://leetcode.com/problems/contains-duplicate/"], ["49 Group Anagrams (stretch)", "https://leetcode.com/problems/group-anagrams/"], ["347 Top K Frequent (stretch)", "https://leetcode.com/problems/top-k-frequent-elements/"]] },
     { t: "Thu (~45 min) — LLM basics: tokens, context, temperature", cmd: "python llm_basics.py",
@@ -441,91 +464,134 @@ deque.addFirst(x);  // O(1)  — ArrayDeque; new ArrayList().add(0, x) is O(n)` 
           cmd: `cd "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core"; python gotchas.py`,
           note: "Blocks 1, 5 and 8 of gotchas.py are this exact lesson, measured live instead of taken on faith.",
           timingNote: "Captured from one real run. Every line except the two timing lines (blocks 5 and 8) will match yours exactly — timings vary run to run and machine to machine. What matters there is the shape (set/deque dramatically faster), not the exact milliseconds.",
-          output: `=== 1. Comprehension with a filter (your diagnostic Q2) ===
-[1, 9, 25]
-why: x % 2 is truthy only for odd x -> 1,3,5 survive -> squares 1,9,25
+          output: `======================================================================
+BLOCK 1: Comprehension with a filter (your diagnostic Q2)
+======================================================================
+CODE:
+    [x * x for x in range(6) if x % 2]
 
-=== 2. Hashability - what can be a dict key? (your diagnostic Q3) ===
-TypeError: unhashable type: 'list'
-{(1, 2): 'value'}
+QUESTION: What list does this produce?
+>>> Type your guess, then press Enter to reveal the real answer: (you type here, then Enter)
+
+ACTUAL ANSWER:
+    [1, 9, 25]
+
+why: x % 2 is truthy only for odd x -> 1, 3, 5 survive -> their squares 1, 9, 25
+
+
+BLOCK 2: Hashability - what can be a dict key? (your diagnostic Q3)
+CODE:  bad_key = {[1, 2]: "value"}
+QUESTION: Does this line run, or crash? If it crashes, what error?
+ACTUAL ANSWER:
+    TypeError: unhashable type: 'list'
+(a TUPLE key works fine, though: {(1, 2): 'value'})
 why: dict keys must be hashable. Lists are mutable -> unhashable.
      Tuples are hashable IF every element inside them is too.
 
-=== 3. sorted(key=len) + stability (your diagnostic Q6) ===
-['fig', 'pear', 'plum', 'kiwi', 'date']
+BLOCK 3: sorted(key=len) + stability (your diagnostic Q6)
+QUESTION: What order do the words come out in? (watch 'plum' and 'kiwi' - same length)
+ACTUAL ANSWER:
+    ['fig', 'pear', 'plum', 'kiwi', 'date']
 why: sorted() always returns a NEW list. Timsort is stable, so
      'plum' and 'kiwi' (both len 4) keep their original relative order.
 
-=== 4. Multi-key sort - extend #3 ===
-[('ana', 27), ('sid', 27), ('bo', 19)]
+BLOCK 4: Multi-key sort - extends #3
+ACTUAL ANSWER:
+    [('ana', 27), ('sid', 27), ('bo', 19)]
 why: tuple keys sort left-to-right - here: age descending, then name ascending.
 
-=== 5. Big-O of \`in\`: list scan vs set hash - measured, not memorized ===
-list: 0.09953s   set: 0.00003s   ratio: 3110x
+BLOCK 5: Big-O of \`in\`: list scan vs set hash
+QUESTION: Which is faster, and roughly how much - 2x? 10x? 1000x?
+ACTUAL ANSWER:
+    list: 0.09553s total   set: 0.00003s total   set is 3352x faster
 why: list.__contains__ is O(n) - it scans. set.__contains__ hashes straight
      to the bucket, O(1) average. You just measured it instead of reading it.
 
-=== 6. Counter - tally + top-k in one line ===
-[('i', 4), ('s', 4)]
+BLOCK 6: Counter - tally + top-k in one line
+ACTUAL ANSWER:
+    [('i', 4), ('s', 4)]
 why: most_common(k) returns [(elem, count), ...] sorted by count, highest first.
 
-=== 7. defaultdict - skip the 'if key not in dict' boilerplate ===
-{'a': ['ant', 'ape'], 'b': ['bee', 'bat']}
+BLOCK 7: defaultdict
+ACTUAL ANSWER:
+    {'a': ['ant', 'ape'], 'b': ['bee', 'bat']}
 why: defaultdict(list) auto-creates [] on first touch of a new key - no KeyError guard needed.
 
-=== 8. deque - O(1) at both ends vs list's O(n) at the front ===
-deque([0, 1, 2, 3])
-list.pop(0): 0.09501s   deque.popleft(): 0.00010s
+BLOCK 8: deque - O(1) at both ends vs list's O(n) at the front
+ACTUAL ANSWER:
+    list.pop(0): 0.08923s total   deque.popleft(): 0.00010s total
 why: list.pop(0) shifts every remaining element left -> O(n). deque is a
      doubly-linked structure under the hood -> O(1) at either end.
 
-=== Self-check ===
-Score yourself 0-8: how many did you predict correctly BEFORE running?
+SELF-CHECK
+Score yourself 0-8: how many of your typed guesses were actually right?
 6+ correct -> you knew this, the diagnostic misses were rust, not gaps.
-<6 -> that's fine, it's exactly why this drill exists. Re-run any block you missed.` },
+<6 -> that's fine, it's exactly why this drill exists. Re-run any block you missed.
+
+(Trimmed here for space - the real terminal repeats the full CODE/QUESTION
+block for every one of the 8, exactly like Block 1 above.)` },
         { label: "Terminal — PowerShell (Java)", cwd: "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core",
           cmd: `cd "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core"; java Gotchas.java`,
           note: "JDK 11+ runs a single .java file directly — no separate javac step. Blocks 1, 2, 4 and 6 of Gotchas.java target your Collections 3/4 diagnostic gap specifically.",
           timingNote: "Captured from one real run. Every line except the timing lines (blocks 1, 2 and 6) will match yours exactly — timings vary run to run. What matters is the shape (a 100x+ gap), not the exact milliseconds.",
-          output: `=== 1. ArrayList.get(i) vs LinkedList.get(i) - measured, not memorized ===
-ArrayList: 0.14ms   LinkedList: 60.15ms   ratio: 424x
+          output: `======================================================================
+BLOCK 1: ArrayList.get(i) vs LinkedList.get(i) - measured, not memorized
+======================================================================
+CODE:
+    arrayList.get(mid);   vs   linkedList.get(mid);   // mid = a MIDDLE index, not an end
+
+QUESTION: Which is faster, and roughly how much - 2x? 10x? 100x?
+>>> Type your guess, then press Enter to reveal the real answer: (you type here, then Enter)
+
+ACTUAL ANSWER:
+    ArrayList: 0.17ms   LinkedList: 54.38ms   ratio: 325x
+
 why: ArrayList indexes a backing array directly, O(1) regardless of which
      index. LinkedList.get() walks node-by-node from whichever end is closer -
      get(0) or get(size-1) is nearly free, but a MIDDLE index (used here, so
      this isn't accidentally flattered) is genuinely O(n). get(i) in a loop is
      the wrong reason to reach for LinkedList either way.
 
-=== 2. HashSet.contains O(1) avg vs List.contains O(n) ===
-List.contains: 55.68ms   HashSet.contains: 0.35ms   ratio: 161x
+
+BLOCK 2: HashSet.contains O(1) avg vs List.contains O(n)
+ACTUAL ANSWER:
+    List.contains: 56.83ms   HashSet.contains: 0.31ms   ratio: 184x
 why: List.contains scans; HashSet hashes straight to the bucket. Same shape as
      the Python list-vs-set check in gotchas.py block 5, different syntax.
 
-=== 3. ConcurrentModificationException - not actually about threads ===
-ConcurrentModificationException: java.util.ConcurrentModificationException
+BLOCK 3: ConcurrentModificationException - not actually about threads
+ACTUAL ANSWER:
+    ConcurrentModificationException: java.util.ConcurrentModificationException
 why: removing from a List mid for-each invalidates the iterator's modCount
      check. One thread triggers this despite the name - use iterator.remove()
      or removeIf() instead.
 
-=== 4. hashCode contract - mutate a field it depends on, and the set forgets you ===
-contains before mutation: true
-contains after mutation:  false
+BLOCK 4: hashCode contract - mutate a field it depends on
+ACTUAL ANSWER:
+    contains before mutation: true
+    contains after mutation:  false
 why: HashSet located the bucket using the OLD hashCode. After mutating x, p
      now hashes to a different bucket than the one it's actually stored in -
      it's stranded. Never mutate a field hashCode()/equals() depend on.
 
-=== 5. Comparator chaining - multi-key, stable sort ===
-[Person[name=ana, age=27], Person[name=sid, age=27], Person[name=bo, age=19]]
+BLOCK 5: Comparator chaining - multi-key, stable sort
+ACTUAL ANSWER:
+    [Person[name=ana, age=27], Person[name=sid, age=27], Person[name=bo, age=19]]
 why: chaining reads left-to-right, same idea as Python's tuple-key sort - age
      descending, then name ascending. Java's sort is stable too (TimSort).
 
-=== 6. ArrayDeque O(1) at both ends vs ArrayList.remove(0) O(n) ===
-ArrayList.remove(0): 9.62ms   ArrayDeque.removeFirst(): 0.41ms
+BLOCK 6: ArrayDeque O(1) at both ends vs ArrayList.remove(0) O(n)
+ACTUAL ANSWER:
+    ArrayList.remove(0): 9.75ms   ArrayDeque.removeFirst(): 0.52ms
 why: ArrayList.remove(0) shifts every remaining element left, O(n). ArrayDeque
      is a resizable array used as a ring buffer - O(1) at either end.
 
-=== Self-check ===
+SELF-CHECK
 Score yourself 0-6: your diagnostic scored Collections 3/4 - blocks 1, 2, 4
-and 6 above are exactly that gap, measured instead of recalled.` }
+and 6 above are exactly that gap, measured instead of recalled.
+
+(Trimmed here for space - the real terminal repeats the full CODE/QUESTION
+block for every one of the 6, exactly like Block 1 above.)` }
       ] },
 
     { id: "llm-basics", tag: "Thu · AI/ML", title: "LLM basics: tokens, context, temperature",
@@ -596,26 +662,41 @@ def softmax(logits, temperature):
       terminal: { cwd: "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core",
         cmd: `cd "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core"; python llm_basics.py`,
         note: "No API key needed — the softmax and sampling are hand-rolled stdlib, same math a real model uses at the output layer.",
-        output: `=== 1. Tokens are not words, and not characters ===
-chars: 52   words: 7   approx tokens (word+punct split): 12
+        output: `======================================================================
+BLOCK 1: Tokens are not words, and not characters
+======================================================================
+CODE:
+    sentence = "Claude's tokenizer doesn't split on whitespace only."
+    chars = len(sentence)
+    words = len(sentence.split())
+
+QUESTION: 52 chars, 7 words. Guess a token count - closer to 7, to 52, or in between?
+>>> Type your guess, then press Enter to reveal the real answer: (you type here, then Enter)
+
+ACTUAL ANSWER:
+    chars: 52   words: 7   approx tokens (word+punct split): 12
+
 why: real BPE tokenizers split on sub-word pieces ("Claude's" -> "Claude" + "'s"),
      so token count sits between word count and char count. Rule of thumb:
      ~4 chars/token in English. This is why cost/latency scale with TOKENS,
      not words - a German or Hindi sentence of the same word count can cost more.
 
-=== 2. Context window is a hard cutoff, not a soft suggestion ===
-kept (model still sees these): ['turn-7: some message text here', 'turn-8: some message text here', 'turn-9: some message text here', 'turn-10: some message text here']
-dropped (model has NO memory of these): ['turn-1: some message text here', 'turn-2: some message text here', 'turn-3: some message text here', 'turn-4: some message text here', 'turn-5: some message text here', 'turn-6: some message text here']
+
+BLOCK 2: Context window is a hard cutoff, not a soft suggestion
+QUESTION: Which turns does the model still see, and which has it lost entirely?
+ACTUAL ANSWER:
+    kept (turns 7-10): ['turn-7...', 'turn-8...', 'turn-9...', 'turn-10...']
+    dropped (turns 1-6, zero memory): ['turn-1...', 'turn-2...', ..., 'turn-6...']
 why: once a conversation exceeds the window, the oldest turns fall off the
      front - the model doesn't 'summarize' or 'remember the gist' unless your
      application code does that. This is exactly the RAG-vs-fine-tune framing:
      the window is knowledge you paid to include, not knowledge the model owns.
 
-=== 3. Temperature - same logits, different sampling behavior ===
-temp=0.1: probs=[0.982, 0.018, 0.0, 0.0, 0.0]
-           200 samples -> {'the': '97%', 'a': '3%', 'definitely': '0%', 'possibly': '0%', 'banana': '0%'}
-temp=1.5: probs=[0.491, 0.376, 0.066, 0.058, 0.009]
-           200 samples -> {'the': '47%', 'a': '36%', 'definitely': '8%', 'possibly': '8%', 'banana': '2%'}
+BLOCK 3: Temperature - same logits, different sampling behavior
+QUESTION: At temp=0.1, what % is "the"? At temp=1.5, can "banana" ever get picked?
+ACTUAL ANSWER:
+    temp=0.1 -> the:97% a:3% definitely:0% possibly:0% banana:0%
+    temp=1.5 -> the:47% a:36% definitely:8% possibly:8% banana:2%
 why: LOW temperature sharpens the distribution toward the top logit -> 'the' wins
      almost every time (near-deterministic, but 'near' - not exactly 0% chance of
      anything else, which is WHY temp=0 still isn't perfectly deterministic in
@@ -623,10 +704,12 @@ why: LOW temperature sharpens the distribution toward the top logit -> 'the' win
      HIGH temperature flattens it -> the model actually gambles on 'banana'
      sometimes. Same model, same prompt, same logits - different product behavior.
 
-=== Self-check ===
-Could you have predicted the dropped turns in #2 without running it?
-Could you have predicted which temperature makes 'banana' possible in #3?
-If not, that's the actual gap the diagnostic can't see - not tokenizer trivia.` } },
+SELF-CHECK
+Were your typed guesses in the right ballpark for all 3 blocks?
+If not, that's the actual gap this drill exists to close - not tokenizer trivia.
+
+(Trimmed here for space - the real terminal shows the full CODE/QUESTION
+block for every one of the 3, exactly like Block 1 above.)` } },
 
     { id: "sql-exec-order", tag: "Sat · SQL", title: "SQL: why SELECT runs 5th",
       sub: "The order the database actually works in — not the order you type",
@@ -705,71 +788,131 @@ HAVING AVG(salary) > 70000;  -- runs after grouping, per GROUP`,
       terminal: { cwd: "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core",
         cmd: `cd "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-01-python-core"; python sql_playground.py`,
         note: "sqlite3 is Python stdlib — real database, real rows, zero installs. Same reasoning moves to Postgres in Week 3-4.",
-        output: `=== 1. INNER JOIN - only rows that match on both sides ===
-SELECT e.name, d.name AS dept
-    FROM employees e
+        output: `THE DATA (fixed for every question below):
+  departments: (1, Engineering) (2, Sales) (3, Legal)
+  employees:   (1, Ana, 90000, dept 1)  (2, Bo, 70000, dept 1)
+               (3, Chen, 60000, dept 2)  (4, Deja, 85000, dept NULL)
+
+======================================================================
+BLOCK 1: INNER JOIN - only rows that match on both sides
+======================================================================
+QUERY:
+    SELECT e.name, d.name AS dept FROM employees e
     INNER JOIN departments d ON e.department_id = d.id;
-['name', 'dept']
-('Ana', 'Engineering')
-('Bo', 'Engineering')
-('Chen', 'Sales')
-why: Deja has department_id = NULL, matches no department row, and simply vanishes from the result. INNER JOIN keeps only pairs that matched.
 
-=== 2. LEFT JOIN - every row from the left table, matched or not ===
-SELECT e.name, d.name AS dept
-    FROM employees e
-    LEFT JOIN departments d ON e.department_id = d.id;
-['name', 'dept']
-('Ana', 'Engineering')
-('Bo', 'Engineering')
-('Chen', 'Sales')
-('Deja', None)
-why: Deja is back, with dept = NULL. This is your diagnostic question, live: LEFT JOIN keeps every left-side row and fills unmatched right columns with NULL.
+QUESTION: Deja has no department. Does Deja show up in the result at all?
+>>> Type your guess, then press Enter to reveal the real answer: (you type here, then Enter)
 
-=== 3. GROUP BY + aggregation - one row per group ===
-SELECT d.name AS dept, COUNT(*) AS headcount, AVG(e.salary) AS avg_salary
-    FROM employees e
-    JOIN departments d ON e.department_id = d.id
-    GROUP BY d.name;
-['dept', 'headcount', 'avg_salary']
-('Engineering', 2, 80000.0)
-('Sales', 1, 60000.0)
-why: Legal has zero employees and disappears entirely (it's an INNER JOIN feeding the GROUP BY) - Legal never gets a 0-headcount row. Aggregation only sees rows that survived the join above it.
+ACTUAL ANSWER:
+    ['name', 'dept']
+    ('Ana', 'Engineering')
+    ('Bo', 'Engineering')
+    ('Chen', 'Sales')
 
-=== 4. HAVING vs WHERE - filter rows, or filter groups? ===
-SELECT d.name AS dept, AVG(e.salary) AS avg_salary
-    FROM employees e
-    JOIN departments d ON e.department_id = d.id
-    WHERE e.salary > 65000
-    GROUP BY d.name
-    HAVING AVG(e.salary) > 70000;
-['dept', 'avg_salary']
-('Engineering', 80000.0)
-why: WHERE runs first and removes Chen (60000) as an individual ROW, before any grouping happens. HAVING runs after grouping and would remove a whole DEPARTMENT if its post-filter average were too low.
+why: Deja has department_id = NULL, matches no department row, and simply
+     vanishes from the result. INNER JOIN keeps only pairs that matched.
 
-=== 5. The classic gotcha - can you filter on a SELECT alias in WHERE? ===
-SELECT name, salary * 1.1 AS raised FROM employees WHERE raised > 90000;
-[('Ana', 99000.00000000001), ('Deja', 93500.00000000001)]
+
+BLOCK 2: LEFT JOIN - every row from the left table, matched or not
+QUESTION: Same question, different join. Does Deja show up this time?
+ACTUAL ANSWER:
+    ('Ana', 'Engineering') ('Bo', 'Engineering') ('Chen', 'Sales') ('Deja', None)
+why: Deja is back, with dept = NULL. LEFT JOIN keeps every left-side row and
+     fills unmatched right columns with NULL.
+
+BLOCK 3: GROUP BY + aggregation - one row per group
+QUESTION: Legal has ZERO employees. Does Legal show up with headcount 0, or vanish?
+ACTUAL ANSWER:
+    ('Engineering', 2, 80000.0)  ('Sales', 1, 60000.0)   -- no Legal row at all
+why: Legal disappears entirely (it's an INNER JOIN feeding the GROUP BY) -
+     it never gets a 0-headcount row. Aggregation only sees rows that survived
+     the join above it.
+
+BLOCK 4: HAVING vs WHERE - filter rows, or filter groups?
+QUESTION: Chen (60000) fails the WHERE. Sales only has Chen. Does Sales show up at all?
+ACTUAL ANSWER:
+    ('Engineering', 80000.0)   -- no Sales row
+why: WHERE runs first and removes Chen as an individual ROW, before any
+     grouping happens - Sales never even forms a group.
+
+BLOCK 5: The classic gotcha - alias inside your own WHERE clause
+QUESTION: Does WHERE know what your own SELECT alias "raised" means, or does it error?
+ACTUAL ANSWER:
+    [('Ana', 99000.00000000001), ('Deja', 93500.00000000001)]  -- no error!
 why: this WORKED - and if you predicted an error, you predicted correctly for
-     the rule, just not for SQLite specifically. The rule is real: WHERE runs
-     BEFORE SELECT (FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY is
-     the true order, not the order you type), so 'raised' shouldn't exist yet
-     when WHERE runs. Verified for real on 2026-09-06 (a throwaway Postgres 16
-     container, docker run postgres:16-alpine): the identical query fails with
-     ERROR: column "raised" does not exist. MySQL and SQL Server are widely
-     documented to reject it for the same reason, but that part was NOT run in
-     this session - treat it as likely, not verified, until you check yourself.
-     SQLite is the outlier here, not the rule. The bigger lesson: your LOCAL dev
-     database (SQLite, zero setup) can silently accept something your DEPLOYED
-     database (Postgres, from Week 3) will reject. Re-run this exact query once
-     Pulse has real Postgres and see for yourself - don't take this file's word
-     for it either.
+     the rule, just not for SQLite specifically. WHERE runs BEFORE SELECT
+     (FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY is the true
+     order), so 'raised' shouldn't exist yet. Verified for real on 2026-09-06
+     (a throwaway Postgres 16 container): the identical query fails there with
+     ERROR: column "raised" does not exist. SQLite is the outlier, not the rule.
 
-=== Self-check ===
-Before running: did you expect Legal to vanish in query #3, or show headcount 0?
-Before running: did you expect query #5 to work, or to error?
-Getting either wrong is exactly why 'execution order' beats 'clause order.'` } }
+SELF-CHECK
+Were your 5 guesses right? Getting #3 or #5 wrong is exactly why
+'execution order' beats memorizing clause order.
+
+(Trimmed here for space - the real terminal shows the full QUERY/QUESTION
+block for every one of the 5, exactly like Block 1 above.)` } }
   ]
+};
+
+/* Write-it-yourself guide for the graded exercises file each week. Unlike
+   LESSONS (which reveal real output), this NEVER shows a solution - only the
+   problem restated plainly, a design question to answer before coding, one
+   hint, and exactly where to write it. MASTER_PLAN's own rule is no AI
+   assistance on these; a full-answer reveal here would defeat that. */
+const EXERCISES = {
+  1: { file: "exercises.py", groups: [
+    { label: "Tuesday — do these 6 first", items: [
+      { fn: "two_sum(nums, target)",
+        problem: "Given a list of numbers and a target, return the two indices whose values add up to the target. Exactly one answer exists.",
+        design: "Checking every pair is two nested loops — O(n²). Can you do it in ONE pass instead? What do you need to remember about numbers you've already seen, so that when you hit a new number you can instantly tell \"have I already seen the value that completes this pair?\"",
+        hint: "A dict mapping value → index, built as you go. For each number, check whether (target − number) is already a key before you add the current number to the dict." },
+      { fn: "dedupe(items)",
+        problem: "Remove duplicates from a list, but keep the first occurrence of each, in the original order.",
+        design: "A plain set tells you \"have I seen this?\" in O(1), but a set alone doesn't remember order. What do you pair a set with to get O(n) AND keep the original order?",
+        hint: "A set for the \"seen\" membership check, plus a separate result list you append to only when the value is new." },
+      { fn: "top_k_frequent(words, k)",
+        problem: "Return the k most frequent words. Ties are broken alphabetically.",
+        design: "Counting frequency is one pass with Counter. But \"ties broken alphabetically\" means your sort key can't be just the count. What tuple would sort most-frequent-first, then alphabetically among equal counts?",
+        hint: "Counter(words), then sorted(counts, key=lambda w: (-counts[w], w))[:k] — the negative count sorts descending, the word itself breaks ties ascending." },
+      { fn: "group_anagrams(words)",
+        problem: "Group words that are anagrams of each other.",
+        design: "Two words are anagrams if they contain the same letters, just reordered. What single value could you compute from a word so that EVERY anagram of it produces that exact same value — something usable as a dict key?",
+        hint: "sorted(word) turns any word into a canonical form (e.g. a tuple of its sorted letters). Group words by that value." },
+      { fn: "first_unique(s)",
+        problem: "Return the index of the first character that appears exactly once, or −1 if none does.",
+        design: "You can't know a character is \"unique\" until you know its TOTAL count across the whole string. Does that mean one pass is enough, or do you need to go through the string twice?",
+        hint: "First pass: Counter of every character. Second pass: walk the string in order and return the first index whose character has count == 1." },
+      { fn: "compress(s)",
+        problem: "Run-length encode a string (\"aabcccccaaa\" → \"a2b1c5a3\"), but return the ORIGINAL string if the encoding isn't actually shorter.",
+        design: "You're tracking \"the current character\" and \"how many times in a row so far.\" What causes that streak to end, and what should you do at the exact moment it ends?",
+        hint: "Walk the string once with a running character + count; when the next character differs (or you reach the end), append char+count to the result and reset the count." } ] },
+    { label: "Friday — the remaining 6", items: [
+      { fn: "merge_intervals(intervals)",
+        problem: "Merge overlapping (and touching) intervals into the smallest set that covers the same ranges.",
+        design: "You can only tell if two intervals overlap by comparing them in a meaningful order. What should you sort by FIRST, before you even think about merging?",
+        hint: "Sort by start. Then walk through: if the current interval's start is ≤ the last merged interval's end, extend that interval; otherwise start a new one." },
+      { fn: "rotate_right(nums, k)",
+        problem: "Rotate a list right by k steps. k may be larger than the list's length.",
+        design: "If k is bigger than the list, rotating by k has the exact same effect as rotating by some smaller number. What operation turns any k into an equivalent one that's always less than the list length?",
+        hint: "k % len(nums) (careful: handle the empty-list case first). Then it's two slices glued together: nums[-k:] + nums[:-k]." },
+      { fn: "is_balanced(s)",
+        problem: "Check whether brackets ()[]{}  are balanced and correctly nested.",
+        design: "When you hit a closing bracket, which opening bracket must it match — the very FIRST one you saw, or the MOST RECENT one still unclosed? What structure naturally gives you \"the most recent unclosed thing\"?",
+        hint: "A stack: push every opening bracket. On a closing bracket, pop and check it's the matching type. Balanced only if the stack is empty at the very end." },
+      { fn: "chunked(items, size)",
+        problem: "Split a list into consecutive chunks of a given size (the last chunk may be shorter).",
+        design: "This is really just \"take the next `size` items, then repeat.\" What does a slice like items[i:i+size] give you, and how do you step i forward each time?",
+        hint: "for i in range(0, len(items), size): collect items[i:i+size] — no manual index math beyond that." },
+      { fn: "flatten(nested)",
+        problem: "Flatten an arbitrarily nested list of ints and lists into one flat list.",
+        design: "The nesting depth isn't fixed — a list can contain a list that contains a list. What kind of function naturally handles \"this might contain more of the same shape, at any depth\"?",
+        hint: "Recursion: for each item, if it's a list, flatten IT and extend your result with what comes back; if it's an int, append it directly." },
+      { fn: "product_except_self(nums)",
+        problem: "result[i] = the product of every element except nums[i] — without using division.",
+        design: "Without division you can't just compute the total product and divide it back out. What if, for each position, you tracked \"the product of everything to its LEFT\" and \"the product of everything to its RIGHT\" separately?",
+        hint: "One pass left-to-right building running prefix products, one pass right-to-left building running suffix products, multiply the two at each index." } ] }
+  ] }
 };
 
 const QUIZZES = [
@@ -1083,6 +1226,26 @@ function renderWeek(w) {
           <span class="sub">${esc(l.sub)}</span>
           <button class="go" data-openlesson="${esc(l.id)}">Open lesson →</button>
         </div>`).join("")}</div>
+    ` : ""}
+    ${EXERCISES[w] ? `
+      <h2 class="sec-h" style="margin:22px 0 6px">Write it yourself — ${esc(EXERCISES[w].file)}</h2>
+      <p class="hint">Open ${esc(EXERCISES[w].file)} in your editor. For each one below: read the problem,
+        answer the design question in your head (or out loud) BEFORE writing any code, peek at the hint only
+        if you're stuck, then write the actual function where it says. No full solutions here on purpose —
+        that's what would defeat the exercise. Run <code>python check.py</code> anytime to see your real score.</p>
+      ${EXERCISES[w].groups.map(g => `
+        <div class="exgroup-lbl">${esc(g.label)}</div>
+        <div class="exercise-list">${g.items.map((it, i) => `
+          <details class="exercise">
+            <summary><span class="exnum">${String(i + 1).padStart(2, "0")}</span>${esc(it.fn)}</summary>
+            <div class="exercise-body">
+              <p><span class="lbl">Problem</span><br>${esc(it.problem)}</p>
+              <p><span class="lbl">Design it first</span><br>${esc(it.design)}</p>
+              <details class="hint-reveal"><summary>Stuck? See one hint</summary><p>${esc(it.hint)}</p></details>
+              <div class="exercise-where">${esc(EXERCISES[w].file)} → replace <code>raise NotImplementedError</code> in <code>${esc(it.fn.split("(")[0])}</code></div>
+            </div>
+          </details>`).join("")}</div>
+      `).join("")}
     ` : ""}
     ${c ? `
       <div class="stepbar">
