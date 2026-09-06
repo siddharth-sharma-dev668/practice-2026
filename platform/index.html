@@ -183,6 +183,25 @@
   .reveal[open] summary { color: var(--accent); }
   .reveal .codeblock { margin-top: 8px; }
 
+  .datatable-wrap { margin: 16px 0; }
+  .datatable-cap { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 11px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 8px; }
+  .datatables-row { display: flex; gap: 26px; flex-wrap: wrap; max-width: 100%; overflow-x: auto; }
+  .datatables-row .tname { font-size: 11px; color: var(--muted); margin-bottom: 4px;
+    font-family: 'IBM Plex Mono', Consolas, monospace; }
+  table.datatable { border-collapse: collapse; font-size: 13px; margin: 0; }
+  table.datatable th, table.datatable td { border: 1px solid var(--line); padding: 5px 12px; text-align: left; }
+  table.datatable th { background: var(--surface2); font-weight: 700; font-family: 'IBM Plex Mono', Consolas, monospace;
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  table.datatable td { font-family: 'IBM Plex Mono', Consolas, monospace; color: var(--ink); }
+  table.datatable td.null { color: var(--muted); font-style: italic; }
+
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 10px 0; }
+  @media (max-width: 620px) { .compare-grid { grid-template-columns: 1fr; } }
+  .compare-grid .codeblock { margin: 0; }
+  .compare-lbl { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 10.5px; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 5px; }
+
   .runner-head { display: flex; align-items: center; gap: 14px; margin: 20px 0 6px; flex-wrap: wrap; }
   .back { color: var(--muted); font-weight: 600; font-size: 13.5px; padding: 6px 10px 6px 0; }
   .back:hover { color: var(--ink); }
@@ -401,9 +420,9 @@ const LESSONS = {
         <text x="560" y="275" text-anchor="middle" font-size="9.5" fill="currentColor">index-0 insert is O(n) instead</text>
       </svg>`,
       explain: [
-        "Junior framing: \"what's the difference between a list and a set?\" Senior framing: \"given this access pattern, what does the wrong choice cost at 10M rows?\" Same four containers, different question — and the second one is what actually gets asked once you're past the definitions round, in either language.",
-        "Your Java & Spring diagnostic (17/20) had exactly one soft spot in this territory: Collections, 3/4 — HashMap bucket/treeify behavior and ArrayList-vs-LinkedList cost specifically, not Concurrency, Spring, or JPA, which all came back perfect. That's not \"Java is rusty,\" it's this one shelf, and Gotchas.java below drills exactly that shelf, the same way gotchas.py drills your Python diagnostic misses.",
-        "Interview tell, in both languages: if you're explaining why you used a list/ArrayList where a set/HashSet would do, that's a code-review flag, not a style preference. An O(n) membership check inside a loop is a silent O(n²) bug — the kind that passes review and fails at scale."
+        "Suppose you're checking \"has this username already been taken?\" every time someone types one into a signup form. If existing usernames are kept in a list, Python checks them one at a time — first, second, third — until it finds a match or runs out. With 10,000 saved usernames, one check can take up to 10,000 comparisons. Keep them in a set instead, and Python computes the hash of the typed name and jumps straight to where it should be — roughly the same handful of steps whether there are 10 usernames or 10 million. That's the real difference between the four boxes in the diagram above: each one answers \"how do I store this so my most common operation stays fast\" a different way — it's not just different syntax for the same thing.",
+        "Your Java & Spring diagnostic (17/20) shows exactly where this matters for you in Java: Collections scored 3/4, while Concurrency, Spring and JPA all came back perfect. So it isn't \"Java is rusty\" everywhere — it's specifically HashMap's bucket behavior and the ArrayList-vs-LinkedList cost that's soft. Gotchas.java below measures exactly that, the same way gotchas.py measures your Python diagnostic misses.",
+        "Picking a list where a set would do the same job faster isn't a style choice — it's a bug that hides during testing (small data, feels instant) and shows up only once real traffic hits it (large data, suddenly slow). If an interviewer or a reviewer asks why you used one over the other, they're checking whether you noticed this, not testing vocabulary."
       ],
       code: [
         { label: "Code reference — Python", text: `# The check you run before reaching for any of these — not memorized, derived:
@@ -565,9 +584,9 @@ and 6 above are exactly that gap, measured instead of recalled.` }
         <text x="578" y="296" text-anchor="middle" font-size="9" fill="currentColor">banana</text>
       </svg>`,
       explain: [
-        "This is the mental model every later AI/ML week builds on — RAG (W7), tool calling (W5), and the eval harnesses (W6/W12) all assume you already think in tokens and sampling, not \"the AI just answers.\"",
-        "Tokens are the unit that determines cost AND latency — not words, not characters. \"Just send the whole document\" is a token-cost answer in an AI-engineer interview, not an architecture answer, and the interviewer knows the difference.",
-        "Temperature is a product decision, not a knob you set once and forget: near 0 for answers that should feel deterministic (support bots, code generation), higher for answers that should vary (brainstorming). And \"near 0\" really does mean near — see the non-determinism note in AI_SYSTEM_DESIGN.md §3, which is why eval suites re-run the same prompt multiple times instead of trusting one pass."
+        "Every later AI/ML week in this plan — RAG in Week 7, tool calling in Week 5, the eval harness in Weeks 6 and 12 — assumes you already picture the model as something that reads tokens and produces a probability over what word comes next, not something that magically \"just answers.\" This lesson is that foundation, so it's worth getting concrete about it now.",
+        "A token is roughly a word-piece — not a full word, and not a single character. \"Claude's\" usually becomes two tokens, \"Claude\" and \"'s\", because that's how the tokenizer was trained to split text. This matters because you pay per token and you wait per token: if you're deciding whether to send a whole 50-page document as context, the real question is how many tokens that document costs — not how many words it has. Say that in an AI-engineer interview instead of \"just send the whole document\" and it lands very differently.",
+        "Temperature controls how much the model's answer can vary when you ask the exact same question twice. Set it near 0 and the model almost always picks its single most likely next word — good for a support bot or generated code, where the same input should give the same output. Set it higher and the model will sometimes pick a less likely word on purpose — good for brainstorming, where variety is the point. Notice the word \"almost\" in that first sentence: even near temperature 0, there's still a small, real chance of a different answer. That's exactly why a good eval suite runs the same prompt more than once instead of trusting a single pass (more on this in AI_SYSTEM_DESIGN.md, section 3)."
       ],
       code: `# The core mechanism in 4 lines — full version with sampling in llm_basics.py
 def softmax(logits, temperature):
@@ -610,8 +629,15 @@ Could you have predicted which temperature makes 'banana' possible in #3?
 If not, that's the actual gap the diagnostic can't see - not tokenizer trivia.` } },
 
     { id: "sql-exec-order", tag: "Sat · SQL", title: "SQL: why SELECT runs 5th",
-      sub: "Reasoning from execution order instead of memorizing typed order",
+      sub: "The order the database actually works in — not the order you type",
       figcaption: "SQL is typed SELECT-first, but executes FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY — SELECT is the one clause that moves.",
+      dataTable: { caption: "The data every query below actually runs on",
+        tables: [
+          { name: "departments", columns: ["id", "name"], rows: [[1, "Engineering"], [2, "Sales"], [3, "Legal"]] },
+          { name: "employees", columns: ["id", "name", "salary", "department_id"], rows: [
+            [1, "Ana", 90000, 1], [2, "Bo", 70000, 1], [3, "Chen", 60000, 2], [4, "Deja", 85000, null]
+          ] }
+        ] },
       svg: `<svg viewBox="0 0 640 340" role="img" aria-label="SQL clauses are typed with SELECT first, but execute with SELECT fifth: FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY" style="width:100%;height:auto">
         <defs><marker id="sql-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker></defs>
         <text x="150" y="18" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">Typed order</text>
@@ -649,10 +675,26 @@ If not, that's the actual gap the diagnostic can't see - not tokenizer trivia.` 
         <text x="490" y="305" text-anchor="middle" font-size="12" fill="currentColor">6. ORDER BY</text>
       </svg>`,
       explain: [
-        "Every SQL beginner memorizes clause order (SELECT...FROM...WHERE...). Every senior engineer reasons from EXECUTION order instead, because that's what actually explains behavior — including bugs you'll hit in Pulse's analytics queries from Week 9 on.",
-        "It's also why filtering happens twice, in two different clauses: WHERE runs over individual ROWS before grouping exists; HAVING runs over GROUPS after aggregation. Same word \"filter,\" different stage of the pipeline, different thing being filtered.",
-        "The alias gotcha in sql_playground.py block 5 isn't trivia — it's the same \"my local environment lied to me\" failure mode you'll hit with SQLite-vs-Postgres, dev-vs-prod config, or a mock that behaves differently than the real dependency. Verify against the real target, always — the file's own answer for block 5 was wrong on the first draft until it was actually run."
+        "Look at the two tables above. Every employee has a department_id — except Deja, whose department_id is empty (NULL). Keep that one detail in mind; it's the reason every query below actually means something, instead of being syntax to memorize.",
+        "Here's the part almost everyone learns backwards. You TYPE a query as SELECT ... FROM ... WHERE ... GROUP BY ... HAVING ... ORDER BY. But the database does not run it in that order. It runs FROM first (go get the rows), then WHERE (throw away rows that don't match), then GROUP BY (bundle what's left into groups), then HAVING (throw away whole groups that don't match), and only after all of that does it work out your SELECT list — before finally sorting with ORDER BY. Look at the diagram again: SELECT is written first, but it runs fifth, second-to-last. That one fact explains everything else in this lesson.",
+        "This is also why there are two filtering clauses instead of one. WHERE runs in step 2, before any grouping exists — so it can only see one employee row at a time (it can throw out Chen for earning too little, but at that point it has no idea what any department's average salary is). HAVING runs in step 4, after the groups already exist — so it can see a department's average, but it can no longer see Chen as an individual person. Same English word, \"filter,\" but two different stages, working on two different things."
       ],
+      comparison: {
+        intro: "Now the real test. Does the database let a WHERE clause use an alias you only just invented in your own SELECT list (\"raised\" below)? Don't guess from the rule above — here is the exact same query, run for real, on both databases:",
+        left: { label: "SQLite (sql_playground.py, block 5)", text: `SELECT name, salary * 1.1 AS raised FROM employees
+WHERE raised > 90000;
+
+[('Ana', 99000.00000000001), ('Deja', 93500.00000000001)]
+
+-- No error. It just works.` },
+        right: { label: "Real Postgres 16 (verified 2026-09-06, Docker)", text: `SELECT name, salary * 1.1 AS raised FROM employees
+WHERE raised > 90000;
+
+ERROR:  column "raised" does not exist
+LINE 1: ...ame, salary * 1.1 AS raised FROM employees WHERE raised > 9...
+                                                             ^` },
+        note: "Same query, two real databases, two different answers. Postgres is the one enforcing the rule you just learned — WHERE runs before your SELECT list exists, so \"raised\" genuinely isn't defined yet when Postgres tries to use it. SQLite happens to be forgiving about this one specific thing. That's a fact about SQLite, not a fact about SQL in general — and it's exactly the kind of thing that quietly works on your laptop today and breaks the moment Pulse moves onto real Postgres in Week 3."
+      },
       code: `-- Execution order, not typed order:
 -- FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY
 SELECT dept, AVG(salary) AS avg_sal
@@ -709,16 +751,19 @@ why: WHERE runs first and removes Chen (60000) as an individual ROW, before any 
 SELECT name, salary * 1.1 AS raised FROM employees WHERE raised > 90000;
 [('Ana', 99000.00000000001), ('Deja', 93500.00000000001)]
 why: this WORKED - and if you predicted an error, you predicted correctly for
-     the SQL STANDARD, just not for SQLite specifically. The rule you learned
-     is real: WHERE executes BEFORE SELECT (FROM -> WHERE -> GROUP BY -> HAVING
-     -> SELECT -> ORDER BY is the true execution order, not the order you type
-     clauses in), so 'raised' shouldn't exist yet when WHERE runs. PostgreSQL,
-     MySQL and SQL Server all reject this exact query with a missing-column
-     error. SQLite is unusually permissive and resolves it anyway. The lesson
-     is bigger than the syntax: your LOCAL dev database (SQLite, zero setup)
-     can silently accept something your DEPLOYED database (Postgres, from Week 3)
-     will reject. Re-run this exact query once Pulse has real Postgres and see
-     for yourself - don't take this file's word for it either.
+     the rule, just not for SQLite specifically. The rule is real: WHERE runs
+     BEFORE SELECT (FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY is
+     the true order, not the order you type), so 'raised' shouldn't exist yet
+     when WHERE runs. Verified for real on 2026-09-06 (a throwaway Postgres 16
+     container, docker run postgres:16-alpine): the identical query fails with
+     ERROR: column "raised" does not exist. MySQL and SQL Server are widely
+     documented to reject it for the same reason, but that part was NOT run in
+     this session - treat it as likely, not verified, until you check yourself.
+     SQLite is the outlier here, not the rule. The bigger lesson: your LOCAL dev
+     database (SQLite, zero setup) can silently accept something your DEPLOYED
+     database (Postgres, from Week 3) will reject. Re-run this exact query once
+     Pulse has real Postgres and see for yourself - don't take this file's word
+     for it either.
 
 === Self-check ===
 Before running: did you expect Legal to vanish in query #3, or show headcount 0?
@@ -1088,11 +1133,35 @@ function renderLesson(w, id) {
       <h2>${esc(lesson.title)}</h2>
     </div>
     <p class="focusline">${esc(lesson.sub)}</p>
+    ${lesson.dataTable ? `
+      <div class="datatable-wrap">
+        <div class="datatable-cap">${esc(lesson.dataTable.caption)}</div>
+        <div class="datatables-row">
+          ${lesson.dataTable.tables.map(t => `
+            <div>
+              <div class="tname">${esc(t.name)}</div>
+              <table class="datatable">
+                <thead><tr>${t.columns.map(c => `<th>${esc(c)}</th>`).join("")}</tr></thead>
+                <tbody>${t.rows.map(r => `<tr>${r.map(v => v === null ? `<td class="null">NULL</td>` : `<td>${esc(String(v))}</td>`).join("")}</tr>`).join("")}</tbody>
+              </table>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    ` : ""}
     <figure class="figure">
       ${lesson.svg}
       <figcaption>${esc(lesson.figcaption)}</figcaption>
     </figure>
     ${lesson.explain.map(p => `<p class="lesson-p">${esc(p)}</p>`).join("")}
+    ${lesson.comparison ? `
+      <p class="lesson-p">${esc(lesson.comparison.intro)}</p>
+      <div class="compare-grid">
+        <div><div class="compare-lbl">${esc(lesson.comparison.left.label)}</div><pre class="codeblock">${esc(lesson.comparison.left.text)}</pre></div>
+        <div><div class="compare-lbl">${esc(lesson.comparison.right.label)}</div><pre class="codeblock">${esc(lesson.comparison.right.text)}</pre></div>
+      </div>
+      ${lesson.comparison.note ? `<p class="lesson-p">${esc(lesson.comparison.note)}</p>` : ""}
+    ` : ""}
     ${(Array.isArray(lesson.code) ? lesson.code : [{ label: "Code reference", text: lesson.code }]).map(c => `
       <div class="code-lbl"><span class="tag-lbl" style="color:var(--muted)">${esc(c.label || "Code reference")}</span><button class="mini" data-copy="${esc(c.text)}">copy</button></div>
       <pre class="codeblock">${esc(c.text)}</pre>
