@@ -580,6 +580,126 @@ def deck_c():
     return S
 
 
+# ================ DECK D - Postgres isn't slow, storage is ================
+# First carousel built with the glow/icon toolkit instead of flat boxes -
+# a real flow diagram (write -> WAL -> fsync, forking at the storage layer)
+# replaces the old text-only "the pattern" slides.
+def deck_d():
+    S, D, L = [], DARK, LIGHT
+
+    # 1 cover - thesis, gradient + glow already reads like the reference bar
+    s = Slide(("#0A0E14", "#161F2A"), W, H)
+    s.eyebrow("DATABASE INTERNALS", D)
+    s.lines(60, 340, ["Postgres isn't slow.", "Your storage is."],
+            "black", 82, D["ink"], 96, track=-3)
+    s.rect(60, 560, 960, 3, fill=D["line"])
+    s.lines(60, 650, ["Most 'Postgres is slow' complaints", "trace back to one layer nobody blames."],
+            "reg", 34, D["dim"], 46)
+    s.swipe(D); s.counter(1, 7, D); S.append(s.finish())
+
+    # 2 the claim, sourced
+    s = Slide(L["bg"]); s.eyebrow("THE SOURCE", L)
+    s.lines(60, 260, ["A POSETTE 2026 talk made", "the case directly."],
+            "black", 48, L["ink"], 60, track=-1)
+    s.rule(460, L)
+    s.lines(60, 550, ["P95 spikes. Autovacuum falling behind.", "Checkpoint stalls. Replication lag.",
+                      "The usual complaint list -", "mostly one layer underneath it all."],
+            "reg", 36, L["dim"], 48)
+    s.rect(60, 850, 960, 130, fill=L["card"], outline=L["line"], width=2, r=16)
+    s.text(90, 900, "Sai Srirampur, POSETTE 2026", "bold", 30, L["ink"])
+    s.text(90, 945, "recapped by ClickHouse, 1 Sep 2026", "reg", 26, L["dim"])
+    s.swipe(L); s.counter(2, 7, L); S.append(s.finish())
+
+    # 3 the flow diagram - same write path, forking at the storage layer
+    s = Slide(("#0A0E14", "#161F2A"), W, H)
+    s.eyebrow("THE SAME WRITE, TWO STORAGE LAYERS", D)
+    s.badge(190, 280, 120, s.icon_code, ["Write", "issued"], D["ink"], D)
+    s.arrow(190, 350, 190, 410, D["dim"], 4, 14)
+    s.badge(190, 480, 120, s.icon_db, ["WAL", "fsync"], D["ink"], D)
+    s.arrow(230, 500, 380, 380, D["bad"], 4, 14)
+    s.arrow(230, 560, 380, 680, D["ok"], 4, 14)
+
+    s.rect(400, 240, 620, 260, fill="#241318", outline=D["bad"], width=2, r=20)
+    s.text(430, 300, "NETWORK BLOCK STORAGE", "monob", 24, D["bad"], track=1)
+    s.badge(560, 400, 90, s.icon_clock, ["fsync", "latency"], D["bad"], D)
+    s.badge(760, 400, 90, s.icon_warn, ["Checkpoint", "stalls"], D["bad"], D)
+
+    s.rect(400, 560, 620, 260, fill="#0F241C", outline=D["ok"], width=2, r=20)
+    s.text(430, 620, "LOCAL NVMe", "monob", 24, D["ok"], track=1)
+    s.badge(560, 720, 90, s.icon_bolt, ["Overhead", "disappears"], D["ok"], D)
+    s.badge(760, 720, 90, s.icon_chart, ["Scales", "linearly"], D["ok"], D)
+
+    s.text(60, 900, "Same workload. Same query. Different floor under it.", "reg", 32, D["dim"])
+    s.swipe(D); s.counter(3, 7, D); S.append(s.finish())
+
+    # 4 what changes at each layer - two-column, matches the token-cost deck
+    colY = 260; colH = 380
+    s = Slide(L["bg"]); s.eyebrow("WHAT ACTUALLY HAPPENS", L)
+    s.rect(60, colY, 450, colH, fill="#241318", outline=L["bad"], width=2, r=20)
+    s.text(90, colY + 60, "NETWORK STORAGE", "monob", 23, L["bad"], track=1)
+    s.text(90, colY + 140, "WAL fsync", "bold", 32, "#FFFFFF")
+    s.text(90, colY + 185, "waits on a network round trip", "reg", 24, "#D8C4C4")
+    s.rect(90, colY + 230, 390, 1, fill="#4A2E33")
+    s.text(90, colY + 280, "Checkpoint stalls", "bold", 28, "#FFFFFF")
+    s.text(90, colY + 320, "under sustained write pressure", "reg", 24, "#D8C4C4")
+
+    rx = 570
+    s.rect(rx, colY, 450, colH, fill="#0F241C", outline=L["ok"], width=2, r=20)
+    s.text(rx + 30, colY + 60, "LOCAL NVMe", "monob", 23, L["ok"], track=1)
+    s.text(rx + 30, colY + 140, "WAL fsync", "bold", 32, "#FFFFFF")
+    s.text(rx + 30, colY + 185, "resolves at local disk speed", "reg", 24, "#C4D8CC")
+    s.rect(rx + 30, colY + 230, 390, 1, fill="#2E4A3A")
+    s.text(rx + 30, colY + 280, "OLTP latency", "bold", 28, "#FFFFFF")
+    s.text(rx + 30, colY + 320, "stays flat under the same load", "reg", 24, "#C4D8CC")
+    s.arrow(510, colY + colH / 2 - 10, 565, colY + colH / 2 - 10, L["dim"], 5, 16)
+
+    s.rule(colY + colH + 60, L)
+    s.lines(60, colY + colH + 130, ["That reframes the debugging question:",
+                                     "not 'why is Postgres slow,' but", "'what's under my WAL writes.'"],
+            "bold", 34, L["ink"], 46)
+    s.swipe(L); s.counter(4, 7, L); S.append(s.finish())
+
+    # 5 the honest gap - hasn't run this himself
+    s = Slide(D["bg"]); s.eyebrow("THE HONEST GAP", D)
+    s.lines(60, 300, ["I haven't run this", "comparison myself."],
+            "black", 58, D["ink"], 70, track=-2)
+    s.rect(60, 520, 960, 3, fill=D["line"])
+    s.lines(60, 610, ["No local-NVMe box to test against", "a managed network-storage instance",
+                      "side by side."], "reg", 36, D["dim"], 48)
+    s.lines(60, 800, ["But fsync and checkpoint I/O are", "exactly the operations most sensitive",
+                      "to storage latency - the mechanism", "holds without needing to re-run it."],
+            "bold", 34, D["acc"], 46)
+    s.swipe(D); s.counter(5, 7, D); S.append(s.finish())
+
+    # 6 sources / who this is for
+    s = Slide(L["bg"]); s.eyebrow("WHO THIS CHANGES THINGS FOR", L)
+    s.text(60, 255, "Anyone debugging Postgres", "black", 44, L["ink"], track=-1)
+    s.text(60, 305, "on managed cloud storage.", "black", 44, L["ink"], track=-1)
+    causes = [(s.icon_db, ["Cloud-managed", "Postgres, default"]),
+              (s.icon_warn, ["Checkpoint tuning", "before storage swap"]),
+              (s.icon_chart, ["Benchmarking the", "wrong layer"])]
+    for i, (fn, lbl) in enumerate(causes):
+        cx = 190 + i * 350
+        s.badge(cx, 480, 120, fn, lbl, L["acc"], L, glow_col=L["acc"])
+    s.rule(660, L)
+    s.lines(60, 740, ["Most teams tune Postgres knobs", "before ever checking what's",
+                      "underneath the WAL."], "reg", 34, L["dim"], 46)
+    s.swipe(L); s.counter(6, 7, L); S.append(s.finish())
+
+    # 7 close - question
+    s = Slide(L["bg"]); s.eyebrow("YOUR TURN", L)
+    s.lines(60, 280, ["If you've moved a Postgres", "workload between storage",
+                      "layers -"], "black", 48, L["ink"], 60, track=-1)
+    s.rule(500, L)
+    s.lines(60, 590, ["What actually changed,", "and was it what you expected?"],
+            "bold", 40, L["acc"], 52)
+    s.rect(60, 780, 960, 200, fill=L["card"], outline=L["acc"], width=3, r=14)
+    s.lines(92, 850, ["Network block storage vs. local NVMe -", "same workload, different floor."],
+            "bold", 33, L["ink"], 44)
+    s.counter(7, 7, L); S.append(s.finish())
+    return S
+
+
 # ================= INFOGRAPHIC - MCP token cost, single image =============
 # Matches the reference bar we're building to: one dense poster (gradient
 # ground, glowing icon badges, side stat columns, a pull-quote) instead of
@@ -835,6 +955,7 @@ def build_all(theme, out):
     save_deck("deck-interview-shift", deck_a(), out)
     save_deck("deck-cache-aside", deck_b(), out)
     save_deck("deck-mcp-token-cost", deck_c(), out)
+    save_deck("deck-postgres-storage", deck_d(), out)
 
     d = os.path.join(out, "singles")
     os.makedirs(d, exist_ok=True)

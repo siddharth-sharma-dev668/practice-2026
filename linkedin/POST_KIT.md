@@ -1,24 +1,43 @@
-# Week 1 Post Kit — 3 posts, 5 asset varieties
+# Post Kit — weekly cadence, 6+ asset varieties
 
 Everything here is built and sitting in `linkedin/assets/`. Captions are paste-ready.
 No employer named anywhere. No Pramaan specifics anywhere.
 
-**Schedule — one post every 2 days:**
+**Cadence changed 2026-09-06, per Sid: ~3 posts/week, at least one video/animated
+piece per week where possible.** The old "every 2 days" rule is superseded by this.
+Growth research backs a Tue/Thu/Sat-ish spread over strict 2-day spacing — see the
+playbook at the bottom of this file.
 
 Superseded 2026-09-03: the p95/cache-aside carousel from the earlier session
 (`linkedin/post-p95-redis.html`) went live on **2026-09-02**, covering the same
-ground as Deck B below. Posting Deck B now would repeat that topic back-to-back,
-so it's held out of the active queue (content preserved for a future post instead).
-A "MCP in One Piece" post is also already live, low engagement (4 impressions) —
-noted so the MCP-stateless post below reads as the substantive follow-up, not a repeat.
+ground as Deck B below — held out of the active queue. A "MCP in One Piece" post is
+also already live, confirmed weak (4 impressions, 0 engagements per the analytics
+dashboard) — noted so later MCP posts read as the substantive follow-up, not a repeat.
 
 | When | Post | Variety | Upload |
 |---|---|---|---|
 | 2026-09-02 (done) | p95 / cache-aside | Document carousel | `linkedin/post-p95-redis.html` output |
-| **2026-09-04 (next)** | Reading beats writing (interview shift) | Document carousel, 6 slides | `assets/deck-interview-shift.pdf` |
-| **2026-09-06** | MCP's default token cost | Document carousel, 6 slides | `assets/deck-mcp-token-cost.pdf` |
+| 2026-09-06 (done) | MCP's default token cost | Document carousel, 6 slides | `assets/deck-mcp-token-cost.pdf` |
+| **2026-09-08 (Tue, next)** | Postgres isn't slow, your storage is | Document carousel, 7 slides | `assets/deck-postgres-storage.pdf` |
+| held, not killed | Reading beats writing (interview shift) — deprioritized, not topic-collision-blocked | Document carousel, 6 slides | `assets/deck-interview-shift.pdf` |
 | held / retired | Cache-aside deck (topic collision with 09-02 post) | — | `assets/deck-cache-aside.pdf` |
 | held / spare | MCP goes stateless (weaker sourcing than the token-cost post) | GIF or single image | `assets/mcp-stateless.gif` |
+
+**Live performance as of 2026-09-06** (from LinkedIn's own Content analytics, not
+estimated): p95/cache-aside is the best performer so far — 226 impressions, 18
+engagements, all reactions, **zero comments**. MCP token-cost is too fresh to judge
+(35 impressions). Audience skews **Entry-level (41%) and Software Engineer (32%)** —
+mostly peers, not yet the senior engineers/recruiters this is ultimately aimed at.
+62% of reach is already out-of-network, which is a healthy sign the algorithm is
+distributing beyond Sid's own connections. **Zero comments despite 18 reactions is
+the one number worth fixing** — LinkedIn's own ranking research weighs comments far
+above reactions, so closing questions need to keep getting sharper and more
+specific, and replying fast in the first hour matters more than the caption itself.
+
+**Follow-primary changed 2026-09-06:** Settings → Visibility → Followers → "Make
+follow primary" is now **On** (takes ~24h to apply). Profile visitors now see
+"Follow" as the primary button instead of "Connect" — the right move for building
+an audience rather than a 1:1 network, per Sid's explicit ask to grow followers.
 
 **Added 2026-09-05:** research turned up a stronger MCP story than the stateless-spec post —
 two independent sources (Anthropic's own engineering blog, and a third-party benchmark firm)
@@ -150,6 +169,52 @@ split. Both are primary sources, not vendor hype about a product they're selling
 **A bug I caught before sending this to you:** the reliability slide's dot grid initially had
 success and failure colors reversed — the 7 successful calls were drawn red, the 3 failures
 green, which visually said the opposite of the caption. Fixed before this ever reached you.
+
+---
+
+## Post 1.6 — Postgres isn't slow, your storage is (post 2026-09-08, Tuesday)
+
+**Asset:** `assets/deck-postgres-storage.pdf` · document title suggestion:
+`Postgres isn't slow. Your storage is.`
+
+**Why this one next:** topic rotation away from two AI/MCP posts in a row — this is
+backend/database internals. It's also the first deck built with a real flow diagram
+(write → WAL fsync → forks at the storage layer) instead of flat text boxes, using
+the gradient/glow/icon toolkit end to end.
+
+```
+Postgres isn't slow. Your storage is.
+
+Most "Postgres is slow" complaints aren't Postgres bugs.
+
+A POSETTE 2026 talk (Sai Srirampur, recapped by ClickHouse) makes a case I hadn't seen argued this directly: the P95 latency spikes, autovacuum falling behind, checkpoint stalls, replication lag — the usual list of Postgres performance complaints — mostly trace back to one layer nobody blames: networked block storage.
+
+Same workload, two storage backends.
+
+On network-attached block storage: WAL fsync overhead, buffer-read latency, and checkpoint stalls show up exactly where you'd expect — under write pressure.
+
+On local NVMe: that overhead largely disappears. OLTP latency stays flat. Insert-heavy workloads scale close to linearly.
+
+That reframes the debugging question. "Why is Postgres slow" usually isn't a query-plan problem or a Postgres-internals problem — it's "what's actually underneath my WAL and my checkpoint writes."
+
+I haven't run this comparison myself — no local-NVMe box to test against a managed network-storage instance side by side. But the mechanism is concrete enough to reason about without needing to: fsync and checkpoint I/O are exactly the operations most sensitive to storage latency, and cloud-managed Postgres almost always sits on network-attached storage by default.
+
+If you've moved a Postgres workload from network block storage to local NVMe (or the reverse) — what actually changed, and was it what you expected?
+
+#PostgreSQL #DatabaseEngineering #BackendEngineering #SystemDesign #CloudComputing #DataEngineering #SoftwareEngineering
+```
+
+**Sources, so you can defend this if challenged:** Sai Srirampur's POSETTE 2026 talk,
+recapped by ClickHouse's own engineering blog (1 Sep 2026). The comparison (network
+block storage vs. local NVMe under the same workload) is the talk's own benchmark,
+not Sid's — the caption says so explicitly, matching the same hedge discipline as
+every other post in this kit.
+
+**A bug I caught before sending this to you:** slide 4's comparison boxes had bold
+headline text ("WAL fsync," "Checkpoint stalls," "OLTP latency") rendering in dark
+ink against a dark box fill — nearly unreadable. The bug: that slide reused the
+light theme's ink color inside two hand-tinted dark boxes. Fixed to explicit white
+before this reached you.
 
 ---
 
