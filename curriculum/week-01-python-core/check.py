@@ -1,4 +1,4 @@
-"""Week 1 self-checker. Run:  python check.py"""
+"""RETIRED 2026-09-06 along with exercises.py - see that file's docstring. Not a required deliverable."""
 import sys
 
 import exercises

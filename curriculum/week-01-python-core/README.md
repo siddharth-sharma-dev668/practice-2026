@@ -37,17 +37,13 @@ Then solve on the real judge — same LeetCode account as your DSA problems, pic
 - [596 Classes More Than 5 Students](https://leetcode.com/problems/classes-more-than-5-students/) (GROUP BY + HAVING)
 - [181 Employees Earning More Than Their Managers](https://leetcode.com/problems/employees-earning-more-than-their-managers/) (self-join)
 
-## Deliverable 1 — Exercises (the core work)
+## Deliverable 1 — Pulse's spec (the core work, Tue + Fri)
 
-Implement all 12 functions in [exercises.py](exercises.py). Before you open the file, open the platform (Roadmap → Week 1 → **Write it yourself**) — it has all 12, in a suggested Tuesday/Friday order: the problem in plain words, a design question to answer *before* you write any code (what approach, what data structure, why), one hint if you're stuck, and exactly which function to edit. No solutions on that page, on purpose — that's what `check.py` and `grade week 1` are for. Check yourself anytime:
+~~Implement 12 functions in exercises.py~~ — retired 2026-09-06. Four of those functions were the exact same problems as Deliverable 2 below, and the rest were DSA patterns your own thread already schedules for later weeks — redundant work, not two different skills.
 
-```bash
-python check.py
-```
+Instead: open `pulse/SPEC.md` and write it. Five prompts, no answers given — what Pulse actually is in your own words, one event sketched as JSON, the architecture one hop at a time, the repo layout Week 2 builds, and a running reference table so you're not flipping back to `MASTER_PLAN.md` mid-week. This is design-first, then-code — the same muscle as "design it first" in the old exercises guide, just aimed at the thing that's actually unique this week instead of duplicating Wednesday.
 
-Target: **12/12 by Sunday.** No AI assistance for these — the point is your fluency. Docs are allowed.
-
-## Deliverable 2 — DSA set (LeetCode, arrays & hashing)
+## Deliverable 2 — DSA set (LeetCode, arrays & hashing — the single source for algorithm problems)
 
 | # | Problem | Target |
 |---|---|---|
@@ -58,11 +54,11 @@ Target: **12/12 by Sunday.** No AI assistance for these — the point is your fl
 | 347 | Top K Frequent Elements | Medium |
 | 238 | Product of Array Except Self | Medium |
 
-You'll meet several of these in `exercises.py` first — that's deliberate. Solve there, then submit the class-based version on LeetCode. Save your solutions in a `dsa/` folder here (one file per problem) so I can review your approach, not just the accept.
+Solve the first two on LeetCode; the rest are stretch. Save each solution as a file in a `dsa/` folder here so I can review your approach, not just the accept.
 
 ## Deliverable 3 — Quiz
 
-Platform → Quizzes → **Week 1: Python for Interviews** (15 questions). Take it Sunday, after the exercises.
+Platform → Quizzes → **Week 1: Python for Interviews** (15 questions). Take it Sunday, after the drills.
 
 ## Deliverable 4 — One STAR story (15 min)
 

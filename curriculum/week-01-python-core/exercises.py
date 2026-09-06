@@ -1,11 +1,18 @@
-"""Week 1 — Python for Interviews I: 12 exercises.
+"""RETIRED 2026-09-06 - do not use this file.
 
-Rules:
-- Implement each function, then run `python check.py` to score yourself.
-- Python docs allowed. No AI, no copy-paste solutions — fluency is the goal.
-- Think about time complexity for every one (you'll be asked in interviews).
+Every function below duplicates something else already in the plan:
+two_sum, group_anagrams, top_k_frequent and product_except_self are the
+EXACT SAME problems as Wednesday's LeetCode list (1, 49, 347, 238) - and
+the rest (dedupe, first_unique, compress, merge_intervals, rotate_right,
+is_balanced, chunked, flatten) are patterns your DSA thread already
+schedules for later weeks (stack in W4, intervals in W10, etc). Writing
+them here too was redundant work, not a second skill - Sid called this
+out on 2026-09-06.
 
-Replace each `raise NotImplementedError` with your implementation.
+Tuesday/Friday now go to pulse/SPEC.md instead (design work, not code).
+DSA stays exactly where it already was: Wednesday, on the real LeetCode
+judge, 2/week. Left on disk in case any single function is useful
+later, but nothing here is a required deliverable anymore.
 """
 
 
