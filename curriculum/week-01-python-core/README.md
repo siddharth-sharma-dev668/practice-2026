@@ -32,6 +32,11 @@ Same protocol, run [llm_basics.py](llm_basics.py): tokens vs words vs characters
 
 Run [sql_playground.py](sql_playground.py): a real in-process database (`sqlite3`, stdlib, zero setup) walking INNER vs LEFT JOIN, GROUP BY + aggregation, WHERE vs HAVING, and a genuine alias gotcha that proves why execution order beats typed order. Same reasoning moves onto real Postgres in Week 3-4.
 
+Then solve on the real judge — same LeetCode account as your DSA problems, picked to match today exactly:
+- [175 Combine Two Tables](https://leetcode.com/problems/combine-two-tables/) (LEFT JOIN)
+- [596 Classes More Than 5 Students](https://leetcode.com/problems/classes-more-than-5-students/) (GROUP BY + HAVING)
+- [181 Employees Earning More Than Their Managers](https://leetcode.com/problems/employees-earning-more-than-their-managers/) (self-join)
+
 ## Deliverable 1 — Exercises (the core work)
 
 Implement all 12 functions in [exercises.py](exercises.py). Before you open the file, open the platform (Roadmap → Week 1 → **Write it yourself**) — it has all 12, in a suggested Tuesday/Friday order: the problem in plain words, a design question to answer *before* you write any code (what approach, what data structure, why), one hint if you're stuck, and exactly which function to edit. No solutions on that page, on purpose — that's what `check.py` and `grade week 1` are for. Check yourself anytime:
