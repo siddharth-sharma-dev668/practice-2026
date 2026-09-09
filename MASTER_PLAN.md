@@ -28,6 +28,7 @@ You are **not a beginner** — this plan treats you as a working engineer with ~
 | Advanced SQL (window functions, query plans) | 🟡 Medium | Data Analyst, Backend |
 | Statistics / A-B testing / Excel (pivots, lookups) | 🟡 Medium | Data Analyst |
 | SDET title pigeonhole risk | 🟠 High | Backend (recruiter filters) — fixed by portfolio + resume positioning |
+| .NET/C# — zero exposure | 🟡 Mid (7/10, added 2026-09-09) | .NET Developer roles only — a widened net, not a 6th core target. Basics-for-a-screen only; see [DOTNET_FROM_JAVA.md](DOTNET_FROM_JAVA.md) |
 
 **Calibration — diagnostic taken Aug 25, 2026: 22/25 (88%).** Python 3/6 · SQL 4/4 · DSA 4/4 · Web 4/4 · Stats 3/3 · ML/AI 4/4.
 
@@ -35,7 +36,7 @@ The Python misses were Q2 (comprehension with a filter), Q3 (hashability) and Q6
 
 **Java & Spring diagnostic taken Sep 5, 2026: 17/20 (85%).** Java Core 3/5 · Collections 3/4 · Concurrency & JVM 4/4 · Spring 4/4 · JPA/Hibernate 3/3. This is good news that narrows, not confirms, the original worry — "cold since Dec 2025" implied broad rust, but Concurrency/JVM, Spring and JPA/Hibernate all came back perfect: the framework-level knowledge from daily Onextel work held up completely. The real softness is specifically base-language mechanics and collections internals, which is **exactly** W2's Saturday topic (collections internals, generics, Streams) — already correctly targeted. **No restructuring of the Java thread** (still alternating Saturdays + Java DSA from W7 + Spring Boot service W16 + LLD mock W21); this diagnostic confirms the sizing rather than changing it.
 
-**Depth priority (where the hours go when they're scarce):** Backend + AI Engineer first — that's where the existing experience and the MCP differentiator already live. ML, Data and FDE ride along inside the same capstones rather than getting their own months. This is a *weighting*, not a sequence: see §2.
+**Depth priority (where the hours go when they're scarce):** Backend + AI Engineer first — that's where the existing experience and the MCP differentiator already live. ML, Data and FDE ride along inside the same capstones rather than getting their own months. .NET rides even lighter than that — 7/10, mid-priority, borrowing the Java Saturday's time rather than getting its own (2026-09-09, his call — see §2's daily braid and [DOTNET_FROM_JAVA.md](DOTNET_FROM_JAVA.md)). This is a *weighting*, not a sequence: see §2.
 
 ### What the interviews actually look like (researched Aug 2026 — full detail in [interview-prep/INTERVIEW_INTEL.md](interview-prep/INTERVIEW_INTEL.md))
 
@@ -64,7 +65,7 @@ Two cross-cutting 2026 realities: **proctoring is tightening and in-person final
 | **Wed** | DSA — 2 problems | Mid-week cardio, never skipped |
 | **Thu** | AI / ML concept | The differentiator track |
 | **Fri** | Capstone build | Ship something before the weekend |
-| **Sat** | Data ↔ Java (alternating weeks) | Keeps SQL sharp and Java from going cold again |
+| **Sat** | Data ↔ Java ↔ .NET (3-way rotation, roughly every 3rd Saturday is .NET) | Keeps SQL sharp, Java from going cold, and adds .NET basics (7/10 priority, added 2026-09-09) — taught explicitly as a translation from that day's/week's Java, not a parallel curriculum, so it borrows the slot instead of costing new hours. Capstone-critical Java Saturdays (e.g. W16, right before writing Pulse's Spring Boot service) stay Java — .NET only takes a slot where the original topic was a generic reinforcement session, not a load-bearing one. First .NET Saturday: **W4**, replacing "Java: concurrency, JVM memory & GC" — his strongest diagnostic area (4/4), so the least costly Java session to lend. |
 | **Sun** | Quiz + review + weekly log | Spaced recall, and the log feeds LinkedIn |
 
 Missing a day is fine — miss the *same* day two weeks running and tell me, that's a signal the plan is wrong, not that you failed.
@@ -122,12 +123,12 @@ If capacity rises, say `more hours` and I'll re-cut this — more DSA first, the
 ### Stage 1 · Foundations (W1–6 · Aug 24 → Oct 4)
 *Python fluency where the diagnostic found gaps, SQL, FastAPI, LLM basics, Java warm-up. Capstone 1 starts W2.*
 
-| Wk | Backend & Python | AI / ML | Data ↔ Java | Capstone 1 "Pulse" | DSA (2) |
+| Wk | Backend & Python | AI / ML | Data ↔ Java ↔ .NET | Capstone 1 "Pulse" | DSA (2) |
 |---|---|---|---|---|---|
 | 1 | Collections, comprehensions, sorting, big-O of builtins — **targets your Q2/Q3/Q6 misses** | LLM basics: tokens, context, temperature | SQL: joins + aggregation | *spec & repo plan* | Arrays & hashing |
 | 2 | Functions, closures, decorators, generators, typing | Prompting + structured JSON outputs | Java: collections internals, generics, Streams | Repo skeleton, FastAPI up, Docker | Two pointers |
 | 3 | FastAPI: routing, Pydantic v2, dependency injection | Calling the Claude API from Python | SQL: subqueries + CTEs | Event-ingest endpoint + Postgres | Sliding window |
-| 4 | SQLAlchemy 2.0 + Alembic migrations | Embeddings & vector intuition | Java: concurrency, JVM memory & GC | Events persisted, schema designed | Stack |
+| 4 | SQLAlchemy 2.0 + Alembic migrations | Embeddings & vector intuition | **.NET** (§1-2 of DOTNET_FROM_JAVA.md — direct name-swaps, syntax) | Events persisted, schema designed | Stack |
 | 5 | async, background tasks, error design | Tool calling / function calling | SQL: window functions I | Async ingest + worker stub | Binary search |
 | 6 | pytest patterns, fixtures, coverage (**your SDET edge**) | Eval basics: golden sets, why temp=0 isn't deterministic; Task→Trial→Transcript→Grader→Outcome vocabulary, pass@k vs pass^k | Java: Spring IoC/DI, `@Transactional` | Test suite + GitHub Actions CI | Linked lists |
 
@@ -181,6 +182,7 @@ If capacity rises, say `more hours` and I'll re-cut this — more DSA first, the
 
 - **DSA:** 2 problems/week, NeetCode pattern order → ~50 by Feb. From W7, one of the two is written **in Java** so the language never goes cold again. Log every solve.
 - **Java/Spring:** alternating Saturdays all year (not a 4-week block) + Java DSA from W7 + a Spring Boot service in W16 + an LLD mock in W21. Sized by the Java diagnostic score.
+- **.NET (mid, 7/10):** roughly every 3rd Saturday from W4 onward, borrowing the Java slot rather than adding hours — see [DOTNET_FROM_JAVA.md](DOTNET_FROM_JAVA.md), taught as a direct translation from Java/Spring (ASP.NET Core ≈ Spring Boot, EF Core ≈ JPA, C# ≈ Java syntax). Basics-for-a-screen scope only, not the full predict-drill/lesson-page treatment the core threads get — upgrade it if a real .NET interview gets scheduled.
 - **Resume:** v1 at W12, v2 at W18, vFinal at W23. Reviews live in `resume/`.
 - **Applications:** start W12, ~10 quality applications + 5 referral asks per week. Referrals and hiring-manager outreach come *first* — the SDET title filter is real.
 - **Interview stories:** 1 STAR story/week into `interview-prep/stories.md` → 20+ by Feb.
