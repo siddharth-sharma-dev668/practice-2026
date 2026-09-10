@@ -42,7 +42,7 @@ The Python misses were Q2 (comprehension with a filter), Q3 (hashability) and Q6
 
 | Role | The loop at 1–2 YOE in India | The make-or-break round |
 |---|---|---|
-| Backend | OA (2–3 LC-medium) → DSA rounds → **LLD/machine coding at startups** → Java/Spring+SQL+project rounds at GCCs → HM | Live DSA + HashMap/@Transactional-depth Java; startups: 90-min working-code LLD (Parking Lot, Logger, Chess) |
+| Backend | OA (2–3 LC-medium) → DSA rounds → **LLD/machine coding at startups** → Java/Spring+SQL+project rounds at GCCs → HM | Live DSA + HashMap/@Transactional-depth Java; startups: 90-min working-code LLD (Rate Limiter, LRU Cache, Consistent Hash Ring — what actually gets asked, ahead of practice-only classics like Parking Lot/Chess) |
 | AI Engineer | Screen → practical Python → GenAI concepts → AI system design → **take-home (RAG/agent) + defense** | The take-home — and **evals are the #1 differentiator** (your SDET background IS an evals background) |
 | ML Engineer | OA/DSA → ML breadth → junior-level ML system design (a discussion) → **project end-to-end walkthrough** | The project walkthrough — highest-weight round at this level |
 | Data Analyst | Screen → **live SQL** → live Excel (raw data → pivot → dashboard, timed) → case/guesstimate → HR | Live SQL with window functions; "DAU dropped 15% — investigate" case |
@@ -153,8 +153,8 @@ If capacity rises, say `more hours` and I'll re-cut this — more DSA first, the
 
 | Wk | Backend & Python | AI / ML | Data ↔ Java | Capstone 2 "DocMind" | DSA (2) |
 |---|---|---|---|---|---|
-| 13 | System design I: LB, caching, queues, capacity estimation | **Build your own MCP server** | Metrics design | Spec + MCP skeleton | Graphs I |
-| 14 | System design II: sharding, consistency | Agent loop from scratch, streaming | Java: LLD — Parking Lot / Rate Limiter | MCP server working | Graphs II |
+| 13 | System design I: back-of-envelope capacity planning, LB algorithms, caching layers, queues | **Build your own MCP server** | Metrics design | Spec + MCP skeleton | Graphs I |
+| 14 | System design II: sharding & hot partitions, consistent hashing, consistency models (CAP/PACELC) | Agent loop from scratch, streaming | Java: LLD — Rate Limiter + LRU Cache (real interview staples, code from scratch) | MCP server working | Graphs II |
 | 15 | API versioning, idempotency, webhooks at scale | RAG with citations over a real corpus | Stats: CIs, hypothesis tests, A/B | Cited RAG answers | 1-D DP |
 | 16 | Write one service in **Spring Boot** (prove the Java) | Reranking + chunking strategies compared; RAG vs fine-tuning decision framework, LoRA/PEFT (concept-level — why it cuts training cost) | Java: Spring depth + Q-bank | Retrieval quality tuned | 2-D DP |
 | 17 | Monitoring, drift, MLflow serving | **MLOps**: track, serve and monitor the Pulse model | A/B analysis writeup | Eval suite running in CI | Timed mixed |
@@ -169,7 +169,7 @@ If capacity rises, say `more hours` and I'll re-cut this — more DSA first, the
 |---|---|---|---|
 | 19 | DocMind deployed + recorded walkthrough | Mock: backend (Python) | Timed mixed |
 | 20 | Excel/BI power tools + exec storytelling; analytics deep-dive on Pulse data | Mock: AI engineer (take-home defense) | Timed mixed |
-| 21 | LLD in Java, 90-min working-code drill | Mock: LLD (Java) | Timed mixed |
+| 21 | LLD in Java, 90-min working-code drill — pick 2 cold from: Rate Limiter, LRU Cache, Consistent Hash Ring, Bloom Filter, Distributed ID Generator | Mock: LLD (Java) | Timed mixed |
 | 22 | FDE craft: 48-hour POC drill, decomposition cases, client roleplay | Mock: MLE project walkthrough | Timed mixed |
 | 23 | Full loop rehearsal + resume vFinal + application push | Mock: backend (Java/Spring) + system design | Timed mixed |
 | 24 | **The Gauntlet** — one mock per role, behavioral polish, portfolio final | Scorecard per role | Timed mixed |
@@ -189,6 +189,7 @@ If capacity rises, say `more hours` and I'll re-cut this — more DSA first, the
 - **LinkedIn:** Mon DECODE / Thu UPGRADE LOG from `linkedin/studio.html` — the Sunday review doubles as post material.
 - **Spaced review:** every weekly quiz carries 3 questions from earlier weeks.
 - **AI system design reference:** [interview-prep/AI_SYSTEM_DESIGN.md](interview-prep/AI_SYSTEM_DESIGN.md) — the production-GenAI concept bank (RAG, fine-tuning, evals, observability, caching, feedback loops, guardrails) that W6–W18's AI/ML column draws its terminology from. Pull from it when generating those weeks' content and the "AI system design" interview round.
+- **External reference — fanout.sh** (checked 2026-09-10): a paid staff/L7-level learning site (System Design, AI Research, ML Math paths; free tier gives ~16-25 lessons per path; full access ~₹735/mo or ~₹6,510 lifetime at the time of checking — verify current pricing before quoting it again). Its **System Design path (14 modules, 179 topics)** is a genuinely good, more granular breakdown than what's below and is where the sharper LLD picks above (Rate Limiter, LRU Cache, Consistent Hash Ring, Bloom Filter, Distributed ID Generator) came from — worth using its free lessons as a study companion when W13/14/21 actually come up, and its module list as a checklist of standard topics to make sure nothing's missed. Its **AI Research path** is research-scientist-flavored (attention/GPT/LLMs from scratch, RL, fine-tuning depth) — more than an AI *Engineer* interview (RAG/agents/evals/tool-calling) actually tests, so skip most of it; its **MLOps module** (Docker, CI/CD, Kubernetes, Prometheus/Grafana, MLflow) is the one piece worth a look for W17.
 
 ## 5. Capstone portfolio (what recruiters will see)
 
