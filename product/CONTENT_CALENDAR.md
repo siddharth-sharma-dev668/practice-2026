@@ -88,6 +88,26 @@ You lived it, so say it: you wrote a nine-line function, never ran it, and both 
 
 ---
 
+## The third angle: your score becomes your study guide
+
+**This is the step nobody else's content covers, and it's the actual product, not just the pitch.** Angle 1 gets someone to admit their resume doesn't match. Angle 2 gets them to admit AI-assisted practice isn't real practice. Neither one shows what happens next: a closed-book score, broken down by topic, turning directly into a plan with nothing generic in it. That's the gap. Works for anyone, in any domain — the score is the input, not the person's background.
+
+**Why it works as content:** "here's a study plan" is a commodity; anyone can generate one. "Here's a study plan generated FROM a score you can't fake your way past" is not — and showing the score-to-plan mechanism, live, is a demo nobody else can copy without literally being the product.
+
+**Eight posts from this angle:**
+1. "A study plan without a diagnostic first is a guess wearing a schedule."
+2. "I didn't pick my own weak topics. My score did. Here's the difference."
+3. "Two people, same target role, same 5 hours a week — completely different plans, because their scores were different."
+4. "If your prep plan looks the same before and after you took a test, it isn't a plan. It's a syllabus."
+5. "Score 9/10 on a topic and the plan skips it. Score 3/10 and it doesn't. That's the whole idea."
+6. "The honest version of 'personalized': not your name on a template, your actual gaps driving actual hours."
+7. "Closed-book, no googling, 25 questions — then the plan gets built from what that revealed, not from what you hoped was true."
+8. "Retake the diagnostic at week 12. If the plan doesn't change, something's wrong with the plan."
+
+**The free lead magnet for this angle:** run the diagnostic, screenshot your own real section scores next to the resulting plan snippet — "score → plan" as one image, no product pitch in the caption. Let the mechanism be the ad.
+
+---
+
 ## Hooks that work in this niche
 
 The first line decides everything. Steal these patterns:
