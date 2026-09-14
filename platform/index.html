@@ -139,6 +139,12 @@
   .linkchips a { display: inline-block; padding: 4px 13px; border: 1px solid var(--line); border-radius: 99px;
     font-size: 12.5px; font-weight: 600; color: var(--ink); text-decoration: none; background: var(--surface2); }
   .linkchips a:hover { border-color: var(--accent); color: var(--accent); }
+  .linkchip-cb { display: inline-flex; align-items: center; gap: 6px; padding: 4px 13px 4px 10px;
+    border: 1px solid var(--line); border-radius: 99px; background: var(--surface2); }
+  .linkchip-cb input { margin: 0; }
+  .linkchip-cb a { padding: 0; border: none; background: none; }
+  .linkchip-cb:has(input:checked) { border-color: var(--ok, #2fa86a); }
+  .linkprog { font-size: 12px; color: var(--muted); margin-top: 6px; }
   .takequiz { margin-top: 10px; }
   .locked { border: 1px dashed var(--line); border-radius: 10px; padding: 16px 18px; color: var(--muted);
     font-size: 14px; margin-top: 16px; background: var(--surface); }
@@ -1249,7 +1255,10 @@ function stepHTML(w, i, s) {
       <span class="st-t">${esc(s.t)}</span>
       ${s.d ? `<div class="st-d">${esc(s.d)}</div>` : ""}
       ${s.cmd ? `<div class="cmd"><code>${esc(s.cmd)}</code><button class="mini" data-copy="${esc(s.cmd)}">copy</button></div>` : ""}
-      ${s.links ? `<div class="linkchips">${s.links.map(l => `<a href="${l[1]}" target="_blank" rel="noopener">${esc(l[0])} ↗</a>`).join("")}</div>` : ""}
+      ${s.links ? `<div class="linkchips">${s.links.map((l, j) => s.links.length > 1
+        ? `<span class="linkchip-cb"><input type="checkbox" data-linktask="${w}:${i}:l${j}" ${S.tasks[`${w}:${i}:l${j}`] ? "checked" : ""} aria-label="mark solved: ${esc(l[0])}"><a href="${l[1]}" target="_blank" rel="noopener">${esc(l[0])} ↗</a></span>`
+        : `<a href="${l[1]}" target="_blank" rel="noopener">${esc(l[0])} ↗</a>`
+      ).join("")}</div>${s.links.length > 1 ? `<div class="linkprog">${s.links.filter((_, j) => S.tasks[`${w}:${i}:l${j}`]).length}/${s.links.length} marked solved</div>` : ""}` : ""}
       ${s.quiz ? `<div class="takequiz"><button class="go" data-openquiz="${s.quiz}">${best ? "Retake" : "Take"} the quiz →</button>${best ? ` <span class="chip ${best.pct >= 70 ? "ok" : "warn"}" style="margin-left:8px">best: ${best.score}/${best.total}</span>` : ""}</div>` : ""}
     </span>
   </div>`;
@@ -1320,6 +1329,10 @@ function renderWeek(w) {
   pill.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") cycle(e); });
   host.querySelectorAll("[data-task]").forEach(cb => cb.addEventListener("change", () => {
     S.tasks[cb.dataset.task] = cb.checked;
+    save(); renderWeek(w); renderProgress(); renderNow();
+  }));
+  host.querySelectorAll("[data-linktask]").forEach(cb => cb.addEventListener("change", () => {
+    S.tasks[cb.dataset.linktask] = cb.checked;
     save(); renderWeek(w); renderProgress(); renderNow();
   }));
   host.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click", () => {
