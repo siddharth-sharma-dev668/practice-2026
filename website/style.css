@@ -1,15 +1,17 @@
 :root {
   --paper: #ffffff;
-  --panel: #f0f2f5;
-  --ink: #12141a;
-  --ink-mute: #565c68;
-  --line: #d8dce2;
-  --signal: #0f7a6b;
-  --signal-soft: #e4f3ef;
-  --gap: #b34700;
-  --gap-soft: #fbe9dd;
+  --panel: #eef1f0;
+  --ink: #10131a;
+  --ink-mute: #5b6169;
+  --line: #e4e7ea;
+  --signal: #0b6e5e;
+  --signal-deep: #084f44;
+  --signal-soft: #e1f0ec;
+  --gap: #9c4415;
+  --gap-soft: #f6e8dd;
   --error: #b91c1c;
   --wrap: 1080px;
+  --shadow-soft: 0 1px 2px rgba(16, 19, 25, 0.04), 0 16px 36px rgba(16, 19, 25, 0.08);
   --sans: 'IBM Plex Sans', system-ui, -apple-system, Segoe UI, sans-serif;
   --mono: 'IBM Plex Mono', 'SF Mono', Consolas, monospace;
 }
@@ -40,17 +42,18 @@ strong { color: var(--ink); }
 
 .btn {
   display: inline-block;
-  padding: 13px 26px;
+  padding: 13px 28px;
   font-family: var(--sans);
   font-weight: 600;
   font-size: 1rem;
   border: 1px solid transparent;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
 }
-.btn-primary { background: var(--ink); color: #fff; }
-.btn-primary:hover { background: var(--signal); text-decoration: none; }
-.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-primary { background: var(--signal); color: #fff; }
+.btn-primary:hover { background: var(--signal-deep); text-decoration: none; box-shadow: 0 6px 16px rgba(11, 110, 94, 0.22); }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
 .btn-block { display: block; width: 100%; text-align: center; }
 
 /* Header */
@@ -60,7 +63,7 @@ strong { color: var(--ink); }
   border-bottom: 1px solid var(--line);
 }
 .header-inner { display: flex; align-items: center; justify-content: space-between; height: 60px; }
-.wordmark { font-weight: 700; font-size: 1.05rem; color: var(--ink); }
+.wordmark { font-weight: 700; font-size: 1.05rem; color: var(--ink); letter-spacing: -0.01em; }
 .site-nav { display: flex; align-items: center; gap: 28px; }
 .site-nav a { color: var(--ink-mute); font-weight: 500; font-size: 0.95rem; }
 .site-nav a:hover { color: var(--ink); text-decoration: none; }
@@ -76,8 +79,9 @@ strong { color: var(--ink); }
 .hero-readout {
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 28px;
+  border-radius: 10px;
+  padding: 32px;
+  box-shadow: var(--shadow-soft);
 }
 .readout-label { font-size: 0.82rem; color: var(--ink-mute); margin-bottom: 18px; }
 .readout-score { display: flex; align-items: baseline; gap: 4px; margin-bottom: 14px; }
@@ -96,9 +100,9 @@ strong { color: var(--ink); }
 .tag-gap { background: var(--gap-soft); color: var(--gap); }
 
 /* Sections */
-.section { padding: 68px 0; border-top: 1px solid var(--line); }
+.section { padding: 76px 0; border-top: 1px solid var(--line); }
 .section-panel { background: var(--panel); }
-.section-lede { font-size: 1.05rem; margin-bottom: 36px; }
+.section-lede { font-size: 1.05rem; margin-bottom: 40px; }
 
 /* Ledger (the four steps) */
 .ledger { list-style: none; margin: 0; padding: 0; max-width: 640px; }
