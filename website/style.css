@@ -138,12 +138,20 @@ strong { color: var(--ink); }
 .price-note .mono { font-size: 1.4rem; }
 .price-alt { font-size: 0.95rem; font-weight: 400; color: var(--ink-mute); }
 
-/* Objections (Q&A) */
-.qa-list { margin: 0; }
-.qa-row { padding: 22px 0; border-top: 1px solid var(--line); }
-.qa-row:first-child { border-top: none; }
-.qa-row dt { font-weight: 600; color: var(--ink); margin-bottom: 6px; }
-.qa-row dd { margin: 0; }
+/* FAQ accordion */
+.accordion { margin-top: 32px; }
+.accordion details { border-top: 1px solid var(--line); padding: 16px 0; }
+.accordion details:last-child { padding-bottom: 0; }
+.accordion summary {
+  font-weight: 600; color: var(--ink); cursor: pointer;
+  list-style: none;
+}
+.accordion summary::-webkit-details-marker { display: none; }
+.accordion summary::before {
+  content: '+'; display: inline-block; width: 1em; color: var(--signal); font-weight: 700;
+}
+.accordion details[open] summary::before { content: '\2212'; }
+.accordion details p { margin: 12px 0 0; }
 
 .pull-quote {
   font-size: 1.25rem; font-weight: 500; color: var(--ink);
