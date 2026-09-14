@@ -60,13 +60,18 @@
       "done": ["diagnostic (22/25)", "Java & Spring diagnostic (17/20)", "GitHub account + username", "git remote configured"],
       "outstanding": ["coding warm-up bug fix by Sid himself (bugs were pointed out, not corrected for him)", "push commits to GitHub — unconfirmed"],
       "note": "Started 12 days late against the original Aug 24 calendar date — real pace, not a calendar the plan should pretend held. Dates on weeks 1+ are labels, not deadlines; the loop (start week N -> work the braid -> grade week N) is what actually paces this, not the printed date range." },
-    "1": { "status": "in_progress", "assigned": "2026-08-21", "started": "2026-09-05", "due": "2026-08-30" }
+    "1": { "status": "in_progress", "assigned": "2026-08-21", "started": "2026-09-05", "due": "2026-08-30",
+      "graded": "2026-09-14",
+      "done": ["gotchas.py / Gotchas.java drills (Mon + Mon-bonus)", "llm_basics.py drill (Thu)", "sql_playground.py drill + 3 real LeetCode SQL problems (Sat)", "Week 1 quiz: 13/15 (87%)", "STAR story #1 (Onextel p95 latency) — written honestly, with the measurement-provenance gap flagged rather than hidden"],
+      "outstanding": ["pulse/SPEC.md — all 5 prompts still blank placeholders (`>`, empty `{}`, `?? --> ??`). This is Tue/Fri's actual deliverable, not optional.", "DSA set — 0 of 6 LeetCode problems solved, no dsa/ folder yet with saved solutions"],
+      "note": "Checkbox state in the platform (7/9 steps) does not match what's actually in the repo — the coach's job is to verify files, not trust ticks. Not marking Week 1 done until SPEC.md has Sid's own words and at least the two 'do this' DSA problems (217, 242 easy, plus 1 Two Sum) are solved and saved." }
   },
   "quiz_scores": {
     "diag": { "score": 22, "total": 25, "pct": 88, "date": "2026-08-25",
       "sections": { "Python": "3/6", "SQL": "4/4", "DSA": "4/4", "Web": "4/4", "Stats": "3/3", "ML/AI": "4/4" } },
     "diag-java": { "score": 17, "total": 20, "pct": 85, "date": "2026-09-05",
-      "sections": { "Java Core": "3/5", "Collections": "3/4", "Concurrency & JVM": "4/4", "Spring": "4/4", "JPA/Hibernate": "3/3" } }
+      "sections": { "Java Core": "3/5", "Collections": "3/4", "Concurrency & JVM": "4/4", "Spring": "4/4", "JPA/Hibernate": "3/3" } },
+    "w1": { "score": 13, "total": 15, "pct": 87, "date": "unconfirmed — read off Progress screen 2026-09-14, not self-reported by Sid in chat" }
   },
   "dsa": { "solved_total": 0, "log": [] },
   "capstones": {
