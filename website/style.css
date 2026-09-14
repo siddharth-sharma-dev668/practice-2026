@@ -138,6 +138,13 @@ strong { color: var(--ink); }
 .price-note .mono { font-size: 1.4rem; }
 .price-alt { font-size: 0.95rem; font-weight: 400; color: var(--ink-mute); }
 
+/* Objections (Q&A) */
+.qa-list { margin: 0; }
+.qa-row { padding: 22px 0; border-top: 1px solid var(--line); }
+.qa-row:first-child { border-top: none; }
+.qa-row dt { font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.qa-row dd { margin: 0; }
+
 .pull-quote {
   font-size: 1.25rem; font-weight: 500; color: var(--ink);
   border-left: 2px solid var(--gap);
