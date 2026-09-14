@@ -1,0 +1,36 @@
+INTERVIEW LAUNCHPAD — LICENCE
+
+Copyright (c) 2026 Siddharth Sharma. All rights reserved.
+
+WHAT YOU MAY DO
+You have bought a personal licence to use this software. You may:
+  - Use it for your own interview preparation, on as many of your own
+    devices as you like, for as long as you like.
+  - Modify your own copy — it is a single HTML file, so edit it freely.
+  - Keep it forever. There is no subscription, no licence server, and no
+    expiry. It will keep working offline long after you have the job.
+
+WHAT YOU MAY NOT DO
+  - Resell, sublicense, rent or redistribute this file or any modified
+    version of it.
+  - Publish it publicly (a website, a public repository, a file-sharing
+    service, a Telegram or WhatsApp group).
+  - Remove this notice or present the work as your own.
+  - Use it to build a competing product for sale.
+
+Sharing it privately with one friend will not be pursued. Posting it
+publicly or reselling it will be.
+
+NO WARRANTY
+This software is provided "as is", without warranty of any kind, express
+or implied, including but not limited to the warranties of
+merchantability, fitness for a particular purpose and non-infringement.
+In no event shall the author be liable for any claim, damages or other
+liability, whether in an action of contract, tort or otherwise, arising
+from, out of or in connection with the software or its use.
+
+NOT PROFESSIONAL ADVICE
+This is a study-planning tool. It is not career advice, recruitment
+advice, or a guarantee of employment. See DISCLAIMER.md.
+
+Questions: launchpadinterview@gmail.com
