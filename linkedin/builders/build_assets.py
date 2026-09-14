@@ -35,8 +35,19 @@ FONTS = {
     "ital":  r"C:\Windows\Fonts\segoeuii.ttf",
     "mono":  r"C:\Windows\Fonts\consola.ttf",
     "monob": r"C:\Windows\Fonts\consolab.ttf",
+    # Segoe MDL2 Assets - a real icon font that ships with Windows. Used for
+    # icon glyphs instead of hand-drawn primitives, which read as "robotic"
+    # (Sid's word) next to genuinely designed icon sets.
+    "icon":  r"C:\Windows\Fonts\segmdl2.ttf",
 }
 _fcache = {}
+
+# Verified by rendering a candidate sheet and checking each glyph visually -
+# Segoe MDL2's public codepoint list isn't reliable enough to guess blind.
+ICON_GLYPHS = {
+    "bolt": "\uE945", "clock": "\uE121", "warn": "\uE7BA", "chart": "\uE9D2",
+    "lock": "\uE72E", "db": "\uE968", "code": "\uE943",
+}
 
 
 def font(kind, size):
@@ -269,46 +280,31 @@ class Slide:
         self.text(x + 30, y + 56, "“", "black", 60, accent)
         self.lines(x + 70, y + 58, lines_, "bold", 27, P["ink"], 37)
 
-    # -- icon glyphs, drawn (no font glyph coverage dependency) --
+    # -- icon glyphs, real ones (Segoe MDL2 Assets), not hand-drawn shapes --
+    def _icon(self, cx, cy, s, col, name):
+        f = font("icon", s)
+        self.d.text((cx * SS, cy * SS), ICON_GLYPHS[name], font=f, fill=col, anchor="mm")
+
     def icon_bolt(self, cx, cy, s, col):
-        pts = [(cx + s*.12, cy - s*.85), (cx - s*.55, cy + s*.1), (cx - s*.05, cy + s*.1),
-               (cx - s*.22, cy + s*.85), (cx + s*.55, cy - s*.15), (cx + s*.05, cy - s*.15)]
-        self.d.polygon([(px * SS, py * SS) for px, py in pts], fill=col)
+        self._icon(cx, cy, s, col, "bolt")
 
     def icon_clock(self, cx, cy, s, col):
-        self.circle(cx, cy, s, outline=col, width=int(s * .16))
-        self.line(cx, cy, cx, cy - s * .55, col, int(s * .14))
-        self.line(cx, cy, cx + s * .4, cy + s * .12, col, int(s * .14))
+        self._icon(cx, cy, s, col, "clock")
 
     def icon_chart(self, cx, cy, s, col):
-        bw = s * .42
-        for i, hh in enumerate([.6, 1.0, .78]):
-            bx = cx - s * .8 + i * bw * 1.15
-            self.rect(bx, cy + s * .8 - s * 1.6 * hh, bw * .8, s * 1.6 * hh, fill=col, r=4)
+        self._icon(cx, cy, s, col, "chart")
 
     def icon_lock(self, cx, cy, s, col):
-        self.d.arc([(cx - s*.4) * SS, (cy - s*.9) * SS, (cx + s*.4) * SS, (cy + s*.1) * SS],
-                   180, 360, fill=col, width=int(s * .16 * SS))
-        self.rect(cx - s * .5, cy - s * .05, s, s * .85, fill=col, r=8)
+        self._icon(cx, cy, s, col, "lock")
 
     def icon_db(self, cx, cy, s, col):
-        for dy in (-s * .5, 0, s * .5):
-            self.d.ellipse([(cx - s*.55)*SS, (cy+dy-s*.18)*SS, (cx+s*.55)*SS, (cy+dy+s*.18)*SS],
-                           outline=col, width=int(s * .1 * SS))
-        self.line(cx - s * .55, cy - s * .5, cx - s * .55, cy + s * .5, col, int(s * .1))
-        self.line(cx + s * .55, cy - s * .5, cx + s * .55, cy + s * .5, col, int(s * .1))
+        self._icon(cx, cy, s, col, "db")
 
     def icon_code(self, cx, cy, s, col):
-        self.d.polygon([((cx-s*.15)*SS,(cy-s*.7)*SS),((cx-s*.75)*SS,cy*SS),((cx-s*.15)*SS,(cy+s*.7)*SS)],
-                       outline=col, width=int(s*.14*SS))
-        self.d.line([((cx+s*.15)*SS,(cy-s*.7)*SS),((cx+s*.75)*SS,cy*SS),((cx+s*.15)*SS,(cy+s*.7)*SS)],
-                    fill=col, width=int(s*.14*SS), joint="curve")
+        self._icon(cx, cy, s, col, "code")
 
     def icon_warn(self, cx, cy, s, col):
-        self.d.polygon([(cx*SS,(cy-s*.85)*SS), ((cx-s*.85)*SS,(cy+s*.65)*SS), ((cx+s*.85)*SS,(cy+s*.65)*SS)],
-                       outline=col, width=int(s*.14*SS))
-        self.line(cx, cy - s * .25, cx, cy + s * .18, col, int(s * .14))
-        self.circle(cx, cy + s * .48, s * .06, fill=col)
+        self._icon(cx, cy, s, col, "warn")
 
     def finish(self):
         return self.im.resize((self.w, self.h), Image.LANCZOS)
@@ -772,6 +768,71 @@ def infographic_mcp():
     return s.finish()
 
 
+def infographic_postgres():
+    """Same poster structure as infographic_mcp() - one dense image, not a
+    carousel. This is what a Hritika-style post actually looks like: gradient
+    ground, icon badges explaining the mechanism, a two-column comparison,
+    a pull-quote, sources. Built after the carousel version of this story
+    missed the point - carousels aren't the format her posts actually use."""
+    D = DARK
+    s = Slide(("#0A0E14", "#161F2A"), IW, IH)
+
+    s.text(60, 100, "DATABASE INTERNALS", "mono", 26, D["acc"], track=3)
+    s.lines(60, 200, ["Postgres isn't slow.", "Your storage is."],
+            "black", 62, D["ink"], 74, track=-2)
+    s.text(60, 350, "A POSETTE 2026 talk made the case directly.", "reg", 30, D["dim"])
+
+    # -- row: why it happens, 3 icon badges --
+    s.text(60, 430, "THE USUAL COMPLAINT LIST", "mono", 24, D["dim"], track=2)
+    causes = [(s.icon_clock, ["fsync", "latency"]),
+              (s.icon_warn, ["Checkpoint", "stalls"]),
+              (s.icon_chart, ["Replication", "lag"])]
+    for i, (fn, lbl) in enumerate(causes):
+        cx = 190 + i * 350
+        s.badge(cx, 540, 130, fn, lbl, D["acc"], D)
+
+    # -- two-column comparison: network storage vs local NVMe --
+    colY = 730
+    colH = 430
+    s.rect(60, colY, 450, colH, fill="#241318", outline=D["bad"], width=2, r=20)
+    s.text(60 + 30, colY + 60, "NETWORK STORAGE", "monob", 25, D["bad"], track=1)
+    s.text(60 + 30, colY + 140, "WAL fsync", "bold", 36, D["ink"])
+    s.text(60 + 30, colY + 195, "waits on a network round trip", "reg", 24, D["dim"])
+    s.rule(colY + 230, D, x=60 + 30, w=390, h=1)
+    s.text(60 + 30, colY + 280, "Checkpoint stalls", "bold", 32, D["ink"])
+    s.text(60 + 30, colY + 330, "under sustained write pressure", "reg", 24, D["bad"])
+
+    rx = 570
+    s.rect(rx, colY, 450, colH, fill="#0F241C", outline=D["ok"], width=2, r=20)
+    s.text(rx + 30, colY + 60, "LOCAL NVMe", "monob", 25, D["ok"], track=1)
+    s.text(rx + 30, colY + 140, "WAL fsync", "bold", 36, D["ink"])
+    s.text(rx + 30, colY + 195, "resolves at local disk speed", "reg", 24, D["dim"])
+    s.rule(colY + 230, D, x=rx + 30, w=390, h=1)
+    s.text(rx + 30, colY + 280, "OLTP latency", "bold", 32, D["ink"])
+    s.text(rx + 30, colY + 330, "stays flat under the same load", "reg", 24, D["ok"])
+
+    s.arrow(510, colY + colH / 2 - 10, 565, colY + colH / 2 - 10, D["dim"], 5, 16)
+
+    # -- quote --
+    qy = colY + colH + 60
+    s.quote_box(60, qy, 960, 190,
+                ["Not 'why is Postgres slow' -", "'what's actually underneath",
+                 "my WAL writes.'"], D)
+
+    # -- sources row --
+    sy = qy + 190 + 70
+    s.text(60, sy, "SOURCES", "mono", 24, D["dim"], track=2)
+    srcs = [(s.icon_db, ["Sai Srirampur,", "POSETTE 2026"]),
+            (s.icon_chart, ["Recapped by", "ClickHouse, 1 Sep"])]
+    for i, (fn, lbl) in enumerate(srcs):
+        cx = 190 + i * 350
+        s.badge(cx, sy + 130, 120, fn, lbl, D["ink"], D, glow_col=D["acc"])
+
+    s.text(60, sy + 280, "Haven't run this comparison myself - reasoning from the mechanism.",
+           "ital", 24, D["dim"])
+    return s.finish()
+
+
 # ============================== SINGLES ==================================
 def singles():
     out, D, L = {}, DARK, LIGHT
@@ -823,6 +884,7 @@ def singles():
                        "and 500 requests land in one second?"], "reg", 34, L["dim"], 44)
     out["cache-aside-code"] = s.finish()
     out["mcp-token-cost-infographic"] = infographic_mcp()
+    out["postgres-storage-infographic"] = infographic_postgres()
     return out
 
 
