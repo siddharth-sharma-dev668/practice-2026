@@ -7,7 +7,7 @@
 <meta name="description" content="Paste your resume, type the role you want, and see the gap between them before you study a single hour. Any role to any role — ₹4,999.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,8 +21,8 @@
     <nav id="site-nav" class="site-nav">
       <a href="#how">How it works</a>
       <a href="#included">What you get</a>
-      <a href="#faq">FAQ</a>
-      <a href="#buy" class="nav-cta">Buy — ₹4,999</a>
+      <a href="#faq">Refunds</a>
+      <a href="#buy" class="nav-cta">Buy now</a>
     </nav>
   </div>
 </header>
@@ -30,105 +30,116 @@
 <main id="top">
 
   <section class="hero">
-    <div class="wrap">
-      <p class="eyebrow">Any role to any role</p>
-      <h1>Does your resume match the job you want?</h1>
-      <p class="hero-sub">Paste your resume, type the role you're actually going for — test engineer to backend, support to developer, backend to AI, anything to anything — and see the gap between what you have and what that role needs. Before you spend a single hour studying the wrong thing.</p>
-      <div class="hero-actions">
-        <a href="#buy" class="btn btn-primary">See what's missing — ₹4,999</a>
-        <a href="#how" class="btn btn-ghost">See how it works</a>
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <h1>Does your resume match the job you want?</h1>
+        <p class="hero-sub">Paste your resume, type the role you're actually going for — test engineer to backend, support to developer, backend to AI, anything to anything. See the gap before you spend a single hour studying the wrong thing.</p>
+        <a href="#buy" class="btn btn-primary">Run your diagnostic</a>
+      </div>
+      <div class="hero-readout" aria-label="Example diagnostic result">
+        <p class="readout-label">Example diagnostic — backend engineer → AI engineer</p>
+        <div class="readout-score">
+          <span class="readout-num" id="readout-num">0</span><span class="readout-pct">%</span>
+          <span class="readout-caption">match</span>
+        </div>
+        <div class="readout-bar"><div class="readout-fill" id="readout-fill"></div></div>
+        <ul class="readout-list">
+          <li><span class="tag tag-have">have</span> Python, SQL, REST APIs, production on-call</li>
+          <li><span class="tag tag-gap">missing</span> Vector search, prompt evaluation, LLM tooling</li>
+          <li><span class="tag tag-gap">missing</span> One deployed model, end to end</li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <section id="how" class="section" data-reveal>
+  <section id="how" class="section">
     <div class="wrap">
       <h2>The order is the product</h2>
       <p class="section-lede">Four steps, in this order — not a pile of study material and a hope.</p>
-      <div class="step-grid">
-        <div class="step-card">
-          <span class="step-num">1</span>
+      <ol class="ledger">
+        <li>
           <h3>Match</h3>
           <p>A score, what's already there, and what's missing. Missing a must-have is the usual reason a resume never gets read.</p>
-        </div>
-        <div class="step-card">
-          <span class="step-num">2</span>
+        </li>
+        <li>
           <h3>Fix</h3>
           <p>The specific bullet to add for each gap, with the evidence it needs — not "add SQL to your skills."</p>
-        </div>
-        <div class="step-card">
-          <span class="step-num">3</span>
+        </li>
+        <li>
           <h3>Score yourself</h3>
-          <p>Closed-book. Your resume says what you can <em>claim</em>; the diagnostic says what you can <em>defend</em>. Both matter, and they're different.</p>
-        </div>
-        <div class="step-card">
-          <span class="step-num">4</span>
+          <p>Closed-book. Your resume says what you can claim; the diagnostic says what you can defend. Both matter, and they're different.</p>
+        </li>
+        <li>
           <h3>Then the plan</h3>
           <p>Every gap becomes a step that ends with something real to put on the resume. A rewritten bullet with nothing behind it fails the interview instead of the screen.</p>
-        </div>
-      </div>
+        </li>
+      </ol>
     </div>
   </section>
 
-  <section class="section section-alt" data-reveal>
+  <section class="section section-panel">
     <div class="wrap wrap-narrow">
       <h2>The AI-era problem</h2>
       <blockquote class="pull-quote">
-        Everyone prepares with AI now. That is exactly why preparation stopped working. You end up able to <em>describe</em> a solution and unable to <em>produce</em> one — watched, unassisted, in fifteen minutes. Interviews test the second thing. Only the second thing.
+        Everyone prepares with AI now. That is exactly why preparation stopped working. You end up able to describe a solution and unable to produce one — watched, unassisted, in fifteen minutes. Interviews test the second thing. Only the second thing.
       </blockquote>
-      <p>So the app is built the way the interview actually works: the diagnostic is closed-book, every plan puts a verify loop in the first three weeks, and there's an AI-era section scoring unassisted fluency, narration and live debugging. <strong>No AI runs inside this app.</strong> Turn your Wi-Fi off and it works identically — that's not a limitation, it's the point.</p>
+      <p>So the app is built the way the interview actually works: the diagnostic is closed-book, every plan puts a verify loop in the first three weeks, and there's a section scoring unassisted fluency, narration and live debugging. No AI runs inside this app. Turn your Wi-Fi off and it works identically — that's not a limitation, it's the point.</p>
     </div>
   </section>
 
-  <section id="included" class="section" data-reveal>
-    <div class="wrap">
+  <section id="included" class="section">
+    <div class="wrap wrap-narrow">
       <h2>What ₹4,999 gets you</h2>
       <p class="section-lede">Not a file. A continuous system.</p>
-      <div class="included-grid">
-        <div class="included-item">
-          <h3>The app</h3>
-          <p>Diagnostic, adaptive plan, progress tracking. Yours forever — no subscription, no login.</p>
+      <dl class="spec-list">
+        <div class="spec-row">
+          <dt>The app</dt>
+          <dd>Diagnostic, adaptive plan, progress tracking. Yours forever — no subscription, no login.</dd>
         </div>
-        <div class="included-item">
-          <h3>One live 45-minute debrief</h3>
-          <p>Reply to your receipt to book it. Two slots a week, so book early — redeem within 90 days.</p>
+        <div class="spec-row">
+          <dt>One live debrief</dt>
+          <dd>45 minutes. Reply to your receipt to book it. Two slots a week, so book early — redeem within 90 days.</dd>
         </div>
-        <div class="included-item">
-          <h3>12 months of updates</h3>
-          <p>New question packs and topics, emailed as they ship.</p>
+        <div class="spec-row">
+          <dt>12 months of updates</dt>
+          <dd>New question packs and topics, emailed as they ship.</dd>
         </div>
-        <div class="included-item">
-          <h3>Quarterly re-diagnostic</h3>
-          <p>A fresh pack every ~3 months. Retake it, compare with your first score, see what actually moved.</p>
+        <div class="spec-row">
+          <dt>Quarterly re-diagnostic</dt>
+          <dd>A fresh pack every ~3 months. Retake it, compare with your first score, see what actually moved.</dd>
         </div>
-      </div>
-      <p class="price-note">₹4,999 <span class="price-alt">(~$59)</span> — one-time, not a subscription.</p>
+      </dl>
+      <p class="price-note"><span class="mono">₹4,999</span> <span class="price-alt">(~$59)</span> — one-time, not a subscription.</p>
     </div>
   </section>
 
-  <section id="buy" class="section section-alt" data-reveal>
+  <section id="buy" class="section section-panel">
     <div class="wrap wrap-narrow">
       <h2>Get your diagnostic</h2>
-      <p class="section-lede">Fill this in, pay, and your download link + booking instructions land in your inbox.</p>
+      <p class="section-lede">Fill this in, pay, and your download link and booking instructions land in your inbox.</p>
       <form id="buy-form" novalidate>
-        <label for="buy-name">Name</label>
-        <input type="text" id="buy-name" name="name" required autocomplete="name">
-        <label for="buy-email">Email</label>
-        <input type="email" id="buy-email" name="email" required autocomplete="email">
+        <div class="field">
+          <label for="buy-name">Name</label>
+          <input type="text" id="buy-name" name="name" required autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="buy-email">Email</label>
+          <input type="email" id="buy-email" name="email" required autocomplete="email">
+        </div>
         <button type="submit" id="buy-submit" class="btn btn-primary btn-block">Buy for ₹4,999</button>
         <p id="buy-status" class="buy-status" role="status" aria-live="polite"></p>
       </form>
     </div>
   </section>
 
-  <section class="section" data-reveal>
+  <section class="section">
     <div class="wrap wrap-narrow">
       <h2>Your resume never leaves your device</h2>
-      <p>There's no server, no account, no telemetry, and nothing is uploaded. You don't have to take that on faith: <strong>turn off your Wi-Fi and use the whole thing</strong> — it works identically. That's the proof.</p>
+      <p>There's no server, no account, no telemetry, and nothing is uploaded. You don't have to take that on faith: turn off your Wi-Fi and use the whole thing — it works identically. That's the proof.</p>
     </div>
   </section>
 
-  <section id="faq" class="section section-alt" data-reveal>
+  <section id="faq" class="section section-panel">
     <div class="wrap wrap-narrow">
       <h2>Refunds</h2>
       <blockquote class="pull-quote pull-quote-small">
@@ -142,11 +153,11 @@
 <footer class="site-footer">
   <div class="wrap footer-inner">
     <p>Questions or refunds: <a href="mailto:launchpadinterview@gmail.com">launchpadinterview@gmail.com</a></p>
-    <p class="footer-links">
-      <a href="legal/LICENSE.txt">Licence</a> ·
-      <a href="legal/DISCLAIMER.md">Disclaimer</a> ·
-      <a href="legal/REFUND_POLICY.md">Refund policy</a>
-    </p>
+    <ul class="footer-links">
+      <li><a href="legal/LICENSE.txt">Licence</a></li>
+      <li><a href="legal/DISCLAIMER.md">Disclaimer</a></li>
+      <li><a href="legal/REFUND_POLICY.md">Refund policy</a></li>
+    </ul>
     <p class="footer-copy">© 2026 Interview Launchpad</p>
   </div>
 </footer>

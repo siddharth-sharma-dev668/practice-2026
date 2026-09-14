@@ -15,23 +15,29 @@
     });
   });
 
-  // Scroll-reveal
-  var revealTargets = document.querySelectorAll("[data-reveal]");
-  if ("IntersectionObserver" in window) {
-    var observer = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.12 }
-    );
-    revealTargets.forEach(function (el) { observer.observe(el); });
-  } else {
-    revealTargets.forEach(function (el) { el.classList.add("is-visible"); });
+  // Hero diagnostic readout: one deliberate on-load moment, not a scroll effect.
+  var readoutNum = document.getElementById("readout-num");
+  var readoutFill = document.getElementById("readout-fill");
+  var targetScore = 62;
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (readoutNum && readoutFill) {
+    if (reduceMotion) {
+      readoutNum.textContent = String(targetScore);
+      readoutFill.style.width = targetScore + "%";
+    } else {
+      requestAnimationFrame(function () {
+        readoutFill.style.width = targetScore + "%";
+      });
+      var start = null;
+      var duration = 900;
+      function tick(ts) {
+        if (start === null) start = ts;
+        var progress = Math.min((ts - start) / duration, 1);
+        readoutNum.textContent = String(Math.round(progress * targetScore));
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
   }
 
   // Buy flow
