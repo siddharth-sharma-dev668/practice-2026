@@ -10,27 +10,30 @@ You write Python daily at work — this week converts "working Python" into **in
 4. Manipulate strings without O(n²) traps (`join` vs `+=`, slicing, `str` methods)
 5. Explain: mutability, `is` vs `==`, shallow vs deep copy, why `[[0]*3]*2` is a bug
 
-## Concept lessons — on the platform, not here
+## Everyday path: the platform, not this folder
 
-Each of this week's three concept days (Mon Python, Thu AI/ML, Sat SQL) has a full lesson on the Launchpad platform (Roadmap → Week 1 → **Concepts**): a flowchart of the actual mechanism, senior-level explanation text, a short code reference, and a ready-to-paste PowerShell command — all on one page. Open the lesson *before* running that day's drill file; the drill is where you verify what the lesson claims.
+Most days you don't need to open anything in this folder at all. Roadmap → Week 1 → **Concepts** has the flowchart + explanation for each concept day, and **Practice** (right below it) has the same predict-then-reveal drill as the matching `.py`/`.java` file, done entirely in the browser — type a guess, click Reveal, see the real answer and the "why." No VS Code, no terminal, no editor.
+
+The files in this folder (`gotchas.py`, `Gotchas.java`, `llm_basics.py`, `sql_playground.py`) still exist and still work exactly as described below — that's the *deeper* option, for when you want an actual interpreter running your guess through real code, not the *required* one. Use whichever fits the day you're having.
 
 ## Monday drill (~45 min) — predict, run, compare
 
-Run `python gotchas.py`. The script itself stops and asks — it shows you a block of code, asks a plain-English question, then waits at a prompt. Type anything (a guess, "no idea," whatever) and press Enter; the real answer prints immediately after, with a "why." You don't write your guess anywhere else — typing it into the terminal IS the exercise. 8 blocks, covering exactly your diagnostic misses (comprehension+filter, hashability, sorted+stability) plus multi-key sort and big-O of `in`/`pop(0)` — measured with `timeit`, not memorized off a table.
+**Browser:** Week 1 → Practice → "gotchas.py - in your browser."
+**Real file:** Run `python gotchas.py`. The script itself stops and asks — it shows you a block of code, asks a plain-English question, then waits at a prompt. Type anything (a guess, "no idea," whatever) and press Enter; the real answer prints immediately after, with a "why." 8 blocks, covering exactly your diagnostic misses (comprehension+filter, hashability, sorted+stability) plus multi-key sort and big-O of `in`/`pop(0)` — measured with `timeit`, not memorized off a table.
 
 No doc reading required first. If a block surprises you even after seeing the "why," *then* the [Data Structures tutorial](https://docs.python.org/3/tutorial/datastructures.html) or [Sorting HOW TO](https://docs.python.org/3/howto/sorting.html) are there as backup — reference, not homework.
 
 ## Monday bonus (~15 min) — the same lesson in Java
 
-Your DSA foundation is Java-first (college), your daily driver now is Python (JCI) — both need reinforcing, not just one. Run [Gotchas.java](Gotchas.java) the same way: `java Gotchas.java` (JDK 11+ runs a single file directly, no `javac` step). It targets your *other* diagnostic's one soft spot — Collections, 3/4 — with the ArrayList-vs-LinkedList cost, HashSet/HashMap hashing, `ConcurrentModificationException`, and the hashCode-mutation gotcha, all measured live. The platform's "Choosing a data structure" lesson has the bilingual diagram and a Python/Java code reference side by side.
+Your DSA foundation is Java-first (college), your daily driver now is Python (JCI) — both need reinforcing, not just one. **Browser:** Practice → "Gotchas.java - in your browser." **Real file:** `java Gotchas.java` (JDK 11+ runs a single file directly, no `javac` step). Either way it targets your *other* diagnostic's one soft spot — Collections, 3/4 — with the ArrayList-vs-LinkedList cost, HashSet/HashMap hashing, `ConcurrentModificationException`, and the hashCode-mutation gotcha. The platform's "Choosing a data structure" lesson has the bilingual diagram and a Python/Java code reference side by side.
 
 ## Thursday drill (~45 min) — LLM basics
 
-Same protocol, run [llm_basics.py](llm_basics.py): tokens vs words vs characters, why a context window is a hard cutoff, and temperature reshaping the same logits into different sampled outputs. Zero dependencies, zero API key — the mental model under the Claude API call you'll make in Week 3.
+**Browser:** Practice → "llm_basics.py - in your browser" (fully deterministic — your answers will match exactly, not just roughly). **Real file:** [llm_basics.py](llm_basics.py) — tokens vs words vs characters, why a context window is a hard cutoff, and temperature reshaping the same logits into different sampled outputs. Zero dependencies, zero API key — the mental model under the Claude API call you'll make in Week 3.
 
 ## Saturday drill (~45 min) — SQL joins + aggregation
 
-Run [sql_playground.py](sql_playground.py): a real in-process database (`sqlite3`, stdlib, zero setup) walking INNER vs LEFT JOIN, GROUP BY + aggregation, WHERE vs HAVING, and a genuine alias gotcha that proves why execution order beats typed order. Same reasoning moves onto real Postgres in Week 3-4.
+**Browser:** Practice → "sql_playground.py - in your browser." **Real file:** [sql_playground.py](sql_playground.py) — a real in-process database (`sqlite3`, stdlib, zero setup) walking INNER vs LEFT JOIN, GROUP BY + aggregation, WHERE vs HAVING, and a genuine alias gotcha that proves why execution order beats typed order. Same reasoning moves onto real Postgres in Week 3-4.
 
 Then solve on the real judge — same LeetCode account as your DSA problems, picked to match today exactly:
 - [175 Combine Two Tables](https://leetcode.com/problems/combine-two-tables/) (LEFT JOIN)
