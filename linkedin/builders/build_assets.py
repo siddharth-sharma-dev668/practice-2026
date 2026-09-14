@@ -1002,113 +1002,126 @@ def gif_frames():
 # Sequel to the MCP token-cost post. Built with the gradient/glow toolkit
 # throughout (the MCP-stateless GIF above predates it and stays flat).
 def gif_frames_promptcache():
-    D = DARK
+    """Light backgrounds throughout except the cover and one pivot frame -
+    matching the carousel decks' convention. An earlier all-dark-gradient
+    version of this GIF read as generic AI-tool output (Sid's call, backed
+    by a real side-by-side); this is the corrected version."""
+    D, L = DARK, LIGHT
     F = []
 
-    def frame():
-        return Slide(("#0A0E14", "#161F2A"), GW, GH)
+    def dframe():
+        return Slide(D["bg"], GW, GH)
 
-    def foot(s, t, col=None):
-        s.text(70, 1010, t, "mono", 24, col or D["dim"], track=1)
+    def lframe():
+        return Slide(L["bg"], GW, GH)
 
-    def stack(s, x, y, w, rowh, rows, dim_from=None):
-        """rows: list of (label, color). dim_from grays out rows at/after
-        that index, to show a cache hit skipping the already-processed part."""
+    def foot(s, t, col, dim):
+        s.text(70, 1010, t, "mono", 24, col or dim, track=1)
+
+    def stack(s, x, y, w, rowh, rows, P, dim_from=None, dim_bg="#E3E7EA", dim_ink="#9AA3AC"):
+        """rows: list of (label, outline_color). dim_from grays out rows at
+        or after that index, to show a cache hit skipping reprocessed work."""
         for i, (label, col) in enumerate(rows):
             active = dim_from is None or i < dim_from
-            fill = D["card"] if active else "#12181F"
-            txt = D["ink"] if active else "#3D4753"
-            s.rect(x, y + i * rowh, w, rowh - 10, fill=fill, outline=col if active else "#232B35",
-                  width=2, r=10)
+            fill = P["card"] if active else dim_bg
+            txt = P["ink"] if active else dim_ink
+            outline = col if active else "#C7CDD3"
+            s.rect(x, y + i * rowh, w, rowh - 10, fill=fill, outline=outline, width=2, r=10)
             s.text(x + 24, y + i * rowh + rowh / 2 - 5, label, "bold", 26, txt, anchor="ls")
 
-    # 1 title
-    s = frame()
+    # 1 title - dark cover
+    s = dframe()
     s.eyebrow("AI ENGINEERING - CONCEPT", D)
     s.lines(70, 340, ["Prompt caching,", "in 8 frames."], "black", 84, D["ink"], 98, track=-3)
     s.rect(70, 560, 940, 3, fill=D["line"])
     s.lines(70, 640, ["The mechanism MCP's own spec", "just leaned on to fix the token-",
                       "cost problem I posted last week."], "reg", 34, D["dim"], 46)
-    foot(s, "VERIFIED AGAINST ANTHROPIC'S DOCS", D["acc"]); F.append(s.finish())
+    foot(s, "VERIFIED AGAINST ANTHROPIC'S DOCS", D["acc"], D["dim"]); F.append(s.finish())
 
-    # 2 every call ships the full context
-    s = frame()
-    s.text(70, 140, "Every call ships this, in full.", "black", 46, D["ink"], track=-1)
-    rows = [("System prompt", D["line"]), ("Tools", D["line"]), ("History", D["line"]),
-            ("New message", D["acc"])]
-    stack(s, 70, 230, 560, 130, rows)
-    s.arrow(650, 420, 780, 420, D["dim"], 5, 16)
-    s.badge(900, 420, 140, s.icon_bolt, ["Model"], D["ink"], D)
-    foot(s, "SYSTEM + TOOLS + HISTORY + MESSAGE"); F.append(s.finish())
+    # 2 every call ships the full context - light
+    s = lframe()
+    s.eyebrow("THE SETUP", L)
+    s.text(70, 190, "Every call ships this, in full.", "black", 46, L["ink"], track=-1)
+    rows = [("System prompt", L["line"]), ("Tools", L["line"]), ("History", L["line"]),
+            ("New message", L["acc"])]
+    stack(s, 70, 280, 560, 130, rows, L)
+    s.arrow(650, 470, 780, 470, L["dim"], 5, 16)
+    s.badge(900, 470, 140, s.icon_bolt, ["Model"], L["acc"], L)
+    foot(s, "SYSTEM + TOOLS + HISTORY + MESSAGE", None, L["dim"]); F.append(s.finish())
 
-    # 3 most of it is identical call to call
-    s = frame()
-    s.text(70, 140, "Call after call, most of", "black", 44, D["ink"], track=-1)
-    s.text(70, 195, "that stack never changes.", "black", 44, D["ink"], track=-1)
-    s.rect(60, 270, 580, 340, outline=D["ok"], width=3, r=16)
-    rows = [("System prompt", D["line"]), ("Tools", D["line"]), ("History", D["line"])]
-    stack(s, 90, 300, 520, 100, rows)
-    s.text(90, 630, "IDENTICAL, EVERY CALL", "monob", 24, D["ok"], track=1)
-    s.rect(60, 690, 580, 90, fill=D["fillbad"], outline=D["bad"], width=2, r=14)
-    s.text(90, 745, "New message - the only part that changes", "bold", 24, D["ink"])
-    foot(s, "ONE SMALL TAIL IS ACTUALLY NEW"); F.append(s.finish())
+    # 3 most of it is identical call to call - light
+    s = lframe()
+    s.eyebrow("THE INSIGHT", L)
+    s.text(70, 190, "Call after call, most of", "black", 44, L["ink"], track=-1)
+    s.text(70, 245, "that stack never changes.", "black", 44, L["ink"], track=-1)
+    s.rect(60, 320, 580, 340, outline=L["ok"], width=3, r=16)
+    rows = [("System prompt", L["line"]), ("Tools", L["line"]), ("History", L["line"])]
+    stack(s, 90, 350, 520, 100, rows, L)
+    s.text(90, 680, "IDENTICAL, EVERY CALL", "monob", 24, L["ok"], track=1)
+    s.rect(60, 740, 580, 90, fill="#FDE4E1", outline=L["bad"], width=2, r=14)
+    s.text(90, 795, "New message - the only part that changes", "bold", 24, L["ink"])
+    foot(s, "ONE SMALL TAIL IS ACTUALLY NEW", None, L["dim"]); F.append(s.finish())
 
-    # 4 without caching - full reprocess every time
-    s = frame()
-    s.text(70, 140, "Without caching:", "black", 50, D["bad"], track=-1)
+    # 4 without caching - full reprocess every time - light
+    s = lframe()
+    s.eyebrow("WITHOUT CACHING", L)
+    s.text(70, 190, "The expensive default:", "black", 50, L["bad"], track=-1)
     for i, cx in enumerate((280, 640)):
-        s.rect(cx - 130, 260, 260, 380, fill=D["fillbad"], outline=D["bad"], width=2, r=16)
-        s.text(cx, 300, f"CALL {i+1}", "monob", 24, D["bad"], anchor="ms")
-        s.icon_clock(cx, 440, 60, D["bad"])
-        s.lines(cx, 560, ["full cost,", "full latency"], "bold", 24, D["ink"], 32, anchor="ms")
-    s.text(70, 720, "Reprocessed from scratch, every call.", "reg", 32, D["dim"])
-    foot(s, "THE EXPENSIVE DEFAULT", D["bad"]); F.append(s.finish())
+        s.rect(cx - 130, 300, 260, 380, fill="#FDE4E1", outline=L["bad"], width=2, r=16)
+        s.text(cx, 340, f"CALL {i+1}", "monob", 24, L["bad"], anchor="ms")
+        s.icon_clock(cx, 480, 60, L["bad"])
+        s.lines(cx, 600, ["full cost,", "full latency"], "bold", 24, L["ink"], 32, anchor="ms")
+    s.text(70, 760, "Reprocessed from scratch, every call.", "reg", 32, L["dim"])
+    foot(s, "THE EXPENSIVE DEFAULT", L["bad"], L["dim"]); F.append(s.finish())
 
-    # 5 with caching - call 1 writes
-    s = frame()
-    s.text(70, 140, "With caching - call 1", "black", 46, D["ink"], track=-1)
-    rows = [("System prompt", D["line"]), ("Tools", D["line"]), ("History", D["line"])]
-    stack(s, 70, 230, 560, 100, rows)
-    s.rect(70, 530, 560, 3, fill=D["acc"])
-    s.text(650, 545, "breakpoint", "mono", 22, D["acc"], anchor="lm")
-    s.badge(850, 300, 160, s.icon_lock, ["CACHE", "WRITE"], D["acc"], D)
-    s.text(70, 620, "Hashes the prefix, stores its state.", "reg", 32, D["dim"])
-    s.text(70, 680, "Costs slightly MORE than normal - once.", "bold", 30, D["acc"])
-    foot(s, "1.25x-2x, ONE TIME"); F.append(s.finish())
+    # 5 with caching - call 1 writes - light
+    s = lframe()
+    s.eyebrow("WITH CACHING - CALL 1", L)
+    rows = [("System prompt", L["line"]), ("Tools", L["line"]), ("History", L["line"])]
+    stack(s, 70, 190, 560, 100, rows, L)
+    s.rect(70, 490, 560, 3, fill=L["acc"])
+    s.text(650, 505, "breakpoint", "mono", 22, L["acc"], anchor="lm")
+    s.badge(850, 260, 160, s.icon_lock, ["CACHE", "WRITE"], L["acc"], L)
+    s.text(70, 590, "Hashes the prefix, stores its state.", "reg", 32, L["dim"])
+    s.text(70, 650, "Costs slightly MORE than normal - once.", "bold", 30, L["acc"])
+    foot(s, "1.25x-2x, ONE TIME", None, L["dim"]); F.append(s.finish())
 
-    # 6 call 2 - cache hit
-    s = frame()
-    s.text(70, 140, "Call 2, same prefix,", "black", 46, D["ink"], track=-1)
-    s.text(70, 195, "inside the TTL window", "black", 46, D["ink"], track=-1)
-    rows = [("System prompt", D["line"]), ("Tools", D["line"]), ("History", D["line"])]
-    stack(s, 70, 260, 560, 90, rows, dim_from=0)
-    s.badge(850, 340, 160, s.icon_bolt, ["CACHE", "HIT"], D["ok"], D)
-    s.rect(70, 560, 560, 90, fill=D["fillok"], outline=D["ok"], width=2, r=14)
-    s.text(100, 615, "Only the new tail gets processed", "bold", 24, D["ink"])
-    foot(s, "HASH MATCH -> REUSE, DON'T REPROCESS", D["ok"]); F.append(s.finish())
+    # 6 call 2 - cache hit - the one dark pivot, matches the carousel-deck rule
+    s = dframe()
+    s.eyebrow("CALL 2, SAME PREFIX", D)
+    s.text(70, 190, "Inside the TTL window,", "black", 46, D["ink"], track=-1)
+    s.text(70, 245, "that hash matches.", "black", 46, D["acc"], track=-1)
+    s.rect(70, 320, 936, 3, fill=D["line"])
+    s.badge(200, 480, 180, s.icon_bolt, ["CACHE", "HIT"], D["ok"], D)
+    s.lines(450, 440, ["Only the new tail", "gets processed.", "Everything before",
+                       "the breakpoint is reused,", "not recomputed."],
+            "bold", 34, D["ink"], 46)
+    foot(s, "HASH MATCH -> REUSE, DON'T REPROCESS", D["ok"], D["dim"]); F.append(s.finish())
 
-    # 7 payoff - 2 bars, no axis
-    s = frame()
-    s.text(70, 140, "The payoff", "black", 54, D["ink"], track=-1)
-    s.text(70, 320, "NORMAL PRICE", "mono", 26, D["dim"], track=2)
-    s.rect(70, 350, 940, 110, fill=D["line"], r=12)
-    s.text(100, 425, "100%", "bold", 44, "#12181F")
-    s.text(70, 520, "CACHED PREFIX", "mono", 26, D["ok"], track=2)
-    s.rect(70, 550, 110, 110, fill=D["ok"], r=12)
-    s.text(70, 705, "~10% of the price. Faster, too.", "bold", 34, D["ink"])
-    foot(s, "SAME OUTPUT, EVERY TIME", D["ok"]); F.append(s.finish())
+    # 7 payoff - 2 bars, no axis - light
+    s = lframe()
+    s.eyebrow("THE PAYOFF", L)
+    s.text(70, 190, "The payoff", "black", 54, L["ink"], track=-1)
+    s.text(70, 340, "NORMAL PRICE", "mono", 26, L["dim"], track=2)
+    s.rect(70, 370, 940, 110, fill=L["barbase"], r=12)
+    s.text(100, 445, "100%", "bold", 44, "#FFFFFF")
+    s.text(70, 540, "CACHED PREFIX", "mono", 26, L["ok"], track=2)
+    s.rect(70, 570, 110, 110, fill=L["ok"], r=12)
+    s.text(70, 725, "~10% of the price. Faster, too.", "bold", 34, L["ink"])
+    foot(s, "SAME OUTPUT, EVERY TIME", L["ok"], L["dim"]); F.append(s.finish())
 
-    # 8 the catch + tie-back
-    s = frame()
-    s.icon_warn(120, 175, 55, D["acc"])
-    s.text(210, 195, "Edit anything upstream, or let the", "bold", 32, D["ink"])
-    s.text(210, 235, "TTL lapse - back to full price.", "bold", 32, D["acc"])
-    s.rect(70, 300, 940, 3, fill=D["line"])
-    s.lines(70, 400, ["MCP's July 2026 spec update leans on", "this exact mechanism - tool-list",
+    # 8 the catch + tie-back - light
+    s = lframe()
+    s.eyebrow("THE CATCH", L)
+    s.icon_warn(120, 215, 55, L["acc"])
+    s.text(210, 195, "Edit anything upstream, or let the", "bold", 32, L["ink"])
+    s.text(210, 235, "TTL lapse - back to full price.", "bold", 32, L["acc"])
+    s.rect(70, 320, 940, 3, fill=L["line"])
+    s.lines(70, 420, ["MCP's July 2026 spec update leans on", "this exact mechanism - tool-list",
                       "responses now carry ttlMs/cacheScope,", "so clients cache catalogs instead of",
-                      "refetching them every call."], "reg", 34, D["dim"], 46)
-    s.text(70, 900, "Same fix, different layer.", "black", 42, D["acc"], track=-1)
-    foot(s, "FULL POST BELOW", D["acc"]); F.append(s.finish())
+                      "refetching them every call."], "reg", 34, L["dim"], 46)
+    s.text(70, 900, "Same fix, different layer.", "black", 42, L["acc"], track=-1)
+    foot(s, "FULL POST BELOW", L["acc"], L["dim"]); F.append(s.finish())
     return F
 
 
