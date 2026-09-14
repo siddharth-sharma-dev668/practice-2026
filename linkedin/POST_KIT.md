@@ -14,15 +14,44 @@ ground as Deck B below — held out of the active queue. A "MCP in One Piece" po
 also already live, confirmed weak (4 impressions, 0 engagements per the analytics
 dashboard) — noted so later MCP posts read as the substantive follow-up, not a repeat.
 
-| When | Post | Variety | Upload |
-|---|---|---|---|
-| 2026-09-02 (done) | p95 / cache-aside | Document carousel | `linkedin/post-p95-redis.html` output |
-| 2026-09-06 (done) | MCP's default token cost | Document carousel, 6 slides | `assets/deck-mcp-token-cost.pdf` |
-| **2026-09-08 (Tue, next)** | Postgres isn't slow, your storage is | Document carousel, 7 slides | `assets/deck-postgres-storage.pdf` |
-| **2026-09-10 (Thu, proposed)** | Prompt caching, in 8 frames | Animated GIF, 8 frames | `assets/prompt-caching.gif` |
-| held, not killed | Reading beats writing (interview shift) — deprioritized, not topic-collision-blocked | Document carousel, 6 slides | `assets/deck-interview-shift.pdf` |
-| held / retired | Cache-aside deck (topic collision with 09-02 post) | — | `assets/deck-cache-aside.pdf` |
-| held / spare | MCP goes stateless (weaker sourcing than the token-cost post) | GIF or single image | `assets/mcp-stateless.gif` |
+## Done so far
+
+| Date | Post | Variety |
+|---|---|---|
+| 2026-09-02 | p95 / cache-aside | Document carousel |
+| 2026-09-06 | MCP's default token cost | Document carousel, 6 slides |
+| 2026-09-10 | Postgres isn't slow, your storage is | Single infographic (not carousel — the format switch, see below) |
+
+## This week (2026-09-14 to 09-20)
+
+The prompt-caching video was built and staged twice but never actually posted — 4-day
+gap since Postgres. Closing that today, then holding to ~3 posts + the one video this
+week already covers.
+
+| Date | Post | Variety | Asset | Theme |
+|---|---|---|---|---|
+| **Mon 09-14 (today)** | Prompt caching, in 8 frames | Animated GIF | `assets/theme-blueprint/prompt-caching.gif` | blueprint |
+| **Wed 09-16** | GitHub's Aug 17 outage postmortem | Single infographic | not built yet | blueprint |
+| **Sat 09-19** | Reading beats writing (interview shift) — the held one, finally used | Single infographic | needs rebuild as infographic, not carousel | press |
+
+**Why GitHub outage next, not the OpenAI/Hugging Face agent-escape story:** both are
+verified and banked (see the research backlog further down), but the agent-escape
+story is a real security incident involving a specific company's breach — it needs
+careful, non-sensational framing before it's post-ready, and shouldn't be rushed out
+just to fill a slot. GitHub's postmortem is squarely backend/SRE, zero framing risk,
+and continues the rotation away from two AI-cost posts in a row.
+
+**Format note:** every post from here defaults to the **single infographic**, not the
+multi-slide carousel — Postgres already validated this (4.3% engagement rate vs. 0.9%
+for the MCP carousel, on real analytics). The interview-shift deck was originally
+carousel-only; it gets rebuilt as an infographic before its Saturday slot.
+
+## Held, not killed
+
+| Post | Why held | Asset |
+|---|---|---|
+| Cache-aside deck | Topic collision with the 09-02 p95 post | `assets/deck-cache-aside.pdf` |
+| MCP goes stateless | Weaker sourcing than the token-cost post | `assets/mcp-stateless.gif` |
 
 **Live performance as of 2026-09-06** (from LinkedIn's own Content analytics, not
 estimated): p95/cache-aside is the best performer so far — 226 impressions, 18
