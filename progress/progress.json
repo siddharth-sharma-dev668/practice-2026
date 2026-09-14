@@ -7,7 +7,7 @@
   "plan_structure": "BRAIDED, not sequential phases — Sid's call on 2026-08-25 and it was the right one. Every week touches backend + AI/ML + data-or-Java + DSA (see MASTER_PLAN.md section 2 for the daily rhythm). Reason: the old 7-phase plan finished Backend in October for a February interview, which is exactly how his Java went cold. 4 stages now: S1 Foundations W1-6, S2 Build W7-12, S3 Deepen W13-18, S4 Prove W19-24. Two COMBINED capstones instead of four separate ones — each spans all five target roles.",
   "github_username": "siddharth-sharma-dev668",
   "github_repo": "https://github.com/siddharth-sharma-dev668/practice-2026",
-  "current_week": 1,
+  "current_week": 2,
   "calibration": {
     "diagnostic_scores": {
       "taken": "2026-08-25",
@@ -60,11 +60,13 @@
       "done": ["diagnostic (22/25)", "Java & Spring diagnostic (17/20)", "GitHub account + username", "git remote configured"],
       "outstanding": ["coding warm-up bug fix by Sid himself (bugs were pointed out, not corrected for him)", "push commits to GitHub — unconfirmed"],
       "note": "Started 12 days late against the original Aug 24 calendar date — real pace, not a calendar the plan should pretend held. Dates on weeks 1+ are labels, not deadlines; the loop (start week N -> work the braid -> grade week N) is what actually paces this, not the printed date range." },
-    "1": { "status": "in_progress", "assigned": "2026-08-21", "started": "2026-09-05", "due": "2026-08-30",
+    "1": { "status": "done", "assigned": "2026-08-21", "started": "2026-09-05", "due": "2026-08-30",
       "graded": "2026-09-14",
       "done": ["gotchas.py / Gotchas.java drills (Mon + Mon-bonus)", "llm_basics.py drill (Thu)", "sql_playground.py drill + 3 real LeetCode SQL problems (Sat)", "Week 1 quiz: 13/15 (87%)", "STAR story #1 (Onextel p95 latency) — written honestly, with the measurement-provenance gap flagged rather than hidden", "DSA: both non-negotiable problems solved on the real LeetCode judge -- 1 Two Sum and 242 Valid Anagram (confirmed 2026-09-14 via Practice History screenshot: Accepted, Sep 6). 217 Contains Duplicate (stretch, optional) not yet done."],
-      "outstanding": ["pulse/SPEC.md -- all 5 prompts still blank placeholders (`>`, empty `{}`, `?? --> ??`). This is Tue/Fri's actual deliverable, not optional.", "No dsa/ folder yet with Sid's own solution files saved for the two solved problems -- LeetCode Accepted isn't the same as 'saved so I can review your approach', which was the actual ask"],
-      "note": "Checkbox state in the platform doesn't fully match what's in the repo -- the coach's job is to verify, not trust ticks. DSA requirement is now genuinely met (the two required problems are solved); only SPEC.md and saving the solutions locally remain before Week 1 is done." }
+      "dropped": ["pulse/SPEC.md — Sid's explicit call, 2026-09-14 ('leave the spec'). All 5 prompts stayed blank placeholders. Not carried forward as a Week 1 debt; Pulse's actual repo skeleton starts fresh in Week 2 with a given default layout instead of Sid's own from-scratch design."],
+      "note": "Checkbox state in the platform didn't match the repo (SPEC.md and the dsa/ folder were still empty when first graded) -- caught by checking files, not trusting ticks. Marked done once DSA was confirmed via a real LeetCode screenshot and Sid explicitly dropped the SPEC.md requirement rather than complete it." },
+    "2": { "status": "in_progress", "assigned": "2026-09-14", "started": "2026-09-14", "due": "2026-09-20",
+      "note": "Content generated 2026-09-14 following 'grade week 1': decorators_closures.py + CollectionsInternals.java + prompting_json.py (all 3 verified by actually running them), lessons + browser drills + 12-question quiz added to platform/index.html. Tue/Fri capstone step gives a concrete default Pulse repo layout (app/main.py, models.py, Dockerfile, requirements.txt) to build from, since SPEC.md's own from-scratch design was skipped in Week 1." }
   },
   "quiz_scores": {
     "diag": { "score": 22, "total": 25, "pct": 88, "date": "2026-08-25",

@@ -398,6 +398,21 @@ const CONTENT = {
     { t: "Take the Week 1 quiz (Sunday, after the exercises)", quiz: "w1", d: "15 questions on exactly what you practised this week." },
     { t: "Write STAR story #1 — the Onextel p95-latency-by-20% bullet", d: "File: interview-prep/stories.md. Situation, Task, Action (what YOU specifically did: which queries, what profiling, why Redis), Result (how it was measured). Every backend interviewer pulls this thread first." },
     { t: "Say “grade week 1” to Claude", d: "Claude reviews every file you wrote, scores it with line-by-line feedback, updates the grade book, and generates Week 2." }
+  ]},
+  2: { steps: [
+    { t: "Mon (~45 min) — closures, decorators, generators, typing (use the drill card above)",
+      d: "Click \"decorators_closures.py - in your browser\" in Practice above — 6 blocks: the late-binding closure bug, a decorator that loses __name__ without functools.wraps, a parametrized decorator, why generators are lazy, why they exhaust, and why type hints aren't enforced at runtime. decorators_closures.py in curriculum\\week-02-python-advanced\\ runs the identical thing for real via `python decorators_closures.py` — that's the deeper option, not the required one." },
+    { t: "Tue + Fri (~45 min each) — build Pulse's repo skeleton (code, not design, this time)",
+      d: "Since SPEC.md's design prompts were skipped, here's a working default layout to build FROM instead of inventing one blind: a pulse/ folder with app/main.py (FastAPI instance + one health-check route), app/models.py (a Pydantic model for one event — pick the fields yourself, at minimum an id and a timestamp), a Dockerfile that installs requirements and runs uvicorn, and requirements.txt (fastapi, uvicorn, pydantic). Get `docker build` succeeding and the health-check route responding — that's this week's actual ship criterion, not just files existing. This is real capstone code, written by you, not generated for you." },
+    { t: "Wed (~45 min) — 2 DSA problems (two pointers)", d: "Two, not six — same honest number as last week. Do the first two; the rest are stretch. Save each solution as a file in curriculum/week-01-python-core/dsa/ (same folder as last week — one running log of your approach, not a new folder every week).",
+      links: [["125 Valid Palindrome (do this)", "https://leetcode.com/problems/valid-palindrome/"], ["167 Two Sum II - Sorted Input (do this)", "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/"], ["15 3Sum (stretch)", "https://leetcode.com/problems/3sum/"], ["11 Container With Most Water (stretch)", "https://leetcode.com/problems/container-with-most-water/"]] },
+    { t: "Thu (~45 min) — prompting + structured JSON output reliability",
+      d: "Open the \"Structured output isn't free\" lesson above, then click \"prompting_json.py - in your browser\" in Practice above — 4 blocks: a model wrapping JSON in prose/markdown fences, extracting the real payload, why valid JSON isn't the same as valid DATA (schema check each field), and the retry-until-valid pattern with a hard cap. prompting_json.py in curriculum\\week-02-python-advanced\\ is there too — zero dependencies, zero API key, same failure modes you'll hit for real once Week 3 calls an actual LLM API." },
+    { t: "Sat (~45 min) — Java: collections internals, generics, Streams (use the drill card above)",
+      d: "Click \"CollectionsInternals.java - in your browser\" in Practice above — 5 blocks: generic type erasure, why an unconsumed Stream does nothing, List.of()'s real immutability, Collectors.groupingBy, and findFirst's short-circuit behavior. CollectionsInternals.java in curriculum\\week-02-python-advanced\\ runs it for real via `java CollectionsInternals.java` (JDK 11+, no javac)." },
+    { t: "Take the Week 2 quiz (Sunday, after the exercises)", quiz: "w2", d: "12 questions on exactly what you practised this week." },
+    { t: "Write STAR story #2", d: "File: interview-prep/stories.md, append below Story 1. Pick a real moment from Onextel or JCI — same rule as Story 1: Situation, Task, Action (specifically what YOU did), Result (how you know, and if you don't know for certain, say so instead of guessing a number)." },
+    { t: "Say “grade week 2” to Claude", d: "Claude reviews every file you wrote, checks the Pulse repo actually builds and runs, scores it, updates the grade book, and generates Week 3." }
   ]}
 };
 
@@ -854,6 +869,111 @@ Were your 5 guesses right? Getting #3 or #5 wrong is exactly why
 
 (Trimmed here for space - the real terminal shows the full QUERY/QUESTION
 block for every one of the 5, exactly like Block 1 above.)` } }
+  ],
+
+  2: [
+    { id: "closures-decorators", tag: "Mon · Python", title: "Decorators: a function that returns a function",
+      sub: "The three moving parts under the @ syntax, and the two ways people get burned by them",
+      figcaption: "@logged on greet is sugar for greet = logged(greet) — the name greet now points at whatever logged() returned, not at your original function.",
+      svg: `<svg viewBox="0 0 640 220" role="img" aria-label="A decorator replaces the name greet with the wrapper function logged() returns" style="width:100%;height:auto">
+        <defs><marker id="dec-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+        <rect x="20" y="70" width="150" height="60" rx="8" fill="var(--surface2)" stroke="currentColor" stroke-width="1.1"/>
+        <text x="95" y="95" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">original greet()</text>
+        <text x="95" y="112" text-anchor="middle" font-size="9.5" fill="currentColor">has __name__, __doc__</text>
+        <line x1="172" y1="100" x2="238" y2="100" stroke="currentColor" stroke-width="1.2" marker-end="url(#dec-arrow)"/>
+        <text x="205" y="90" text-anchor="middle" font-size="9" fill="currentColor">passed into</text>
+        <rect x="240" y="70" width="150" height="60" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"/>
+        <text x="315" y="95" text-anchor="middle" font-size="12" font-weight="700" fill="var(--accent)">logged(fn)</text>
+        <text x="315" y="112" text-anchor="middle" font-size="9.5" fill="var(--accent)">builds + returns wrapper</text>
+        <line x1="392" y1="100" x2="458" y2="100" stroke="currentColor" stroke-width="1.2" marker-end="url(#dec-arrow)"/>
+        <text x="425" y="90" text-anchor="middle" font-size="9" fill="currentColor">returns</text>
+        <rect x="460" y="70" width="160" height="60" rx="8" fill="var(--surface2)" stroke="currentColor" stroke-width="1.1"/>
+        <text x="540" y="90" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">wrapper()</text>
+        <text x="540" y="106" text-anchor="middle" font-size="9.5" fill="currentColor">this is now called "greet"</text>
+        <text x="540" y="120" text-anchor="middle" font-size="9.5" fill="currentColor">unless @wraps fixes it</text>
+        <text x="320" y="30" text-anchor="middle" font-size="12" fill="currentColor">@logged  ==  greet = logged(greet)</text>
+        <text x="320" y="180" text-anchor="middle" font-size="10.5" fill="currentColor">Closures work the same way one level up: a lambda/inner function remembers the</text>
+        <text x="320" y="196" text-anchor="middle" font-size="10.5" fill="currentColor">VARIABLE from its enclosing scope, not a frozen snapshot of its value at creation time.</text>
+      </svg>`,
+      explain: [
+        "@logged above a function definition is not special syntax the interpreter treats magically — it's exactly equivalent to writing greet = logged(greet) right after defining greet. That single fact explains everything else: whatever logged(greet) returns is what the name `greet` points to from then on. If logged returns a `wrapper` function, calling greet(...) now calls wrapper(...), and wrapper's own __name__ is 'wrapper' — not 'greet'. That's why decorators without @functools.wraps break introspection, and why fixing it is one line, not a redesign.",
+        "Closures have the same 'which one wins' subtlety, one level earlier. A closure is an inner function that remembers a variable from the function (or loop) that created it — but it remembers the VARIABLE, a live reference, not the value frozen at the moment the closure was made. Build three lambdas inside a loop over `i` and all three remember the same `i` — by the time any of them actually runs, the loop is long over and `i` holds its final value. This is a genuinely common bug in real code (not just an interview trick), usually surfacing as 'why do all my callback handlers report the same wrong index.'",
+        "Your Java diagnostic and this week's Java thread (Saturday) hit the conceptual cousin of this from the other side: generic type erasure means the JVM keeps less information around at runtime than Python does at the language level, but the underlying lesson is the same shape — know exactly WHEN a piece of information gets fixed (compile time? closure-creation time? call time?), because assuming the wrong moment is where bugs live."
+      ],
+      code: `# The fix for both gotchas in this lesson:
+import functools
+
+def logged(fn):
+    @functools.wraps(fn)          # copies __name__, __doc__, etc onto wrapper
+    def wrapper(*args, **kwargs):
+        return fn(*args, **kwargs)
+    return wrapper
+
+# and for the closure trap:
+funcs = [lambda i=i: i for i in range(3)]   # i=i captures the VALUE, not the variable`,
+      terminal: { cwd: "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-02-python-advanced",
+        cmd: `cd "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-02-python-advanced"; python decorators_closures.py`,
+        note: "6 blocks: late-binding closures, a decorator without functools.wraps, a parametrized decorator, generator laziness, generator exhaustion, and type hints not being enforced at runtime.",
+        output: `Every block runs the real code live and asks you to predict first — see the
+"Practice here" drill card above for the identical thing in the browser.
+Block 1: [2, 2, 2] (not [0, 1, 2] — closures capture the variable, not the value)
+Block 2: 'wrapper' None (not 'greet' and the docstring — lost without @functools.wraps)
+Block 3: ran 3 times, result = 3 (the wrapper loop runs on every call to ping())
+Block 4: nothing prints until next(g) is called — generators are lazy
+Block 5: second_pass = [] — a generator is single-use, it exhausts
+Block 6: 'ab' with no error — type hints are not enforced at runtime` } },
+
+    { id: "structured-output", tag: "Thu · AI/ML", title: "Structured output isn't free",
+      sub: "\"Return JSON\" is a request the model can follow imperfectly — your code still has to check",
+      figcaption: "Every model response passes through three checks before you trust it: is it parseable, does it match your schema, and if not, do you retry or give up.",
+      svg: `<svg viewBox="0 0 640 200" role="img" aria-label="A model response flows through parse, validate, and retry-or-accept stages before being trusted" style="width:100%;height:auto">
+        <defs><marker id="so-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+        <rect x="10" y="70" width="130" height="55" rx="8" fill="var(--surface2)" stroke="currentColor" stroke-width="1.1"/>
+        <text x="75" y="93" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">Raw model text</text>
+        <text x="75" y="109" text-anchor="middle" font-size="9" fill="currentColor">prose + fences + JSON</text>
+        <line x1="142" y1="97" x2="198" y2="97" stroke="currentColor" stroke-width="1.2" marker-end="url(#so-arrow)"/>
+        <rect x="200" y="70" width="130" height="55" rx="8" fill="var(--surface2)" stroke="currentColor" stroke-width="1.1"/>
+        <text x="265" y="93" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">Extract + parse</text>
+        <text x="265" y="109" text-anchor="middle" font-size="9" fill="currentColor">is it even valid JSON?</text>
+        <line x1="332" y1="97" x2="388" y2="97" stroke="currentColor" stroke-width="1.2" marker-end="url(#so-arrow)"/>
+        <rect x="390" y="70" width="130" height="55" rx="8" fill="var(--surface2)" stroke="currentColor" stroke-width="1.1"/>
+        <text x="455" y="93" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">Validate schema</text>
+        <text x="455" y="109" text-anchor="middle" font-size="9" fill="currentColor">right fields, right types?</text>
+        <line x1="522" y1="97" x2="578" y2="97" stroke="currentColor" stroke-width="1.2" marker-end="url(#so-arrow)"/>
+        <rect x="500" y="140" width="130" height="50" rx="8" fill="var(--surface2)" stroke="currentColor" stroke-width="1.1" transform="translate(-420,0)"/>
+        <rect x="500" y="140" width="130" height="50" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3" transform="translate(-420,0)" opacity="0"/>
+        <rect x="80" y="140" width="130" height="50" rx="8" fill="var(--surface2)" stroke="currentColor" stroke-width="1.1"/>
+        <text x="145" y="160" text-anchor="middle" font-size="10.5" fill="currentColor">fail -&gt; retry</text>
+        <text x="145" y="175" text-anchor="middle" font-size="9" fill="currentColor">up to a hard cap</text>
+        <rect x="440" y="70" width="0" height="0"/>
+        <rect x="580" y="70" width="50" height="55" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"/>
+        <text x="605" y="93" text-anchor="middle" font-size="10" font-weight="700" fill="var(--accent)">use</text>
+        <text x="605" y="107" text-anchor="middle" font-size="10" font-weight="700" fill="var(--accent)">it</text>
+      </svg>`,
+      explain: [
+        "\"Return the answer as JSON\" is an instruction, not a guarantee — a model can follow it imperfectly in a way that a rigid API contract never would. The most common failure isn't wrong data, it's wrapper text: a model trained to be conversational adds 'Sure! Here's the JSON you asked for:' and markdown code fences around the actual payload, and json.loads() on the raw string breaks immediately because it expects the WHOLE string to be valid JSON, not JSON somewhere inside it.",
+        "Getting past that first hurdle only proves the string is syntactically valid JSON — it says nothing about whether the DATA is right. A response can parse perfectly and still have age as the string \"thirty\" instead of the integer 30, or be missing a required field entirely. This is exactly the schema-vs-syntax distinction you already know from SQL (Week 1): a query can be syntactically valid and still return the wrong thing. Here the fix is the same shape — an explicit schema check on every field, not just 'did json.loads() throw.'",
+        "Because a model can fail this in a way a hand-written client never would, production code needs a retry loop — but one with a hard cap. Retrying forever against a model that's genuinely stuck (a malformed prompt, a task past what it can reliably do) just hangs your service. The shape that survives contact with reality is: try, validate, retry on failure, give up loudly after N attempts — never silently, and never infinitely."
+      ],
+      code: `# The three checks, in order, every time you trust a model's "JSON":
+raw = call_model(prompt)                 # step 1: get raw text back
+cleaned = extract_json(raw)              # step 2: strip prose/fences
+try:
+    obj = json.loads(cleaned)            # step 3a: is it valid JSON at all?
+except json.JSONDecodeError:
+    retry()
+ok, reason = validate_schema(obj)        # step 3b: is it the RIGHT shape?
+if not ok:
+    retry()  # up to a hard cap — never forever`,
+      terminal: { cwd: "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-02-python-advanced",
+        cmd: `cd "C:\\Users\\jshar494\\sid carrer\\curriculum\\week-02-python-advanced"; python prompting_json.py`,
+        note: "4 blocks, fully deterministic (fixed fake model outputs, no API call) — same failure modes a real LLM API call hits in Week 3, just reproducible on demand.",
+        output: `Block 1: json.JSONDecodeError — prose + markdown fences break raw json.loads()
+Block 2: parses correctly after stripping fences and slicing { ... }
+Block 3: candidate_a valid; candidate_b fails (age is a string); candidate_c
+         fails (name missing) — valid JSON syntax is not the same as valid data
+Block 4: succeeds on attempt 3 of 3 — attempt 1 fails schema, attempt 2 isn't
+         even JSON, attempt 3 finally passes both checks` } }
   ]
 };
 
@@ -973,6 +1093,83 @@ const DRILLS = {
           answer: "[('Ana', 99000.00000000001), ('Deja', 93500.00000000001)]  -- no error, it just works",
           why: "This works in SQLite specifically - WHERE runs BEFORE SELECT (FROM->WHERE->GROUP BY->HAVING->SELECT->ORDER BY), so 'raised' shouldn't exist yet. Verified against a real Postgres container: the same query FAILS there with 'column raised does not exist'. SQLite is the permissive outlier, not the rule." }
       ] }
+  ],
+
+  2: [
+    { id: "drill-decorators-py", tag: "Mon · Python", title: "decorators_closures.py - in your browser",
+      sub: "6 blocks: closures, decorators, generators, typing. Same protocol, no VS Code.",
+      blocks: [
+        { code: "funcs = [lambda: i for i in range(3)]\nresults = [f() for f in funcs]",
+          question: "What is `results`? [0, 1, 2] or something else?",
+          answer: "[2, 2, 2]",
+          why: "Every lambda closes over the SAME variable i, not its value at creation time. By the time any lambda runs, the loop has finished and i is 2." },
+        { code: '@logged\ndef greet(name):\n    """Say hello."""\n    return f"hello {name}"\n\nprint(greet.__name__, greet.__doc__)',
+          question: "What do greet.__name__ and greet.__doc__ print - the real ones, or something else?",
+          answer: "'wrapper' None",
+          why: "The decorator returns wrapper, so greet IS wrapper now - its __name__ becomes 'wrapper' and __doc__ becomes None. Fix: @functools.wraps(fn) on wrapper." },
+        { code: '@repeat(times=3)\ndef ping():\n    call_count["n"] += 1\n    return call_count["n"]\n\nresult = ping()',
+          question: "After calling ping() ONCE, how many times did the inner function actually run, and what does result equal?",
+          answer: "ran 3 times total, result = 3",
+          why: "repeat(times) returns decorator, decorator(fn) returns wrapper, and wrapper is what runs each call. One call to ping() triggers the inner loop 3 times." },
+        { code: 'def make_gen():\n    print("about to yield 1")\n    yield 1\n    print("about to yield 2")\n    yield 2\n\ng = make_gen()\n# does anything print yet?',
+          question: "Does calling make_gen() print anything immediately, or only once you call next(g)?",
+          answer: "nothing prints at creation - only next(g) triggers the first print, returning 1",
+          why: "Calling a generator function returns a generator object immediately - none of the body runs. Each next() resumes from the last yield." },
+        { code: 'gen = three_items()\nfirst_pass = list(gen)   # consumes it fully\nsecond_pass = list(gen)  # ??',
+          question: "first_pass is ['a', 'b', 'c']. What does second_pass equal?",
+          answer: "[]",
+          why: "Once a generator is fully consumed it's exhausted - calling list() again gets an empty list, not a fresh restart." },
+        { code: 'def add_ints(x: int, y: int) -> int:\n    return x + y\n\nresult = add_ints("a", "b")',
+          question: 'add_ints is hinted to take ints. Calling add_ints("a", "b") - TypeError, or does it just run?',
+          answer: "'ab' -- it just ran, no error, string concatenation happened",
+          why: "Python's type hints are documentation for humans and tools (mypy, Pydantic) - the interpreter never checks them at call time." }
+      ] },
+
+    { id: "drill-prompting-json", tag: "Thu · AI/ML", title: "prompting_json.py - in your browser",
+      sub: "4 blocks: parsing, extracting, validating and retrying a model's \"JSON\". Fully deterministic.",
+      blocks: [
+        { code: 'model_output = \'Sure! Here\\\'s the JSON...\\n```json\\n{"name": "Ana", "age": 27}\\n```\\n...\'\nresult = json.loads(model_output)',
+          question: "Does json.loads() on that raw string work, or crash? If it crashes, what error?",
+          answer: "json.JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+          why: "Models add conversational wrapper text and markdown fences even when asked for 'just JSON' - json.loads() expects the WHOLE string to be valid JSON." },
+        { code: "cleaned = extract_json(model_output)\nresult = json.loads(cleaned)",
+          question: "After stripping fences and taking only the { ... } span, does it parse now?",
+          answer: "parsed: {'name': 'Ana', 'age': 27}",
+          why: "Slicing from the first { to the last } after stripping code fences recovers the real payload. Standard defensive-parsing step in production LLM code." },
+        { code: 'candidate_a = {"name": "Bo", "age": 30}\ncandidate_b = {"name": "Chen", "age": "thirty"}\ncandidate_c = {"age": 25}',
+          question: "Which candidates pass a schema check requiring name:str and age:int, and why do the failing ones fail?",
+          answer: "a: valid. b: fails (age is a string, not int). c: fails (name missing entirely).",
+          why: "Valid JSON syntax is not the same as valid data - candidate_b parses fine but violates the schema. Always validate fields, not just parseability." },
+        { code: 'fake_model_attempts = [\n  \'{"name": "Deja", "age": "not a number"}\',\n  \'not json at all\',\n  \'{"name": "Deja", "age": 22}\',\n]\nresult, n = get_valid_response(fake_model_attempts, max_retries=3)',
+          question: "Which attempt number finally succeeds, and what does result end up being?",
+          answer: "succeeds on attempt 3: {'name': 'Deja', 'age': 22}",
+          why: "Attempt 1 fails schema (age is a string). Attempt 2 isn't even JSON. Attempt 3 passes both checks. The max_retries cap matters as much as the retry itself." }
+      ] },
+
+    { id: "drill-collections-java", tag: "Sat · Java", title: "CollectionsInternals.java - in your browser",
+      sub: "5 blocks: generics, Streams, immutability. Same protocol, no IDE.",
+      blocks: [
+        { code: "List<String> strings = new ArrayList<>();\nList<Integer> ints = new ArrayList<>();\nSystem.out.println(strings.getClass() == ints.getClass());",
+          question: "Does this print true or false - are List<String> and List<Integer> the same class at runtime?",
+          answer: "true",
+          why: "Generics exist only at compile time. At runtime both are just plain ArrayList objects - the type arguments are erased." },
+        { code: 'List<Integer> nums = List.of(1, 2, 3);\nStream<Integer> s = nums.stream().peek(x -> System.out.println("peeked " + x));\n// ...and nothing else is called on s',
+          question: 'Does "peeked 1/2/3" print, or does nothing print at all?',
+          answer: "nothing prints - the peek() callback never actually ran",
+          why: "peek/filter/map are intermediate ops that just build a pipeline description. Nothing executes until a terminal op (collect, forEach, findFirst...) pulls elements through." },
+        { code: 'List<String> fixed = List.of("a", "b", "c");\nfixed.add("d");',
+          question: "Does fixed.add(\"d\") work quietly, or throw? If it throws, what kind?",
+          answer: "UnsupportedOperationException",
+          why: "List.of() is genuinely immutable, backed by a fixed-size array with no add/remove/set support - unlike Collections.unmodifiableList(), which just wraps a mutable list." },
+        { code: 'List<String> words = List.of("ant", "bee", "ape", "bat", "cat");\nMap<Character, List<String>> byFirst = words.stream()\n    .collect(Collectors.groupingBy(w -> w.charAt(0)));',
+          question: "What does byFirst look like?",
+          answer: "{a=[ant, ape], b=[bee, bat], c=[cat]}",
+          why: "groupingBy is the Streams equivalent of Python's defaultdict(list) - one line replaces a manual HashMap + computeIfAbsent loop." },
+        { code: 'List<Integer> data = List.of(1, 2, 3, 4, 5);\nOptional<Integer> found = data.stream()\n    .peek(x -> System.out.println("checking " + x))\n    .filter(x -> x > 2)\n    .findFirst();',
+          question: "Does \"checking\" print for all 5 elements, or stop early? If early, after which element?",
+          answer: "stops after checking element 3 - found.get() = 3",
+          why: "findFirst() short-circuits the pipeline - the moment filter() lets one element through, elements 4 and 5 are never even visited." }
+      ] }
   ]
 };
 
@@ -1042,6 +1239,20 @@ const QUIZZES = [
     { q: "{v: k for k, v in d.items()} does what — and what's the catch?", o: ["Sorts the dict; no catch", "Inverts keys/values; duplicate values silently collapse to one key", "Deep-copies the dict", "Raises if values are strings"], a: 1, x: "Inversion needs unique, hashable values — duplicates keep only the last pair." },
     { q: "d[\"missing\"] vs d.get(\"missing\")?", o: ["Both return None", "Both raise KeyError", "[] raises KeyError; .get returns None (or your default)", ".get is deprecated"], a: 2, x: ".get(key, default) is the idiomatic safe lookup; square brackets fail loudly." },
     { q: "In try/except/else/finally, the else block runs…", o: ["Always", "Only if an exception was raised", "Only if NO exception was raised", "Never — it's invalid syntax"], a: 2, x: "else = the success path, keeping it out of the try so its own errors aren't swallowed. finally always runs." }
+  ]},
+  { id: "w2", name: "Week 2 · Decorators, Streams, Structured Output", sub: "12 questions · take Sunday, after the exercises", qs: [
+    { q: "funcs = [lambda: i for i in range(3)]; results = [f() for f in funcs] — results is…", o: ["[0, 1, 2]", "[2, 2, 2]", "[None, None, None]", "IndexError"], a: 1, x: "Every lambda closes over the SAME variable i, not its value — by the time any lambda runs, i is 2." },
+    { q: "A decorator returns `wrapper` but never calls functools.wraps. What happens to the decorated function's __name__?", o: ["Stays the original name", "Becomes 'wrapper'", "Becomes None", "Raises AttributeError"], a: 1, x: "greet = logged(greet) means greet IS wrapper now — its __name__ is 'wrapper' unless @functools.wraps(fn) copies the original over." },
+    { q: "@repeat(times=3) needs how many levels of function nesting, and why?", o: ["One — repeat(times) is the decorator", "Two — repeat(times) returns the decorator, which returns wrapper", "Three — repeat(times) returns decorator(fn) returns wrapper", "None — it's just a regular function call"], a: 2, x: "A parametrized decorator needs an extra layer: repeat(times) -> decorator(fn) -> wrapper(*args)." },
+    { q: "Calling a generator function (one with yield inside) — what runs immediately?", o: ["The whole function body", "Nothing — you get a generator object, body runs on next()", "Just the first line", "A SyntaxError if called without next()"], a: 1, x: "Generator functions return a generator object immediately; none of the body executes until next() is called." },
+    { q: "You fully consume a generator with list(gen), then call list(gen) again. What do you get?", o: ["The same list again", "[] — it's exhausted", "A fresh restart from the top", "TypeError"], a: 1, x: "A generator is a one-shot iterator. Once exhausted, it stays exhausted — call the generator FUNCTION again for a new one." },
+    { q: "def add(x: int, y: int) -> int: return x + y — calling add(\"a\", \"b\") at runtime…", o: ["Raises TypeError immediately", "Just runs — returns 'ab'", "Raises TypeError only in strict mode", "Silently returns None"], a: 1, x: "Type hints are documentation for humans and tools (mypy, Pydantic) — Python itself never checks them at call time." },
+    { q: "List<String> a = new ArrayList<>(); List<Integer> b = new ArrayList<>(); a.getClass() == b.getClass() is…", o: ["false — different generic types", "true — generics are erased at runtime"], a: 1, x: "Generic type parameters exist only at compile time. At runtime both are just ArrayList — this is type erasure." },
+    { q: "nums.stream().filter(x -> x > 2).map(x -> x * 2) with NO terminal operation called — what happens?", o: ["filter and map run immediately", "Nothing runs — Streams are lazy until a terminal op", "It throws IllegalStateException", "Only filter runs"], a: 1, x: "filter/map are intermediate ops that build a pipeline description. Nothing executes until collect/forEach/findFirst/etc pulls elements through." },
+    { q: "List<String> fixed = List.of(\"a\", \"b\"); fixed.add(\"c\") —", o: ["Adds successfully", "Throws UnsupportedOperationException", "Silently does nothing", "Throws IndexOutOfBoundsException"], a: 1, x: "List.of() is genuinely immutable, backed by a fixed-size array with no add/remove support at all." },
+    { q: "A model asked to 'return JSON' replies with markdown fences and a sentence of prose around the JSON. Calling json.loads() directly on that raw string…", o: ["Works fine — json.loads ignores extra text", "Raises json.JSONDecodeError — it expects the WHOLE string to be valid JSON", "Returns None", "Only fails if the JSON itself has a syntax error"], a: 1, x: "json.loads() needs the entire string to be valid JSON. Wrapper prose/fences break it immediately — you must extract the JSON span first." },
+    { q: "A model's JSON response parses fine but has age as the string \"thirty\" instead of an int. This is…", o: ["Not a real problem — JSON doesn't have types", "A schema violation — valid JSON syntax, invalid data, needs an explicit field check", "Something json.loads() would have caught", "Only fixable by re-prompting, never by validation code"], a: 1, x: "Parsing success only proves syntax validity. Data correctness needs its own explicit schema check on every field." },
+    { q: "Why does a production retry-until-valid loop against an LLM need a max_retries cap?", o: ["APIs charge less with a cap", "Without one, a model that never produces valid output hangs the service forever", "It's required by the JSON spec", "Caps make responses faster"], a: 1, x: "A model can genuinely fail to satisfy your schema indefinitely — an uncapped retry loop against that is a hang, not a safety net." }
   ]}
 ];
 
